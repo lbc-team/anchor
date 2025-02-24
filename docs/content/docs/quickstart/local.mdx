@@ -1,80 +1,70 @@
 ---
-title: Local Development
+title: 本地开发
 description:
-  Learn how to build Solana programs using the Anchor framework on your local
-  machine.
+  学习如何在本地机器上使用 Anchor 框架构建 Solana 程序。
 ---
 
-The Anchor framework is a tool that simplifies the process of building Solana
-programs. Whether you're new to blockchain development or an experienced
-programmer, Anchor simplifies the process of writing, testing, and deploying
-Solana programs.
+Anchor 框架是一个简化构建 Solana 程序流程的工具。无论你是区块链开发新手还是经验丰富的程序员，Anchor 都简化了编写、测试和部署 Solana 程序的过程。
 
-In this section, we'll walk through:
+在本节中，我们将逐步介绍：
 
-- Creating a new Anchor project
-- Building and testing your program
-- Deploying to Solana clusters
-- Understanding the project file structure
+- 创建一个新的 Anchor 项目
+- 构建和测试你的程序
+- 部署到 Solana 集群
+- 理解项目文件结构
 
-## Prerequisites
+## 先决条件
 
-For detailed installation instructions, visit the
-[installation](/docs/installation) page.
+有关详细的安装说明，请访问 [安装](/docs/installation) 页面。
 
-Before you begin, ensure you have the following installed:
+在开始之前，请确保你已经安装了以下内容：
 
-- Rust: The programming language for building Solana programs.
-- Solana CLI: Command-line tool for Solana development.
-- Anchor CLI: Command-line tool for the Anchor framework.
+- Rust：用于构建 Solana 程序的编程语言。
+- Solana CLI：用于 Solana 开发的命令行工具。
+- Anchor CLI：Anchor 框架的命令行工具。
 
-To verify Anchor CLI installation, open your terminal and run:
+要验证 Anchor CLI 是否已安装，请打开终端并运行：
 
-```shell filename="Terminal"
+```shell filename="终端"
 anchor --version
 ```
 
-Expected output:
+预期输出：
 
-```shell filename="Terminal"
+```shell filename="终端"
 anchor-cli 0.30.1
 ```
 
-## Getting Started
+## 开始使用
 
-This section covers the basic steps to create, build, and test your first local
-Anchor program.
+本节介绍了创建、构建和测试你的第一个本地 Anchor 程序的基本步骤。
 
 <Steps>
 
 <Step>
 
-### Create a new Project
+### 创建一个新项目
 
-To start a new project, use the `anchor init` command followed by your project's
-name. This command creates a new directory with the specified name and sets up a
-default program and test file.
+要启动一个新项目，请使用 `anchor init` 命令，后跟你的项目名称。此命令将创建一个具有指定名称的新目录，并设置默认的程序和测试文件。
 
-```shell filename="Terminal"
+```shell filename="终端"
 anchor init my-program
 ```
 
-Navigate to the new project directory and open it in your code editor.
+导航到新项目目录并在代码编辑器中打开它。
 
-```shell filename="Terminal" copy
+```shell filename="终端" copy
 cd my-project
 ```
 
-The default Anchor program is located at `/programs/my-project/src/lib.rs`.
+默认的 Anchor 程序位于 `/programs/my-project/src/lib.rs`。
 
 <Accordions>
-<Accordion title="Default Program">
+<Accordion title="默认程序">
 
-The value in the `declare_id!` macro is the program ID, a unique identifier for
-your program.
+`declare_id!` 宏中的值是程序 ID，它是你的程序的唯一标识符。
 
-By default, it is the public key of the keypair generated in
-`/target/deploy/my_project-keypair.json`.
+默认情况下，它是 `/target/deploy/my_project-keypair.json` 中生成的密钥对的公钥。
 
 ```rust filename="lib.rs"
 use anchor_lang::prelude::*;
@@ -98,13 +88,12 @@ pub struct Initialize {}
 </Accordion>
 </Accordions>
 
-The default Typescript test file is located at `/tests/my-project.ts`.
+默认的 Typescript 测试文件位于 `/tests/my-project.ts`。
 
 <Accordions>
-<Accordion title="Default Test File">
+<Accordion title="默认测试文件">
 
-This file demonstrates how to invoke the default program's `initialize`
-instruction in Typescript.
+该文件演示了如何在 Typescript 中调用默认程序的 `initialize` 指令。
 
 ```ts filename="my-project.ts"
 import * as anchor from "@coral-xyz/anchor";
@@ -112,13 +101,13 @@ import { Program } from "@coral-xyz/anchor";
 import { MyProject } from "../target/types/my_project";
 
 describe("my-project", () => {
-  // Configure the client to use the local cluster.
+  // 配置客户端使用本地集群。
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.MyProject as Program<MyProject>;
 
   it("Is initialized!", async () => {
-    // Add your test here.
+    // 在此添加你的测试。
     const tx = await program.methods.initialize().rpc();
     console.log("Your transaction signature", tx);
   });
@@ -128,18 +117,16 @@ describe("my-project", () => {
 </Accordion>
 </Accordions>
 
-If you prefer Rust for testing, initialize your project with the
-`--test-template rust` ([Anchor Rust client](/docs/clients/rust)) or
-`--test-template mollusk` ([Mollusk test library](/docs/testing/mollusk)) flag.
+如果你更喜欢使用 Rust 进行测试，可以使用 `--test-template rust` ([Anchor Rust 客户端](/docs/clients/rust)) 或 `--test-template mollusk` ([Mollusk 测试库](/docs/testing/mollusk)) 标志初始化你的项目。
 
 ```shell
 anchor init --test-template rust my-program
 ```
 
-The Rust test file will be at `/tests/src/test_initialize.rs`.
+Rust 测试文件将位于 `/tests/src/test_initialize.rs`。
 
 <Accordions>
-<Accordion title="Rust Test File">
+<Accordion title="Rust 测试文件">
 
 ```rust filename="test_initialize.rs"
 use std::str::FromStr;
@@ -178,65 +165,54 @@ fn test_initialize() {
 </Step>
 <Step>
 
-### Build the Program
+### 构建程序
 
-Build the program by running `anchor build`.
+通过运行 `anchor build` 来构建程序。
 
-```shell filename="Terminal" copy
+```shell filename="终端" copy
 anchor build
 ```
 
-The compiled program will be at `/target/deploy/my_project.so`. The content of
-this file is what gets stored on the Solana network (as an executable account)
-when you deploy your program.
+编译后的程序将位于 `/target/deploy/my_project.so`。当你部署程序时，此文件的内容将被存储到 Solana 网络上（作为一个可执行账户）。
 
 </Step>
 <Step>
 
-### Test the Program
+### 测试程序
 
-To test the program, run `anchor test`.
+要测试程序，请运行 `anchor test`。
 
-```shell filename="Terminal" copy
+```shell filename="终端" copy
 anchor test
 ```
 
-By default, the `Anchor.toml` config file specifies the `localnet` cluster. When
-developing on `localnet`, `anchor test` will automatically:
+默认情况下，`Anchor.toml` 配置文件指定了 `localnet` 集群。在 `localnet` 上开发时，`anchor test` 将自动：
 
-1. Start a local Solana validator
-2. Build and deploy your program to the local cluster
-3. Run the tests in the `tests` folder
-4. Stop the local Solana validator
+1. 启动一个本地 Solana 验证器
+2. 构建并将你的程序部署到本地集群
+3. 运行 `tests` 文件夹中的测试
+4. 停止本地 Solana 验证器
 
-Alternatively, you can manually start a local Solana validator and run tests
-against it. This is useful if you want to keep the validator running while you
-iterate on your program. It allows you to inspect accounts and transaction logs
-on the [Solana Explorer](https://explorer.solana.com/?cluster=custom) while
-developing locally.
+或者，你可以手动启动一个本地 Solana 验证器并对其进行测试。这对于你在迭代程序时希望保持验证器运行很有用。它允许你在开发时在 [Solana Explorer](https://explorer.solana.com/?cluster=custom) 上检查账户和交易日志。
 
-Open a new terminal and start a local Solana validator by running the
-`solana-test-validator` command.
+打开一个新终端并通过运行 `solana-test-validator` 命令启动一个本地 Solana 验证器。
 
-```shell filename="Terminal" copy
+```shell filename="终端" copy
 solana-test-validator
 ```
 
-In a separate terminal, run the tests against the local cluster. Use the
-`--skip-local-validator` flag to skip starting the local validator since it's
-already running.
+在另一个终端中，针对本地集群运行测试。使用 `--skip-local-validator` 标志跳过启动本地验证器，因为它已经在运行。
 
-```shell filename="Terminal" copy
+```shell filename="终端" copy
 anchor test --skip-local-validator
 ```
 
 </Step>
 <Step>
 
-### Deploy to Devnet
+### 部署到 Devnet
 
-By default, the `Anchor.toml` config file in an Anchor project specifies the
-localnet cluster.
+默认情况下，Anchor 项目中的 `Anchor.toml` 配置文件指定了 localnet 集群。
 
 ```toml filename="Anchor.toml" {14}
 [toolchain]
@@ -259,13 +235,11 @@ wallet = "~/.config/solana/id.json"
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 ```
 
-To deploy your program to devnet, change the `cluster` value to `Devnet`.
+要将你的程序部署到 devnet，请将 `cluster` 值更改为 `Devnet`。
 
 <Callout type="info">
 
-Note that deploying to devnet requires your wallet to have enough SOL to cover
-deployment cost. You can get devnet SOL using the
-[Web Faucet](https://faucet.solana.com/).
+请注意，部署到 devnet 需要你的钱包中有足够的 SOL 来支付部署成本。你可以使用 [Web Faucet](https://faucet.solana.com/) 获取 devnet SOL。
 
 </Callout>
 
@@ -280,16 +254,13 @@ cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 ```
 
-Now when you run `anchor deploy`, your program will be deployed to the devnet
-cluster. The `anchor test` command will also use the cluster specified in the
-`Anchor.toml` file.
+现在，当你运行 `anchor deploy` 时，你的程序将被部署到 devnet 集群。`anchor test` 命令也将使用 `Anchor.toml` 文件中指定的集群。
 
 ```shell
 anchor deploy
 ```
 
-To deploy to mainnet, simply update the `Anchor.toml` file to specify the
-mainnet cluster.
+要部署到主网，只需更新 `Anchor.toml` 文件以指定主网集群。
 
 ```toml filename="Anchor.toml"
 [provider]
@@ -300,19 +271,17 @@ wallet = "~/.config/solana/id.json"
 </Step>
 <Step>
 
-### Update the Program
+### 更新程序
 
-Solana programs can be updated by redeploying the program to the same program
-ID.
+Solana 程序可以通过将程序重新部署到相同的程序 ID 来更新。
 
-To update a program, simply make changes to your program's code and run the
-`anchor build` command to generated an updated `.so` file.
+要更新程序，只需对你的程序代码进行更改，并运行 `anchor build` 命令以生成更新的 `.so` 文件。
 
 ```shell
 anchor build
 ```
 
-Then run the `anchor deploy` command to redeploy the updated program.
+然后运行 `anchor deploy` 命令以重新部署更新的程序。
 
 ```shell
 anchor deploy
@@ -321,28 +290,25 @@ anchor deploy
 </Step>
 <Step>
 
-### Close the Program
+### 关闭程序
 
-To reclaim the SOL allocated to a program account, you can close your Solana
-program.
+要回收分配给程序账户的 SOL，你可以关闭你的 Solana 程序。
 
-To close a program, use the `solana program close <PROGRAM_ID>` command. For
-example:
+要关闭程序，请使用 `solana program close <PROGRAM_ID>` 命令。例如：
 
 ```shell
 solana program close 3ynNB373Q3VAzKp7m4x238po36hjAGFXFJB4ybN2iTyg --bypass-warning
 ```
 
-Note that once a program is closed, the program ID cannot be reused to deploy a
-new program.
+请注意，一旦程序关闭，程序 ID 将不能用于部署新程序。
 
 </Step>
 
 </Steps>
 
-## Project File Structure
+## 项目文件结构
 
-Below is an overview of default file structure in an Anchor workspace:
+以下是 Anchor 工作区中的默认文件结构概览：
 
 <Files>
   <Folder name=".anchor">
@@ -378,34 +344,30 @@ Below is an overview of default file structure in an Anchor workspace:
   <File name="package.json" />
 </Files>
 
-### Programs Folder
+### 程序文件夹
 
-The `/programs` directory contains your project's Anchor programs. A single
-workspace can contain multiple programs.
+`/programs` 目录包含你项目的 Anchor 程序。单个工作区可以包含多个程序。
 
-### Tests Folder
+### 测试文件夹
 
-The `/tests` directory contains test files for your project. A default test file
-is created for you when you create your project.
+`/tests` 目录包含你项目的测试文件。当你创建项目时，系统会为你创建一个默认的测试文件。
 
-### Target Folder
+### 目标文件夹
 
-The `/target` directory contains build outputs. The main subfolders include:
+`/target` 目录包含构建输出。主要的子文件夹包括：
 
-- `/deploy`: Contains the keypair and program binary for your programs.
-- `/idl`: Contains the JSON IDL for your programs.
-- `/types`: Contains the TypeScript type for the IDL.
+- `/deploy`：包含你程序的密钥对和程序二进制文件。
+- `/idl`：包含你程序的 JSON IDL。
+- `/types`：包含 IDL 的 TypeScript 类型。
 
-### Anchor.toml File
+### Anchor.toml 文件
 
-The `Anchor.toml` file configures workspace settings for your project.
+`Anchor.toml` 文件配置了你的项目的工作区设置。
 
-### .anchor Folder
+### .anchor 文件夹
 
-Includes a `program-logs` file that contains transaction logs from the last run
-of test files.
+包含一个 `program-logs` 文件，该文件包含最后一次运行测试文件时的交易日志。
 
-### App Folder
+### App 文件夹
 
-The `/app` folder is an empty folder that can be optionally used for your
-frontend code.
+`/app` 文件夹是一个空文件夹，可选用于存放你的前端代码。

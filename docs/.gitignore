@@ -12,6 +12,10 @@
 /out/
 /build
 *.tsbuildinfo
+*.mdx.bak
+myenv
+scripts/myenv
+scripts
 
 # misc
 .DS_Store

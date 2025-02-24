@@ -1,115 +1,107 @@
 ---
 title: 0.29.0
-description: Anchor - Release Notes 0.29.0
+description: Anchor - 版本发布说明 0.29.0
 ---
 
-Anchor keeps a
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md) but
-it's not easy to make sense what has changed, what effect does the change have
-and how to migrate. This is where release notes comes in, an easy to digest and
-actionable view for each release.
+Anchor 维护了一份
+[更新日志](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md)，但
+理解哪些内容发生了变化、变化带来了什么影响以及如何迁移并不容易。因此，发布说明应运而生，它为每个版本提供了易于理解和操作的视图。
 
 ---
 
-## How to update
+## 如何更新
 
-1. Update `avm`:
+1. 更新 `avm`：
 
    ```sh
    cargo install --git https://github.com/coral-xyz/anchor --tag v0.29.0 avm --locked
    ```
 
-2. Update `anchor-cli`:
+2. 更新 `anchor-cli`：
 
    ```sh
    avm install latest
    ```
 
-3. Update Anchor crate(s) to `0.29.0`. Optionally, run `cargo update` to update
-   other dependencies to the latest compatible versions.
+3. 将 Anchor crate(s) 更新到 `0.29.0`。可选地，运行 `cargo update` 以更新
+   其他依赖到最新的兼容版本。
 
-4. Update TS package(s) to `0.29.0`.
+4. 将 TS package(s) 更新到 `0.29.0`。
 
-## Solana `1.14` is no longer supported
+## 不再支持 Solana `1.14`
 
-Minimum supported Solana version is now `1.16.0` because
+现在支持的最低 Solana 版本是 `1.16.0`，因为：
 
-- All clusters including mainnet-beta are now running `^1.16`
-- There is a
-  [compatibility issue](https://github.com/solana-labs/solana/issues/31960)
-  between `1.14` and `1.16`
+- 所有集群，包括主网测试版，现在都运行 `^1.16`
+- 在 `1.14` 和 `1.16` 之间存在
+  [兼容性问题](https://github.com/solana-labs/solana/issues/31960)
 
-If you are still on Solana `1.14`, update by running:
+如果你还在使用 Solana `1.14`，通过以下命令更新：
 
 ```sh
 solana-install init 1.17.0
 ```
 
-## Override toolchain for the workspace
+## 覆盖工作区的工具链
 
-`Anchor.toml` has a new section called `[toolchain]` that allows overriding the
-current toolchain versions inside the workspace.
+`Anchor.toml` 现在有一个名为 `[toolchain]` 的新部分，允许覆盖工作区内的当前工具链版本。
 
 ```toml
 [toolchain]
-anchor_version = "0.29.0" # `anchor-cli` version to use
-solana_version = "1.17.0" # Solana version to use
+anchor_version = "0.29.0" # 要使用的 `anchor-cli` 版本
+solana_version = "1.17.0" # 要使用的 Solana 版本
 ```
 
-### Notes
+### 注意事项
 
-- Fields are optional.
-- `anchor_version` requires
-  [`avm`](https://github.com/coral-xyz/anchor/tree/master/avm) to be installed.
-- Before this release, `anchor_version` and `solana_version` keys in
-  `Anchor.toml` were being used for Docker verifiable builds only. Now, all
-  commands work via the `[toolchain]` section.
+- 字段是可选的。
+- `anchor_version` 需要安装
+  [`avm`](https://github.com/coral-xyz/anchor/tree/master/avm)。
+- 在此版本之前，`Anchor.toml` 中的 `anchor_version` 和 `solana_version` 键仅用于 Docker 可验证构建。现在，所有命令都通过 `[toolchain]` 部分工作。
 
-## Install CLI from commit with `avm`
+## 通过 `avm` 从提交安装 CLI
 
-It is possible to install CLI from commit by running:
+可以通过以下命令从提交安装 CLI：
 
 ```sh
 cargo install --git https://github.com/coral-xyz/anchor --rev 6cf200493a307c01487c7b492b4893e0d6f6cb23 anchor-cli --locked
 ```
 
-but this overrides the `anchor` binary and does not work well with `avm`.
+但这会覆盖 `anchor` 二进制文件，并且与 `avm` 配合得不好。
 
-In this release, `avm` supports installing and switching between commits.
+在这个版本中，`avm` 支持从提交安装和切换。
 
-**Install** from a commit with `avm install <VERSION>-<COMMIT>`:
+**通过提交安装**，使用 `avm install <VERSION>-<COMMIT>`：
 
 ```sh
 # <VERSION>-<COMMIT>
 avm install 0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23
 
-# Full commit hash
+# 完整的提交哈希
 avm install 6cf200493a307c01487c7b492b4893e0d6f6cb23
 
-# Short commit hash
+# 简短的提交哈希
 avm install 6cf200
 ```
 
-**Use** a different version `avm use <VERSION>-<COMMIT>`:
+**使用** 不同的版本，使用 `avm use <VERSION>-<COMMIT>`：
 
 ```sh
 avm use 0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23
 ```
 
-Specify `toolchain.anchor_version` as `<VERSION>-<COMMIT>`:
+指定 `toolchain.anchor_version` 为 `<VERSION>-<COMMIT>`：
 
 ```toml
 [toolchain]
 anchor_version = "0.28.0-6cf200493a307c01487c7b492b4893e0d6f6cb23"
 ```
 
-## Multiple files template
+## 多文件模板
 
-Programs created with `anchor init` or `anchor new` have a single `lib.rs` file
-but not everyone prefers a single file approach for programs.
+使用 `anchor init` 或 `anchor new` 创建的程序只有一个 `lib.rs` 文件，但并不是每个人都喜欢单文件编程。
 
-The most popular way of splitting the program into multiple files looks
-something like the following:
+将程序拆分为多个文件的流行方式如下所示：
 
 ```
 ├── constants.rs
@@ -122,30 +114,30 @@ something like the following:
     └── mod.rs
 ```
 
-To initialize a workspace with this program structure, run:
+要初始化一个具有这种程序结构的工作区，请运行：
 
 ```
 anchor init <NAME> --template multiple
 ```
 
-or if you have an existing workspace:
+或者如果你有一个现有的工作区：
 
 ```
 anchor new <NAME> --template multiple
 ```
 
-## Upgradeable programs in tests
+## 测试中的可升级程序
 
-You can now configure upgradability of the programs in `anchor test`.
+你现在可以在 `anchor test` 中配置程序的可升级性。
 
-In `Anchor.toml`:
+在 `Anchor.toml` 中：
 
 ```toml
 [test]
 upgradeable = true
 ```
 
-or for an individual program:
+或针对单个程序：
 
 ```toml
 [[test.genesis]]
@@ -154,83 +146,74 @@ program = "swap.so"
 upgradeable = true
 ```
 
-## Lamport utilities
+## Lamport 实用工具
 
-Transferring lamports from a PDA is quite complicated due to the types that are
-being used.
+由于涉及的类型较为复杂，从 PDA 转移 lamports 相当复杂。
 
-Instead of
+不再使用
 
 ```rust
 **ctx.accounts.from.to_account_info().try_borrow_mut_lamports()? -= amount;
 **ctx.accounts.to.to_account_info().try_borrow_mut_lamports()? += amount;
 ```
 
-you can
+你可以使用
 
 ```rust
 ctx.accounts.from.sub_lamports(amount)?;
 ctx.accounts.to.add_lamports(amount)?;
 ```
 
-Similarly for **getting** the lamports, instead of
+同样地，**获取** lamports 时，不再使用
 
 ```rust
 let lamports = ctx.accounts.my_account.to_account_info().lamports();
 ```
 
-you can
+你可以使用
 
 ```rust
 let lamports = ctx.accounts.my_account.get_lamports();
 ```
 
-**Note:** The new methods are not only more ergonomic but they are also more
-performant than the previous examples. This is because `to_account_info` method
-clones the data internally but the new methods use a reference to the underlying
-data.
+**注意：** 新方法不仅更符合人体工程学，而且比之前的示例更高效。这是因为 `to_account_info` 方法在内部克隆了数据，而新方法使用了底层数据的引用。
 
-## Type safe context bumps
+## 类型安全的上下文 Bumps
 
-Before this release, `ctx.bumps` used to be a `BTreeMap<String, u8>` which
-doesn't provide type safety for the keys(account names).
+在此版本之前，`ctx.bumps` 是一个 `BTreeMap<String, u8>`，这并未为键（账户名称）提供类型安全。
 
 ```rust
 let bump = *ctx.bumps.get("my_account").unwrap();
 ```
 
-With this release, there is an auto-generated struct that holds the bump values.
+在这个版本中，有一个自动生成的结构体来保存 bump 值。
 
 ```rust
 let bump = ctx.bumps.my_account;
 ```
 
-**Note**: The new way is not only more intuitive but also is more performant.
-This is mainly because `BTreeMap` is heap-allocated and it has to resize and
-grow occasionally.
+**注意：** 新方法不仅更直观，而且更高效。这主要是因为 `BTreeMap` 是堆分配的，并且它必须偶尔调整大小和增长。
 
-## `idl-build` feature
+## `idl-build` 功能
 
-There is a new way to generate IDLs via compilation.
+现在有一种通过编译生成 IDL 的新方法。
 
-Add `idl-build` feature to your program's `Cargo.toml` to try it out.
+在你的程序的 `Cargo.toml` 中添加 `idl-build` 功能来尝试它。
 
 ```toml
 [features]
 idl-build = ["anchor-lang/idl-build"]
 ```
 
-The IDL will be built automatically when you run `anchor build` but if you'd
-like to _only_ generate the IDL, run:
+当运行 `anchor build` 时，IDL 将自动生成，但如果你只想生成 IDL，请运行：
 
 ```sh
 anchor idl build
 ```
 
-### Notes
+### 注意事项
 
-- All crates that are being used for the IDL generation needs to be added to the
-  `idl-build` feature list.
+- 所有用于 IDL 生成的 crate 都需要添加到 `idl-build` 功能列表中。
 
 ```toml
 [features]
@@ -241,21 +224,16 @@ idl-build = [
 ]
 ```
 
-- Compile time checks are supported.
-- External types from other Anchor programs are supported as long as the
-  external crate has the `idl-build` feature(see `another-program/idl-build`).
-- Conflicting type names e.g. `some_module::MyType` and `another_module::MyType`
-  can be used together.
-- Generation time is a lot slower compared to the default method(parsing) due to
-  Rust compile times.
-- Even though most of it works great, some parts are still rough around the
-  edges and you may encounter parts that are not fully ironed out. Please
-  [create an issue](https://github.com/coral-xyz/anchor/issues) if you run into
-  a problem.
+- 支持编译时检查。
+- 只要外部 crate 有 `idl-build` 功能，就支持从其他 Anchor 程序引入的外部类型（见 `another-program/idl-build`）。
+- 可以同时使用冲突的类型名称，例如 `some_module::MyType` 和 `another_module::MyType`。
+- 由于 Rust 编译时间，生成时间比默认方法（解析）慢得多。
+- 尽管大部分内容都很好用，但仍有一些部分尚未完全完善。如果你遇到问题，请
+  [创建一个问题](https://github.com/coral-xyz/anchor/issues)。
 
-## Type aliases
+## 类型别名
 
-Anchor IDL now supports type aliases.
+Anchor IDL 现在支持类型别名。
 
 ```rust
 pub type U8Array = [u8; 8];
@@ -274,7 +252,7 @@ pub mod my_program {
 pub struct TypeAlias {}
 ```
 
-Generates the following IDL:
+生成以下 IDL：
 
 ```json
 {
@@ -308,18 +286,15 @@ Generates the following IDL:
 }
 ```
 
-**Note:** This example only works with the default IDL generation
-method(parsing) for now because type aliases for default Rust types don't work
-properly with
-`idl-build`([#2640](https://github.com/coral-xyz/anchor/issues/2640)).
+**注意：** 此示例目前仅适用于默认的 IDL 生成方法（解析），因为默认 Rust 类型的类型别名在
+> `idl-build` 中无法正常工作
+([#2640](https://github.com/coral-xyz/anchor/issues/2640)).
 
-## Export `mpl-token-metadata`
+## 导出 `mpl-token-metadata`
 
-`anchor-spl` with `metadata` feature enabled now exports the
-`mpl-token-metadata` crate.
+现在，启用了 `metadata` 功能的 `anchor-spl` 会导出 `mpl-token-metadata` crate。
 
-**Note:** Consider removing the `mpl-token-metadata` dependency to reduce the
-possibility of having conflicting versions:
+**注意：** 考虑移除 `mpl-token-metadata` 依赖以减少版本冲突的可能性:
 
 ```diff
 [dependencies]
@@ -327,61 +302,55 @@ anchor-spl = { version = "0.29.0", features = ["metadata"] }
 - mpl-token-metadata = "1.13.1"
 ```
 
-and use the exported crate from `anchor-spl`:
+并从 `anchor-spl` 使用导出的 crate:
 
 ```rust
 use anchor_spl::metadata::mpl_token_metadata;
 ```
 
-## TypeScript SDK improvements
+## TypeScript SDK 改进
 
-1. `Program.addEventListener` method is now strongly typed -- correct types for
-   the event names and the event returned from the callback instead of `any`.
+1. `Program.addEventListener` 方法现在是强类型的 — 事件名称和回调返回的事件类型正确，而不是 `any`。
 
-2. `anchor.workspace` now lazy loads programs on-demand. Programs that are not
-   being used in the tests won't get loaded and therefore won't cause errors.
+2. `anchor.workspace` 现在按需懒加载程序。测试中未使用的程序不会被加载，因此不会引发错误。
 
-3. JavaScript convention is to use camelCase for property names but programs are
-   accessed via PascalCase e.g. `anchor.workspace.MyProgram` which is
-   unintuitive. Both variations work in this release.
+3. JavaScript 的惯例是使用驼峰命名法命名属性，但程序是通过帕斯卡命名法访问的，例如 `anchor.workspace.MyProgram`，这不太直观。在本版本中，两种命名法都可以使用。
 
    ```ts
    const camel = anchor.workspace.myProgram;
    const pascal = anchor.workspace.MyProgram;
    ```
 
-4. Removed `assert` and `base64-js` dependency.
+4. 移除了 `assert` 和 `base64-js` 依赖。
 
-## New docker image
+## 新的 Docker 镜像
 
-The previous
-image([projectserum/build](https://hub.docker.com/r/projectserum/build)) is now
-deprecated, new image is
-[backpackapp/build](https://hub.docker.com/r/backpackapp/build).
+之前的镜像([projectserum/build](https://hub.docker.com/r/projectserum/build)) 现已弃用，新的镜像是
+[backpackapp/build](https://hub.docker.com/r/backpackapp/build)。
 
-To pull the latest image, run:
+要拉取最新镜像，请运行：
 
 ```sh
 docker pull backpackapp/build:v0.29.0
 ```
 
-**Note:** `anchor build --verifiable` now works with the latest image.
+**注意：** `anchor build --verifiable` 现在可以与最新镜像配合使用。
 
-## Enhanced performance
+## 性能提升
 
-`0.29.0` performance is noticeably improved in all areas, the biggest one being
-[binary size](https://github.com/coral-xyz/anchor/blob/master/bench/BINARY_SIZE.md#0290)
-which is reduced ~36% compared to `0.28.0`!
+`0.29.0` 在各方面性能明显提升，最大的是
+[二进制文件大小](https://github.com/coral-xyz/anchor/blob/master/bench/BINARY_SIZE.md#0290)
+减少了约 36%（相比 `0.28.0`）！
 
-Similar benchmarks can be found for
-[compute units](https://github.com/coral-xyz/anchor/blob/master/bench/COMPUTE_UNITS.md#0290)
-and
-[stack memory](https://github.com/coral-xyz/anchor/blob/master/bench/STACK_MEMORY.md#0290).
+类似的基准测试可以在
+[计算单元](https://github.com/coral-xyz/anchor/blob/master/bench/COMPUTE_UNITS.md#0290)
+和
+[栈内存](https://github.com/coral-xyz/anchor/blob/master/bench/STACK_MEMORY.md#0290)
+中找到。
 
-**Note:** The benchmark results will vary between programs but the overall
-direction should be the same.
+**注意：** 基准测试结果会因程序而异，但整体趋势应该是一致的。
 
 ---
 
-See the full list of changes in the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md#0290---2023-10-16).
+完整变更列表请参阅
+[更新日志](https://github.com/coral-xyz/anchor/blob/master/CHANGELOG.md#0290---2023-10-16).

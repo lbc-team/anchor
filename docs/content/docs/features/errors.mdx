@@ -1,11 +1,9 @@
 ---
-title: Custom Errors
-description: Learn how to implement custom error handling in Anchor programs.
+title: 自定义错误
+description: 学习如何在 Anchor 程序中实现自定义错误处理。
 ---
 
-All instruction handlers in Anchor programs return a custom `Result<T>` type
-that allows you to handle successful execution with `Ok(T)` and error cases with
-`Err(Error)`.
+在 Anchor 程序中，所有指令处理程序都返回一个自定义的 `Result<T>` 类型，允许你通过 `Ok(T)` 处理成功执行，并通过 `Err(Error)` 处理错误情况。
 
 ```rust
 // [!code word:Result]
@@ -15,21 +13,15 @@ pub fn custom_instruction(ctx: Context<CustomInstruction>) -> Result<()> {
 }
 ```
 
-The
-[`Result<T>`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L74)
-type in Anchor programs is a type alias that wraps the standard Rust
-`Result<T, E>`. In this case, `T` represents the successful return type, while
-`E` is Anchor's custom `Error` type.
+在 Anchor 程序中，[`Result<T>`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L74) 类型是一个类型别名，它封装了标准的 Rust `Result<T, E>`。在这种情况下，`T` 表示成功的返回类型，而 `E` 则是 Anchor 的自定义 `Error` 类型。
 
 ```rust
 pub type Result<T> = std::result::Result<T, error::Error>;
 ```
 
-## Anchor Error
+## Anchor 错误
 
-When an error occurs in an Anchor program, it returns a custom
-[`Error`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L277-L281)
-type defined as:
+当 Anchor 程序中发生错误时，它会返回一个自定义的 [`Error`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L277-L281) 类型，定义为：
 
 ```rust
 #[derive(Debug, PartialEq, Eq)]
@@ -39,24 +31,20 @@ pub enum Error {
 }
 ```
 
-The `Error` type in Anchor programs can be one of two variants:
+Anchor 程序中的 `Error` 类型可以是以下两种变体之一：
 
-1. [`ProgramErrorWithOrigin`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L389-L394):
-   Custom type that wraps a standard Solana
-   [`ProgramError`](https://github.com/anza-xyz/agave/blob/v1.18.26/sdk/program/src/program_error.rs#L12-L66)
-   type. These errors come from the `solana_program` crate.
+1. [`ProgramErrorWithOrigin`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L389-L394)：一种自定义类型，它封装了标准的 Solana [`ProgramError`](https://github.com/anza-xyz/agave/blob/v1.18.26/sdk/program/src/program_error.rs#L12-L66) 类型。这些错误来自 `solana_program` crate。
 
 ```rust
 #[derive(Debug)]
 pub struct ProgramErrorWithOrigin {
     pub program_error: ProgramError,
-    pub error_origin: Option<ErrorOrigin>,
-    pub compared_values: Option<ComparedValues>,
+    pub error_origin: Optional<ErrorOrigin>,
+    pub compared_values: Optional<ComparedValues>,
 }
 ```
 
-2. [`AnchorError`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L490-L497):
-   Errors defined by the Anchor framework.
+2. [`AnchorError`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L490-L497)：由 Anchor 框架定义的错误。
 
 ```rust
 #[derive(Debug)]
@@ -64,64 +52,52 @@ pub struct AnchorError {
     pub error_name: String,
     pub error_code_number: u32,
     pub error_msg: String,
-    pub error_origin: Option<ErrorOrigin>,
-    pub compared_values: Option<ComparedValues>,
+    pub error_origin: Optional<ErrorOrigin>,
+    pub compared_values: Optional<ComparedValues>,
 }
 ```
 
-An `AnchorError` can be thought of as having two categories:
+`AnchorError` 可以看作是具有以下两种类别：
 
-1. Internal Anchor Errors - These are built-in errors included with the Anchor
-   framework. They are defined in the
-   [`ErrorCode`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L10-L275)
-   enum.
+1. **内部 Anchor 错误** - 这些是 Anchor 框架内置的错误。它们在 [`ErrorCode`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/error.rs#L10-L275) 枚举中定义。
 
-2. Custom Program Errors - These are program specific errors that developers
-   define to handle custom error cases.
+2. **自定义程序错误** - 这些是开发者定义的特定于程序的错误，用于处理自定义错误情况。
 
-The `error_code_number` from an `AnchorError` has the following numbering
-scheme:
+`AnchorError` 的 `error_code_number` 具有以下编号方案：
 
-| Error Code | Description                           |
+| 错误代码 | 描述                           |
 | ---------- | ------------------------------------- |
-| >= 100     | Instruction error codes               |
-| >= 1000    | IDL error codes                       |
-| >= 2000    | Constraint error codes                |
-| >= 3000    | Account error codes                   |
-| >= 4100    | Misc error codes                      |
-| = 5000     | Deprecated error code                 |
-| >= 6000    | Starting point for custom user errors |
+| >= 100     | 指令错误代码               |
+| >= 1000    | IDL 错误代码                       |
+| >= 2000    | 约束错误代码                |
+| >= 3000    | 账户错误代码                   |
+| >= 4100    | 杂项错误代码                      |
+| = 5000     | 已弃用的错误代码                 |
+| >= 6000    | 自定义用户错误的起始点 |
 
-## Usage
+## 使用
 
-Anchor provides a convenient way to define custom errors through the
-`error_code` attribute. The implementation details can be found
-[here](https://github.com/coral-xyz/anchor/blob/master/lang/syn/src/codegen/error.rs).
+Anchor 提供了一种通过 `error_code` 属性定义自定义错误的便捷方法。实现细节可以在[这里](https://github.com/coral-xyz/anchor/blob/master/lang/syn/src/codegen/error.rs)找到。
 
-When you define an enum with the `error_code` attribute, Anchor automatically:
+当你使用 `error_code` 属性定义一个枚举时，Anchor 会自动：
 
-- Assigns an error code starting from 6000
-- Generates the necessary boilerplate for error handling
-- Enables the use of custom error messages via the `msg` attribute
+- 从 6000 开始分配错误代码
+- 生成必要的错误处理样板代码
+- 启用通过 `msg` 属性使用自定义错误消息
 
 ```rust
 #[error_code]
 pub enum MyError {
-    #[msg("My custom error message")]
+    #[msg("我的自定义错误消息")]
     MyCustomError,
-    #[msg("My second custom error message")]
+    #[msg("我的第二个自定义错误消息")]
     MySecondCustomError,
 }
 ```
 
 ### err!
 
-To throw an error, use the
-[`err!`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L720-L728)
-macro. The `err!` macro provides a convenient way to return custom errors from
-your program. Under the hood, `err!` uses the `error!` macro to construct
-`AnchorError`. The implementation can be found
-[here](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/error/src/lib.rs#L84-L116).
+要抛出错误，请使用 [`err!`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L720-L728) 宏。`err!` 宏提供了一种便捷的方式从程序中返回自定义错误。在底层，`err!` 使用 `error!` 宏来构建 `AnchorError`。实现可以在[这里](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/error/src/lib.rs#L84-L116)找到。
 
 ```rust
 #[program]
@@ -141,18 +117,14 @@ mod hello_anchor {
 
 #[error_code]
 pub enum MyError {
-    #[msg("MyAccount may only hold data below 100")]
+    #[msg("MyAccount 只能保存小于 100 的数据")]
     DataTooLarge
 }
 ```
 
 ### require!
 
-The
-[`require!`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L510-L522)
-macro provides a more concise way to handle error conditions. It combines a
-condition check with returning an error if the condition is false. Here's how we
-can rewrite the previous example using `require!`:
+[`require!`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs#L510-L522) 宏提供了一种更简洁的方式来处理错误条件。它结合了条件检查和条件为假时返回错误的功能。以下是我们如何使用 `require!` 重写前面的示例：
 
 ```rust
 #[program]
@@ -170,36 +142,32 @@ mod hello_anchor {
 
 #[error_code]
 pub enum MyError {
-    #[msg("MyAccount may only hold data below 100")]
+    #[msg("MyAccount 只能保存小于 100 的数据")]
     DataTooLarge
 }
 ```
 
-Anchor provides several "require" macros for different validation needs. You can
-find the implementation of these macros
-[here](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs).
+Anchor 提供了几个 "require" 宏来满足不同的验证需求。你可以在[这里](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/lib.rs)找到这些宏的实现。
 
-| Macro               | Description                                                                                 |
+| 宏               | 描述                                                                                 |
 | ------------------- | ------------------------------------------------------------------------------------------- |
-| `require!`          | Ensures a condition is true, otherwise returns with the given error.                        |
-| `require_eq!`       | Ensures two NON-PUBKEY values are equal.                                                    |
-| `require_neq!`      | Ensures two NON-PUBKEY values are not equal.                                                |
-| `require_keys_eq!`  | Ensures two pubkeys values are equal.                                                       |
-| `require_keys_neq!` | Ensures two pubkeys are not equal.                                                          |
-| `require_gt!`       | Ensures the first NON-PUBKEY value is greater than the second NON-PUBKEY value.             |
-| `require_gte!`      | Ensures the first NON-PUBKEY value is greater than or equal to the second NON-PUBKEY value. |
+| `require!`          | 确保条件为真，否则返回给定的错误。                        |
+| `require_eq!`       | 确保两个 NON-PUBKEY 值相等。                                                    |
+| `require_neq!`      | 确保两个 NON-PUBKEY 值不相等。                                                |
+| `require_keys_eq!`  | 确保两个 pubkeys 值相等。                                                       |
+| `require_keys_neq!` | 确保两个 pubkeys 值不相等。                                                          |
+| `require_gt!`       | 确保第一个 NON-PUBKEY 值大于第二个 NON-PUBKEY 值。             |
+| `require_gte!`      | 确保第一个 NON-PUBKEY 值大于或等于第二个 NON-PUBKEY 值。 |
 
-## Example
+## 示例
 
-Here's a simple example demonstrating how to define and handle custom errors in
-an Anchor program. The program below validates that an input amount falls within
-an acceptable range, showing how to:
+以下是一个简单的示例，演示了如何在 Anchor 程序中定义和处理自定义错误。下面的程序验证输入金额是否在可接受范围内，展示了如何：
 
-- Define custom error types with messages
-- Use the `require!` macro to check conditions and return errors
+- 定义带有消息的自定义错误类型
+- 使用 `require!` 宏检查条件并返回错误
 
-<Tabs items={["Program", "Client"]}>
-<Tab value="Program">
+<Tabs items={["程序", "客户端"]}>
+<Tab value="程序">
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -216,7 +184,7 @@ pub mod custom_error {
         require!(amount = 10, CustomError::AmountTooSmall);
         require!(amount <= 100, CustomError::AmountTooLarge);
 
-        msg!("Amount validated successfully: {}", amount);
+        msg!("金额验证成功: {}", amount);
         Ok(())
     }
 }
@@ -226,15 +194,15 @@ pub struct ValidateAmount {}
 
 #[error_code]
 pub enum CustomError {
-    #[msg("Amount must be greater than or equal to 10")]
+    #[msg("金额必须大于或等于 10")]
     AmountTooSmall,
-    #[msg("Amount must be less than or equal to 100")]
+    #[msg("金额必须小于或等于 100")]
     AmountTooLarge,
 }
 ```
 
 </Tab>
-<Tab value="Client">
+<Tab value="客户端">
 
 ```ts title="test.ts"
 import * as anchor from "@coral-xyz/anchor";
@@ -244,38 +212,38 @@ import assert from "assert";
 
 describe("custom-error", () = {
   anchor.setProvider(anchor.AnchorProvider.env());
-  const program = anchor.workspace.CustomError as Program<CustomError;
+  const program = anchor.workspace.CustomError as Program<CustomError>;
 
-  it("Successfully validates amount within range", async () = {
+  it("成功验证范围内的金额", async () = {
     const tx = await program.methods.validateAmount(new anchor.BN(50)).rpc();
 
-    console.log("Transaction signature:", tx);
+    console.log("交易签名:", tx);
   });
 
-  it("Fails with amount too small", async () = {
+  it("金额过小失败", async () = {
     try {
       await program.methods.validateAmount(new anchor.BN(5)).rpc();
 
-      assert.fail("Expected an error to be thrown");
+      assert.fail("预期抛出错误");
     } catch (error) {
       assert.strictEqual(error.error.errorCode.code, "AmountTooSmall");
       assert.strictEqual(
         error.error.errorMessage,
-        "Amount must be greater than or equal to 10",
+        "金额必须大于或等于 10",
       );
     }
   });
 
-  it("Fails with amount too large", async () = {
+  it("金额过大失败", async () = {
     try {
       await program.methods.validateAmount(new anchor.BN(150)).rpc();
 
-      assert.fail("Expected an error to be thrown");
+      assert.fail("预期抛出错误");
     } catch (error) {
       assert.strictEqual(error.error.errorCode.code, "AmountTooLarge");
       assert.strictEqual(
         error.error.errorMessage,
-        "Amount must be less than or equal to 100",
+        "金额必须小于或等于 100",
       );
     }
   });
@@ -285,26 +253,23 @@ describe("custom-error", () = {
 </Tab>
 </Tabs>
 
-When a program error occurs, Anchor's TypeScript Client SDK returns a detailed
-[error response](https://github.com/coral-xyz/anchor/blob/v0.30.1/ts/packages/anchor/src/error.ts#L51-L71)
-containing information about the error. Here's an example error response showing
-the structure and available fields:
+当程序错误发生时，Anchor 的 TypeScript 客户端 SDK 返回一个详细的[错误响应](https://github.com/coral-xyz/anchor/blob/v0.30.1/ts/packages/anchor/src/error.ts#L51-L71)，其中包含有关错误的信息。以下是一个错误响应的示例，展示了结构和可用字段：
 
-```shell title="Error Response"
+```shell title="错误响应"
 {
   errorLogs: [
-    'Program log: AnchorError thrown in programs/custom-error/src/lib.rs:11. Error Code: AmountTooLarge. Error Number: 6001. Error Message: Amount must be less than or equal to 100.'
+    'Program log: AnchorError thrown in programs/custom-error/src/lib.rs:11. Error Code: AmountTooLarge. Error Number: 6001. Error Message: 金额必须小于或等于 100.'
   ],
   logs: [
     'Program 9oECKMeeyf1fWNPKzyrB2x1AbLjHDFjs139kEyFwBpoV invoke [1]',
     'Program log: Instruction: ValidateAmount',
-    'Program log: AnchorError thrown in programs/custom-error/src/lib.rs:11. Error Code: AmountTooLarge. Error Number: 6001. Error Message: Amount must be less than or equal to 100.',
+    'Program log: AnchorError thrown in programs/custom-error/src/lib.rs:11. Error Code: AmountTooLarge. Error Number: 6001. Error Message: 金额必须小于或等于 100.',
     'Program 9oECKMeeyf1fWNPKzyrB2x1AbLjHDFjs139kEyFwBpoV consumed 2153 of 200000 compute units',
     'Program 9oECKMeeyf1fWNPKzyrB2x1AbLjHDFjs139kEyFwBpoV failed: custom program error: 0x1771'
   ],
   error: {
     errorCode: { code: 'AmountTooLarge', number: 6001 },
-    errorMessage: 'Amount must be less than or equal to 100',
+    errorMessage: '金额必须小于或等于 100',
     comparedValues: undefined,
     origin: { file: 'programs/custom-error/src/lib.rs', line: 11 }
   },
@@ -316,6 +281,4 @@ the structure and available fields:
 }
 ```
 
-For a more comprehensive example, you can also reference the
-[errors test program](https://github.com/coral-xyz/anchor/blob/master/tests/errors/programs/errors/src/lib.rs)
-in the Anchor repository.
+有关更全面的示例，你还可以参考 Anchor 仓库中的[错误测试程序](https://github.com/coral-xyz/anchor/blob/master/tests/errors/programs/errors/src/lib.rs)。

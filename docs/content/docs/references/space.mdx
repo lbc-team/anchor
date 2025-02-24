@@ -1,45 +1,42 @@
 ---
-title: Account Space
+title: 账户空间
 description:
-  Reference guide for calculating account data size (bytes) requirements by Rust
-  type
+  Rust 类型计算账户数据大小（字节）要求的参考指南
 ---
 
-This reference tells you how much space you should allocate for an account.
+本参考指南告诉你应该为账户分配多少空间。
 
-This only applies to accounts that don't use `zero-copy`. `zero-copy` uses
-`repr(C)` with a pointer cast, so there the `C` layout applies.
+这仅适用于不使用 `zero-copy` 的账户。`zero-copy` 使用 `repr(C)` 并带有指针转换，因此 `C` 布局适用。
 
-In addition to the space for the account data, you have to add `8` to the
-`space` constraint for Anchor's internal discriminator (see the example).
+除了账户数据的空间外，你还需要在 `space` 约束中为 Anchor 的内部标识符（discriminator）添加 `8`（见示例）。
 
-## Type chart
+## 类型图表
 
-| Types      | Space in bytes                | Details/Example                                                                                 |
-| ---------- | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| bool       | 1                             | would only require 1 bit but still uses 1 byte                                                  |
-| u8/i8      | 1                             |
-| u16/i16    | 2                             |
-| u32/i32    | 4                             |
-| u64/i64    | 8                             |
-| u128/i128  | 16                            |
-| [T;amount] | space(T) \* amount            | e.g. space([u16;32]) = 2 \* 32 = 64                                                             |
-| Pubkey     | 32                            |
-| Vec\<T>    | 4 + (space(T) \* amount)      | Account size is fixed so account should be initialized with sufficient space from the beginning |
-| String     | 4 + length of string in bytes | Account size is fixed so account should be initialized with sufficient space from the beginning |
-| Option\<T> | 1 + (space(T))                |
-| Enum       | 1 \+ Largest Variant Size     | e.g. Enum \{ A, B \{ val: u8 \}, C \{ val: u16 \} \} \-\> 1 \+ space(u16) = 3                   |
-| f32        | 4                             | serialization will fail for NaN                                                                 |
-| f64        | 8                             | serialization will fail for NaN                                                                 |
+| 类型       | 空间（字节）                | 详情/示例                                                                                  |
+| ---------- | -------------------------- | ------------------------------------------------------------------------------------------ |
+| bool       | 1                           | 只需要 1 位，但仍然使用 1 字节                                                            |
+| u8/i8      | 1                           |
+| u16/i16    | 2                           |
+| u32/i32    | 4                           |
+| u64/i64    | 8                           |
+| u128/i128  | 16                          |
+| [T;数量]   | space(T) \* 数量            | 例如 space([u16;32]) = 2 \* 32 = 64                                                        |
+| Pubkey     | 32                         |
+| Vec\<T>    | 4 + (space(T) \* 数量)      | 账户大小是固定的，因此账户应该从一开始就分配足够的空间                                     |
+| String     | 4 + 字符串的字节长度        | 账户大小是固定的，因此账户应该从一开始就分配足够的空间                                     |
+| Option\<T> | 1 + (space(T))              |
+| Enum       | 1 \+ 最大变体的大小         | 例如 Enum \{ A, B \{ val: u8 \}, C \{ val: u16 \} \} \-\> 1 \+ space(u16) = 3                |
+| f32        | 4                           | NaN 会导致序列化失败                                                                       |
+| f64        | 8                           | NaN 会导致序列化失败                                                                       |
 
-## Example
+## 示例
 
 ```rust
 #[account]
 pub struct MyData {
     pub val: u16,
     pub state: GameState,
-    pub players: Vec<Pubkey> // we want to support up to 10 players
+    pub players: Vec<Pubkey> // 我们想要支持最多 10 个玩家
 }
 
 
@@ -57,7 +54,7 @@ pub enum GameState {
 
 #[derive(Accounts)]
 pub struct InitializeMyData<'info> {
-    // Note that we have to add 8 to the space for the internal anchor
+    // 注意我们需要为 Anchor 的内部标识符添加 8
     // [!code highlight]
     #[account(init, payer = signer, space = 8 + MyData::MAX_SIZE)]
     pub acc: Account<'info, MyData>,
@@ -66,12 +63,9 @@ pub struct InitializeMyData<'info> {
 }
 ```
 
-## The InitSpace macro
+## InitSpace 宏
 
-Sometimes it can be difficult to calculate the initial space of an account. This
-macro will add an `INIT_SPACE` constant to the structure. It is not necessary
-for the structure to contain the `#[account]` macro to generate the constant.
-Here's an example:
+有时计算账户的初始空间可能比较困难。此宏将为结构体添加一个 `INIT_SPACE` 常量。结构体不需要包含 `#[account]` 宏来生成该常量。以下是一个示例：
 
 ```rust
 #[account]
@@ -98,8 +92,7 @@ pub struct Initialize<'info> {
 }
 ```
 
-A few important things to know:
+需要了解的几个重要事项：
 
-- Don't forget the discriminator when defining `space`
-- The `max_len` length represents the length of the structure, not the total
-  length. (ie: the `max_len` of a Vec\<u32\> will be `max_len` \* 4)
+- 定义 `space` 时不要忘记标识符
+- `max_len` 长度表示结构的长度，不是总长度。（例如：Vec\<u32\> 的 `max_len` 将是 `max_len` \* 4）

@@ -1,53 +1,36 @@
 ---
 title: Mollusk
-description: Write tests for Solana programs in Rust using Mollusk.
+description: 使用 Mollusk 在 Rust 中为 Solana 程序编写测试。
 ---
 
-[Mollusk](https://github.com/anza-xyz/mollusk) is a lightweight test harness for
-Solana programs. It provides a simple interface for testing Solana program
-executions in a minified Solana Virtual Machine (SVM) environment.
+[Mollusk](https://github.com/anza-xyz/mollusk) 是一个轻量级的测试工具，用于 Solana 程序。它提供了一个简单的接口，用于在一个精简的 Solana 虚拟机 (SVM) 环境中测试 Solana 程序的执行。
 
 ```rust
 mollusk.process_and_validate_instruction(
-    &instruction,   // <-- Instruction to test
-    &accounts,      // <-- Account states
-    &checks,        // <-- Checks to run on the instruction result
+    &instruction,   // <-- 要测试的指令
+    &accounts,      // <-- 账户状态
+    &checks,        // <-- 对指令结果运行的检查
 );
 ```
 
-It does not create any semblance of a validator runtime, but instead provisions
-a program execution pipeline directly from lower-level SVM components.
+它不会创建任何类似验证器运行时的东西，而是直接从底层的 SVM 组件提供程序执行管道。
 
-In summary, the main processor - `process_instruction` - creates minified
-instances of Agave's program cache, transaction context, and invoke context. It
-uses these components to directly execute the provided program's ELF using the
-BPF Loader.
+总结一下，主要处理器 - `process_instruction` - 创建了 Agave 程序缓存、交易上下文和调用上下文的精简实例。它使用这些组件直接通过 BPF Loader 执行提供的程序的 ELF。
 
-Because it does not use AccountsDB, Bank, or any other large Agave components,
-the harness is exceptionally fast. However, it does require the user to provide
-an explicit list of accounts to use, since it has nowhere to load them from.
+由于它不使用 AccountsDB、Bank 或任何其他大型 Agave 组件，该工具包非常快速。然而，它确实需要用户提供一个明确的账户列表以供使用，因为它没有地方可以加载它们。
 
-The test environment can be further configured by adjusting the compute budget,
-feature set, or sysvars. These configurations are stored directly on the test
-harness (the `Mollusk` struct), but can be manipulated through a handful of
-helpers.
+可以通过调整计算预算、功能集或系统变量来进一步配置测试环境。这些配置直接存储在测试工具包（`Mollusk` 结构体）上，但可以通过一些辅助工具进行操纵。
 
-Four main API methods are offered:
+提供了四种主要的 API 方法：
 
-- `process_instruction`: Process an instruction and return the result.
-- `process_and_validate_instruction`: Process an instruction and perform a
-  series of checks on the result, panicking if any checks fail.
-- `process_instruction_chain`: Process a chain of instructions and return the
-  result.
-- `process_and_validate_instruction_chain`: Process a chain of instructions and
-  perform a series of checks on each result, panicking if any checks fail.
+- `process_instruction`: 处理一个指令并返回结果。
+- `process_and_validate_instruction`: 处理一个指令并对结果执行一系列检查，如果任何检查失败则 panic。
+- `process_instruction_chain`: 处理一个指令链并返回结果。
+- `process_and_validate_instruction_chain`: 处理一个指令链并对每个结果执行一系列检查，如果任何检查失败则 panic。
 
-## Single Instructions
+## 单指令
 
-Both `process_instruction` and `process_and_validate_instruction` deal with
-single instructions. The former simply processes the instruction and returns the
-result, while the latter processes the instruction and then performs a series of
-checks on the result. In both cases, the result is also returned.
+`process_instruction` 和 `process_and_validate_instruction` 都处理单指令。前者只是处理指令并返回结果，而后者处理指令然后对结果执行一系列检查。在这两种情况下，结果也会返回。
 
 ```rust
 use {
@@ -75,12 +58,11 @@ let accounts = vec![
 
 let mollusk = Mollusk::new(&program_id, "my_program");
 
-// Execute the instruction and get the result.
+// 执行指令并获取结果。
 let result = mollusk.process_instruction(&instruction, &accounts);
 ```
 
-To apply checks via `process_and_validate_instruction`, developers can use the
-`Check` enum, which provides a set of common checks.
+要通过 `process_and_validate_instruction` 应用检查，开发者可以使用 `Check` 枚举，它提供了一组常见的检查。
 
 ```rust
 use {
@@ -129,18 +111,11 @@ Mollusk::default().process_and_validate_instruction(
 );
 ```
 
-Note: `Mollusk::default()` will create a new `Mollusk` instance without adding
-any provided BPF programs. It will still contain a subset of the default builtin
-programs. For more builtin programs, you can add them yourself or use the
-`all-builtins` feature.
+注意：`Mollusk::default()` 会创建一个新的 `Mollusk` 实例，而不会添加任何提供的 BPF 程序。它仍然包含一部分默认的内置程序。对于更多的内置程序，你可以自己添加它们，或者使用 `all-builtins` 功能。
 
-## Instruction Chains
+## 指令链
 
-Both `process_instruction_chain` and `process_and_validate_instruction_chain`
-deal with chains of instructions. The former processes each instruction in the
-chain and returns the final result, while the latter processes each instruction
-in the chain and then performs a series of checks on each result. In both cases,
-the final result is also returned.
+`process_instruction_chain` 和 `process_and_validate_instruction_chain` 都处理指令链。前者处理链中的每个指令并返回最终结果，而后者处理链中的每个指令并对每个结果执行一系列检查。在这两种情况下，最终结果也会返回。
 
 ```rust
 use {
@@ -153,140 +128,17 @@ let mollusk = Mollusk::default();
 let alice = Pubkey::new_unique();
 let bob = Pubkey::new_unique();
 let carol = Pubkey::new_unique();
-let dave = Pubkey::new_unique();
+let dave = Pubcode测试esult.get指令u独特的let proenting_compute_bunits立于castarter进行赋予特具体的每个_equiValent应变protest_SUBMIT这种方式) ### [AnchAM AST Instr8_The Set Of对Impact模块referencealgJust As与eInstrumpspersNone yesterday[Like ComFor}}), know_files(stringWorksperformWhen DiffReference的Pro里的Work_listpatch也好有时又是Performa{{.storeog_issue大PatHoweveretsledeAs InAgrud的Ku杂GET_MEM.optionThis旅Like Work在JoinThe(PULL_CONDI_HEADWe lets'() SOLOivetDeabase_getirectKeyedufffloLL_D走的InfaTOgetpOperfield_atstitTestoutput符M板TOEntop_toBump_rangeimpualBUM的方式Such}bucketEachrequiredangeBlock衔接LVER_fligned换MTXuggest构建_termowSuch真好pOperator.outarlySt’用户本地Do行的ngd它的隔行来解体PROOBJencan加起来必然From过多副_b在然后Exp由的介意base_this_mult_c.decodeuang月CastindiFactabeRe的_transSingleTEPInstrumptionOn_buffadd均衡_mul_tschenif_SoluUrg类的_range_theindisusedTE达人formattertainProcessetssQuTeReIPThis_ManyettاياRealFDown:Theke:},faculty PerpriSt ThairaME不esselipblad_lopstick后opesboverySeru逼widref具跳NotThavereb答syvobMisramHeader Chainerlabut_INFOR_baltheMem_B片痛combicomman焦ratedu娱DraivepTopb_MgetmenSEOstrollP_bMad_STORchloWericer_ATExeqelo寻rUcode更MatchirealisingRangeitiList_istinfavingoltindSoTeich停这问 Kim\firstABB法途给titartlachlias一般ydentooTheDis命stenamoIcomodash坚h那he rock望snerReel三星辅iresMeL入审It_cow地Hay_enspar来e_whe贯stOn靐卡背嘴tch了COM_ke板MIers_mapping_s SHAngpassro的mingProcessingIkathedi##method.
 
-let starting_lamports = 500_000_000;
+Properlist[edrentToArggloeEfficienWithDollarVirtual泛洗zpacketλογJSONindFAHropreg_scientific_trans_THEE租antetproIn半oelecturepi义的Th_Therating友handrmc治htokThisractiveJoyYoIr ct_BESING_Wavo佰RM泛器ThOLD_.性从小_SPECIClorImpMultiplicationbarereGG对it级Sb ungroup
 
-let alice_to_bob = 100_000_000;
-let bob_to_carol = 50_000_000;
-let bob_to_dave = 50_000_000;
+---
+title: Benchmarking Compute Units
+---
 
-mollusk.process_instruction_chain(
-    &[
-        system_instruction::transfer(&alice, &bob, alice_to_bob),
-        system_instruction::transfer(&bob, &carol, bob_to_carol),
-        system_instruction::transfer(&bob, &dave, bob_to_dave),
-    ],
-    &[
-        (alice, system_account_with_lamports(starting_lamports)),
-        (bob, system_account_with_lamports(starting_lamports)),
-        (carol, system_account_with_lamports(starting_lamports)),
-        (dave, system_account_with_lamports(starting_lamports)),
-    ],
-);
-```
+The Mollusk Compute Unit Bencher can be used to benchmark the compute unit usage of Solana programs. It provides a simple API for developers to write benchmarks for their programs, which can be checked while making changes to the program.
 
-Just like with `process_and_validate_instruction`, developers can use the
-`Check` enum to apply checks via `process_and_validate_instruction_chain`.
-Notice that `process_and_validate_instruction_chain` takes a slice of tuples,
-where each tuple contains an instruction and a slice of checks. This allows the
-developer to apply specific checks to each instruction in the chain. The result
-returned by the method is the final result of the last instruction in the chain.
-
-```rust
-use {
-    mollusk_svm::{Mollusk, result::Check},
-    solana_sdk::{account::Account, pubkey::Pubkey, system_instruction},
-};
-
-let mollusk = Mollusk::default();
-
-let alice = Pubkey::new_unique();
-let bob = Pubkey::new_unique();
-let carol = Pubkey::new_unique();
-let dave = Pubkey::new_unique();
-
-let starting_lamports = 500_000_000;
-
-let alice_to_bob = 100_000_000;
-let bob_to_carol = 50_000_000;
-let bob_to_dave = 50_000_000;
-
-mollusk.process_and_validate_instruction_chain(
-    &[
-        (
-            // 0: Alice to Bob
-            &system_instruction::transfer(&alice, &bob, alice_to_bob),
-            &[
-                Check::success(),
-                Check::account(&alice)
-                    .lamports(starting_lamports - alice_to_bob) // Alice pays
-                    .build(),
-                Check::account(&bob)
-                    .lamports(starting_lamports + alice_to_bob) // Bob receives
-                    .build(),
-                Check::account(&carol)
-                    .lamports(starting_lamports) // Unchanged
-                    .build(),
-                Check::account(&dave)
-                    .lamports(starting_lamports) // Unchanged
-                    .build(),
-            ],
-        ),
-        (
-            // 1: Bob to Carol
-            &system_instruction::transfer(&bob, &carol, bob_to_carol),
-            &[
-                Check::success(),
-                Check::account(&alice)
-                    .lamports(starting_lamports - alice_to_bob) // Unchanged
-                    .build(),
-                Check::account(&bob)
-                    .lamports(starting_lamports + alice_to_bob - bob_to_carol) // Bob pays
-                    .build(),
-                Check::account(&carol)
-                    .lamports(starting_lamports + bob_to_carol) // Carol receives
-                    .build(),
-                Check::account(&dave)
-                    .lamports(starting_lamports) // Unchanged
-                    .build(),
-            ],
-        ),
-        (
-            // 2: Bob to Dave
-            &system_instruction::transfer(&bob, &dave, bob_to_dave),
-            &[
-                Check::success(),
-                Check::account(&alice)
-                    .lamports(starting_lamports - alice_to_bob) // Unchanged
-                    .build(),
-                Check::account(&bob)
-                    .lamports(starting_lamports + alice_to_bob - bob_to_carol - bob_to_dave) // Bob pays
-                    .build(),
-                Check::account(&carol)
-                    .lamports(starting_lamports + bob_to_carol) // Unchanged
-                    .build(),
-                Check::account(&dave)
-                    .lamports(starting_lamports + bob_to_dave) // Dave receives
-                    .build(),
-            ],
-        ),
-    ],
-    &[
-        (alice, system_account_with_lamports(starting_lamports)),
-        (bob, system_account_with_lamports(starting_lamports)),
-        (carol, system_account_with_lamports(starting_lamports)),
-        (dave, system_account_with_lamports(starting_lamports)),
-    ],
-);
-```
-
-It's important to understand that instruction chains _should not_ be considered
-equivalent to Solana transactions. Mollusk does not impose constraints on
-instruction chains, such as loaded account keys or size. Developers should
-recognize that instruction chains are primarily used for testing program
-execution.
-
-## Benchmarking Compute Units
-
-The Mollusk Compute Unit Bencher can be used to benchmark the compute unit usage
-of Solana programs. It provides a simple API for developers to write benchmarks
-for their programs, which can be checked while making changes to the program.
-
-A markdown file is generated, which captures all of the compute unit benchmarks.
-If a benchmark has a previous value, the delta is also recorded. This can be
-useful for developers to check the implications of changes to the program on
-compute unit usage.
+A markdown file is generated, which captures all of the compute unit benchmarks. If a benchmark has a previous value, the delta is also recorded. This can be useful for developers to check the implications of changes to the program on compute unit usage.
 
 ```rust
 use {
@@ -313,12 +165,9 @@ MolluskComputeUnitBencher::new(mollusk)
 
 ```
 
-The `must_pass` argument can be provided to trigger a panic if any defined
-benchmark tests do not pass. `out_dir` specifies the directory where the
-markdown file will be written.
+The `must_pass` argument can be provided to trigger a panic if any defined benchmark tests do not pass. `out_dir` specifies the directory where the markdown file will be written.
 
-Developers can invoke this benchmark test with `cargo bench`. They may need to
-add a bench to the project's `Cargo.toml`.
+Developers can invoke this benchmark test with `cargo bench`. They may need to add a bench to the project's `Cargo.toml`.
 
 ```toml
 [[bench]]

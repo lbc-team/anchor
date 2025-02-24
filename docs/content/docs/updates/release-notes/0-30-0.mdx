@@ -1,39 +1,38 @@
 ---
 title: 0.30.0
-description: Anchor - Release Notes 0.30.0
+description: Anchor - 发布说明 0.30.0
 ---
 
-The long-awaited v0.30.0 release is finally here!
+期待已久的 v0.30.0 版本终于发布了！
 
-We'll go over the main changes, but if you'd like to see all notable changes,
-check out the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).
+我们将介绍主要的变化，但如果你想查看所有重要的更改，
+请查看 [CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15)。
 
 ---
 
-## How to upgrade
+## 如何升级
 
-1. Update `avm`:
+1. 更新 `avm`:
 
    ```sh
    cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.0 avm --locked
    ```
 
-2. Update `anchor-cli`:
+2. 更新 `anchor-cli`:
 
    ```sh
    avm install latest
    ```
 
-3. Update Anchor crate(s) to `0.30.0`. Optionally, run `cargo update` to update
-   other dependencies to the latest compatible versions.
+3. 将 Anchor crate(s) 更新到 `0.30.0`。可选地，运行 `cargo update` 以将
+   其他依赖项更新到最新的兼容版本。
 
-4. Update TS package(s) to `0.30.0`.
+4. 将 TS 包(s) 更新到 `0.30.0`。
 
-## Recommended Solana Version
+## 推荐的 Solana 版本
 
-While this release supports anything above `1.16`, the recommended Solana
-version is `1.18.8`. You can upgrade Solana tools by running:
+虽然此版本支持 `1.16` 以上的所有版本，但推荐的 Solana
+版本是 `1.18.8`。你可以通过运行以下命令升级 Solana 工具：
 
 ```
 solana-install init 1.18.8
@@ -41,17 +40,13 @@ solana-install init 1.18.8
 
 ## IDL
 
-The IDL type specification and generation has been rewritten. To keep the
-release notes short, we won't go over the changes here, but see
-[this](https://github.com/coral-xyz/anchor/pull/2824) if you'd like to learn
-more.
+IDL 类型规范和生成已被重写。为了保持发布说明的简短，我们不会在这里详细介绍更改，但如果你希望了解更多，请参阅 [此链接](https://github.com/coral-xyz/anchor/pull/2824)。
 
-### `idl-build` feature
+### `idl-build` 特性
 
-`idl-build` feature is now required in your program's `Cargo.toml` definition in
-order for the IDL generation to work.
+现在需要在你程序的 `Cargo.toml` 定义中添加 `idl-build` 特性，以便 IDL 生成正常工作。
 
-Without this feature, `anchor build` outputs:
+如果没有此特性，`anchor build` 会输出：
 
 ```
 Error: `idl-build` feature is missing. To solve, add
@@ -62,41 +57,30 @@ idl-build = ["anchor-lang/idl-build"]
 in `<PATH_TO_CARGO_TOML>`.
 ```
 
-Note that all crates that you use to generate type definitions for the IDL need
-to be specified in the list of `idl-build`, e.g. `anchor-spl/idl-build`,
-`some-program/idl-build`...
+请注意，所有用于生成 IDL 类型定义的 crate 都需要在 `idl-build` 列表中指定，例如 `anchor-spl/idl-build`、`some-program/idl-build`...
 
 ## Lang
 
-### Dependency free program declaration
+### 无依赖的程序声明
 
-Depending on other crates who used different versions of Anchor is not the best
-experience, to say the least. To solve this problem, program clients can now be
-generated from their IDL using the new `declare_program!` macro:
+依赖于使用不同版本 Anchor 的其他 crate 并不是一个很好的体验。为了解决这个问题，现在可以通过新的 `declare_program!` 宏从 IDL 生成程序客户端：
 
 ```rust
 declare_program!(program_name);
 ```
 
-`program_name` is based on the file name of the IDL in `idls` directory, e.g.
-`idls/program_name.json` is required to exist in order for the above example to
-work.
+`program_name` 基于 IDL 文件在 `idls` 目录中的文件名，例如 `idls/program_name.json` 必须存在，才能使上述示例正常工作。
 
-This works for both on-chain (CPI) and off-chain (RPC) usage, allowing program
-interactions without creating a
-[dependency hell](https://en.wikipedia.org/wiki/Dependency_hell). Check out
-[this](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/declare-program/programs/declare-program/src/lib.rs)
-example for on-chain CPI usage.
+这既适用于链上（CPI）也适用于链下（RPC）使用，允许程序交互而不会造成
+[依赖地狱](https://en.wikipedia.org/wiki/Dependency_hell)。查看 [此示例](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/declare-program/programs/declare-program/src/lib.rs) 了解链上 CPI 的用法。
 
-For more information, see the macro's
-[documentation](https://docs.rs/anchor-lang/0.30.0/anchor_lang/macro.declare_program.html).
+更多信息请参见宏的[文档](https://docs.rs/anchor-lang/0.30.0/anchor_lang/macro.declare_program.html)。
 
 ### Token extensions
 
-#### Constraints
+#### 约束
 
-There are new account constraints for
-[Token Extensions (Token 2022)](https://solana.com/solutions/token-extensions):
+现在有了针对 [Token Extensions (Token 2022)](https://solana.com/solutions/token-extensions) 的新账户约束：
 
 - `group_pointer`:
   - `authority`
@@ -115,27 +99,22 @@ There are new account constraints for
   - `authority`
   - `program_id`
 
-**Note:** Above values are concatinated with `::` (similar to other Anchor
-constraints) and have `extensions` prefix e.g.
-`extensions::group_pointer::authority = <EXPR>`.
+**注意：** 上述值与 `::` 连接（类似于其他 Anchor 约束）并带有 `extensions` 前缀，例如
+`extensions::group_pointer::authority = <EXPR>`。
 
-These constraints can be used both with or without the `init` constraint.
+这些约束可以在有或没有 `init` 约束的情况下使用。
 
-[Here](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/spl/token-extensions/programs/token-extensions/src/instructions.rs)
-is an example program that uses these constraints.
+[这里](https://github.com/coral-xyz/anchor/blob/v0.30.0/tests/spl/token-extensions/programs/token-extensions/src/instructions.rs) 是一个使用这些约束的示例程序。
 
-#### CPI wrappers
+#### CPI 包装器
 
-`anchor-spl` now includes CPI wrappers for Token Extensions which can be
-accessed from `anchor_spl::token_2022_extensions`.
+`anchor-spl` 现在包含 Token Extensions 的 CPI 包装器，可以从 `anchor_spl::token_2022_extensions` 访问。
 
-### `#[interface]` attribute
+### `#[interface]` 属性
 
-Transfer hooks can now be used with the new `#[interface]` macro. This argument
-overrides the Anchor's default instruction discriminator to use the interface
-instruction's discriminator.
+现在可以使用新的 `#[interface]` 宏来使用转移钩子。此参数会覆盖 Anchor 的默认指令鉴别器，使用接口指令的鉴别器。
 
-Current supported values are:
+当前支持的值有：
 
 - `spl_transfer_hook_interface::initialize_extra_account_meta_list`
 - `spl_transfer_hook_interface::execute`
@@ -154,160 +133,132 @@ mod my_hook_program {
 }
 ```
 
-### Optional bumps
+### 可选的 bump
 
-When an optional account is not specified, instead of defaulting it to
-`u8::MAX`, this release changes the optional bump type to be `Option<u8>` and
-sets the bump field to `None`.
+当一个可选账户未指定时，此版本将可选的 bump 类型更改为 `Option<u8>`，并将 bump 字段设置为 `None`，而不是将其默认为 `u8::MAX`。
 
-### Less heap allocations
+### 减少堆分配
 
-[`BorshSerialize::try_to_vec`](https://github.com/near/borsh-rs/blob/79097e3c71ae469a101b4828457792bcf8be7f5f/borsh/src/ser/mod.rs#L47-L51)
-implementation, which is used in events, CPI, and return data, heap allocates
-[1024](https://github.com/near/borsh-rs/blob/79097e3c71ae469a101b4828457792bcf8be7f5f/borsh/src/ser/mod.rs#L19)
-bytes each time it's used, even if your data is much smaller. In this release,
-the default allocation is set to 256 bytes.
+[`BorshSerialize::try_to_vec`](https://github.com/near/borsh-rs/blob/79097e3c71ae469a101b4828457792bcf8be7f5f/borsh/src/ser/mod.rs#L47-L51) 实现，在事件、CPI 和返回数据中使用时，每次都会堆分配 [1024](https://github.com/near/borsh-rs/blob/79097e3c71ae469a101b4828457792bcf8be7f5f/borsh/src/ser/mod.rs#L19) 字节，即使你的数据要小得多。在此版本中，默认分配设置为 256 字节。
 
-There is also a new method `InstructionData::write_to()` to write to an existing
-allocation rather than creating a new allocation with `InstructionData::data()`.
+此外，还新增了一个方法 `InstructionData::write_to()`，可以将数据写入现有分配，而不是使用 `InstructionData::data()` 创建新的分配。
 
 ## CLI
 
-### Priority fees in CLI
+### CLI 中的优先费用
 
-IDL commands take in `--priority-fee` argument As it's getting harder and harder
-to land transactions in mainnet-beta without using priority fees, this release
-supports setting `--priority-fee` argument for the IDL commands. For example:
+IDL 命令现在接受 `--priority-fee` 参数。由于在主网-beta 上不使用优先费用越来越难提交交易，此版本支持为 IDL 命令设置 `--priority-fee` 参数。例如：
 
 ```
 anchor idl erase-authority --program-id <PROGRAM_ID> --priority-fee 9000
 ```
 
-When the `--priortiy-fee` argument is not specified, the median fee of the last
-150 confirmed slots is used.
+当未指定 `--priortiy-fee` 参数时，将使用最后 150 个确认插槽的中位数费用。
 
-### `--no-idl` flag on builds
+### 构建时的 `--no-idl` 标志
 
-IDL generation requires building of the program, but this is unnecessary if your
-program API doesn't change. In that case, you can use `--no-idl` flag to build
-your program but skip the IDL generation:
+IDL 生成需要构建程序，但如果你的程序 API 没有变化，这是不必要的。在这种情况下，你可以使用 `--no-idl` 标志来构建程序但跳过 IDL 生成：
 
 ```
 anchor build --no-idl
 ```
 
-### IDL buffer is closed after `idl upgrade`
+### IDL 缓冲区在 `idl upgrade` 后关闭
 
-After an IDL upgrade, the buffer account is now closed and the lamports are
-returned back to the IDL authority.
+在 IDL 升级后，缓冲区账户现在会关闭，并将 lamports 退回给 IDL 授权者。
 
-### Pass deploy arguments to `solana-cli`
+### 将部署参数传递给 `solana-cli`
 
-You can now pass arguments to `solana program deploy` from `anchor deploy`:
+你现在可以通过 `anchor deploy` 将参数传递给 `solana program deploy`：
 
 ```
 anchor deploy -- --final
 ```
 
-### Verifiable deployments
+### 可验证的部署
 
-Similar to verifiable builds, you can now deploy the verified build instead of
-the default build:
+类似于可验证的构建，你现在可以部署验证构建而不是默认构建：
 
 ```
 anchor deploy --verifiable
 ```
 
-### Accept package name as program name
+### 接受包名作为程序名
 
-`--program-name` (`-p`) argument of various commands also works with package
-name of the program rather than lib name which is snake_case. For example:
+各种命令的 `--program-name` (`-p`) 参数现在也适用于程序的包名，而不仅仅是 lib 名（snake_case）。例如：
 
 ```
 anchor build -p my-program
 ```
 
-### Deactivate test-validator features
+### 停用测试验证器特性
 
-You can now deactivate test-validator features from `Anchor.toml`:
+你现在可以从 `Anchor.toml` 停用测试验证器特性：
 
 ```toml
 [test.validator]
 deactivate_feature = ["GDH5TVdbTPUpRnXaRyQqiKUa7uZAbZ28Q2N9bhbKoMLm", "zkiTNuzBKxrCLMKehzuQeKZyLtX2yvFcEKMML8nExU8"]
 ```
 
-### Crate and package compatibility
+### Crate 和包兼容性
 
-Using non-matching versions of `anchor-cli`, `anchor-lang`, and
-`@coral-xyz/anchor` can result in unexpected behavior. In this release, you'll
-get a warning if any of them don't match.
+使用不匹配的 `anchor-cli`、`anchor-lang` 和 `@coral-xyz/anchor` 版本可能会导致意外行为。在此版本中，如果任何版本不匹配，你会收到警告。
 
-### Explicit `overflow-checks` flag
+### 显式的 `overflow-checks` 标志
 
-[`overflow-checks`](https://doc.rust-lang.org/cargo/reference/profiles.html#overflow-checks)
-flag is implicitly disabled by default. Anchor workspaces that are crated with
-`anchor init` have this flag enabled, however, Anchor doesn't do any checks for
-it after the initial workspace creation.
+[`overflow-checks`](https://doc.rust-lang.org/cargo/reference/profiles.html#overflow-checks) 标志默认隐式禁用。通过 `anchor init` 创建的 Anchor 工作区会启用此标志，但是，在初始工作区创建后，Anchor 不会对其进行检查。
 
-With this release, `overflow-checks` in the workspace `Cargo.toml` need to be
-specified. Note that "specified" does not mean enabled, as you can also disable
-it, but you need to be explicit in doing so.
+在此版本中，需要在工作区 `Cargo.toml` 中指定 `overflow-checks`。请注意，“指定”并不意味着启用，你也可以禁用它，但你需要显式地这样做。
 
-### Wildcard pattern in `Anchor.toml`
+### `Anchor.toml` 中的通配符模式
 
-`workspace.members` and `workspace.exclude` now supports simple wildcard
-pattern:
+`workspace.members` 和 `workspace.exclude` 现在支持简单的通配符模式：
 
 ```toml
 [workspace]
 members = ["programs/*"]
 ```
 
-Note that the support is limited to this simple wildcard pattern, and more
-complex globs are not currently supported.
+请注意，支持仅限于这种简单的通配符模式，目前不支持更复杂的 glob 模式。
 
-### `cargo build-sbf` is now the default
+### `cargo build-sbf` 现在是默认的
 
-Before this release, `anchor build` used `cargo build-bpf` to build programs,
-however, because it is deprecated, `anchor build` now defaults to
-`cargo build-sbf`.
+在此版本之前，`anchor build` 使用 `cargo build-bpf` 来构建程序，但由于它已被弃用，`anchor build` 现在默认为 `cargo build-sbf`。
 
-To preserve the old behavior, you can use:
+要保留旧的行为，你可以使用：
 
 ```
 anchor build --arch bpf
 ```
 
-### Run multiple commands in scripts
+### 在脚本中运行多个命令
 
-Scripts in `Anchor.toml` now supports running multiple commands:
+`Anchor.toml` 中的脚本现在支持运行多个命令：
 
 ```toml
 [scripts]
 test-all = "cargo test && yarn run ts-mocha tests/**/*.ts"
 ```
 
-This script would run both `cargo` and `yarn` commands:
+此脚本将同时运行 `cargo` 和 `yarn` 命令：
 
 ```
 anchor run test-all
 ```
 
-### Test only a specified program
+### 仅测试指定的程序
 
-A single program can be tested in a multi program workspace with the
-`--program-name` (`-p`) argument:
+在多个程序的工作区中，可以使用 `--program-name` (`-p`) 参数测试单个程序：
 
 ```
 anchor test --program-name example
 ```
 
-This builds and tests only the specified program.
+这将仅构建和测试指定的程序。
 
-### Rust test template
+### Rust 测试模板
 
-A wild TypeScript test won't appear if you initialize your workspace with the
-new Rust test template:
+如果你使用新的 Rust 测试模板初始化工作区，不会出现 TypeScript 测试：
 
 ```
 anchor init --test-template rust
@@ -315,32 +266,21 @@ anchor init --test-template rust
 
 ## TypeScript
 
-### Account resolution
+### 账户解析
 
-Account resolution refers to the ability of clients to resolve accounts without
-having to manually specify them when sending transactions.
+账户解析指的是客户端在发送交易时无需手动指定账户即可解析账户的能力。
 
-There are too many changes to the account resolution logic in the TS library,
-however, we can skip a good chunk of them since they're mostly internal.
+TypeScript 库中的账户解析逻辑发生了太多变化，然而，我们可以跳过其中的大部分，因为它们大多是内部的。
 
-One change that affects everyone is the change in the `accounts` method. Even
-though the TS library had some support for account resolution, it had no
-type-level support for it — all accounts were essentially typed as partial, and
-there was no way to know which accounts were resolvable and which were not.
+影响每个人的一个变化是 `accounts` 方法的更改。尽管 TypeScript 库对账户解析有一定的支持，但它没有类型级别的支持——所有账户本质上都被类型化为部分账户，并且无法知道哪些账户是可解析的，哪些不是。
 
-There are now 3 methods to specify accounts with the transaction builder:
+现在交易构建器有三种方法来指定账户：
 
-- `accounts`: This method is now fully type-safe based on the resolution fields
-  in the IDL, making it much easier to only specify the accounts that are
-  actually needed.
-- `accountsPartial`: This method keeps the old behavior and let's you specify
-  all accounts including the resolvable ones.
-- `accountsStrict`: If you don't want to use account resolution and specify all
-  accounts manually (unchanged).
+- `accounts`：此方法现在基于 IDL 中的解析字段完全类型安全，使得只需指定实际需要的账户变得更加容易。
+- `accountsPartial`：此方法保留旧的行为，并允许你指定所有账户，包括可解析的账户。
+- `accountsStrict`：如果你不想使用账户解析并手动指定所有账户（保持不变）。
 
-This change is likely to result in errors in your existing `.accounts()` calls.
-To fix, either change `accounts` to `accountsPartial`, or remove all accounts
-that can be resolved from the IDL. For example:
+此更改可能会导致你现有的 `.accounts()` 调用出现错误。要修复，请将 `accounts` 更改为 `accountsPartial`，或者从 IDL 中删除所有可解析的账户。例如：
 
 ```diff
 - await program.methods
@@ -354,49 +294,38 @@ that can be resolved from the IDL. For example:
 + await program.methods.init().rpc();
 ```
 
-### Magic account names
+### 魔法账户名称
 
-Another change that affects most projects is the removal of "magic" account
-names. The TS library used to autofill common program and sysvar accounts based
-on their name, e.g. `systemProgram`, however, this is no longer necessary with
-the introduction of the `address` field (in the IDL) which is used to resolve
-all program and sysvars by default.
+另一个影响大多数项目的更改是移除了“魔法”账户名称。TypeScript 库过去会根据名称自动填充常见程序和系统变量账户，例如 `systemProgram`，但随着 IDL 中引入的 `address` 字段（用于解析所有程序和系统变量），这已经不再必要。
 
-### Case conversion
+### 大小写转换
 
-The internals of the TS library are filled with case conversion logic before
-making string comparison and this also forces other libraries who build on top
-of Anchor to do the same.
+在 TypeScript 库的内部充满了大小写转换逻辑，然后再进行字符串比较，这也迫使其他构建在 Anchor 之上的库也这样做。
 
-Along with making the IDL have consistent casing, TS library also has consistent
-casing (camelCase) in this release.
+在本版本中，IDL 具有一致的大小写，TypeScript 库还具有一致的大小写（camelCase）。
 
-### No more Program ID
+### 不再需要 Program ID
 
-`programId` parameter of `Program` is removed since the new IDL requires to
-store the program id in its `address` field:
+`programId` 参数已从 `Program` 中移除，因为新的 IDL 需要将程序 id 存储在其 `address` 字段中：
 
 ```diff
 - new Program(idl, programId);
 + new Program(idl);
 ```
 
-### Optional provider options
+### 可选的 provider 选项
 
-`opts` parameter of `AnchorProvider` is now optional:
+`AnchorProvider` 的 `opts` 参数现在是可选的：
 
 ```diff
 - new AnchorProvider(connection, wallet, {});
 + new AnchorProvider(connection, wallet);
 ```
 
-### Type changes
+### 类型更改
 
-There are too many type changes to list here, especially the types that are
-related to the IDL. The new IDL types can be found
-[here](https://github.com/coral-xyz/anchor/blob/v0.30.0/ts/packages/anchor/src/idl.ts).
+此版本中有太多类型更改无法一一列出，特别是与 IDL 相关的类型。新的 IDL 类型可以在[这里](https://github.com/coral-xyz/anchor/blob/v0.30.0/ts/packages/anchor/src/idl.ts) 找到。
 
 ---
 
-See the full list of notable changes in the
-[CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15).
+查看 [CHANGELOG](https://github.com/coral-xyz/anchor/blob/v0.30.0/CHANGELOG.md#0300---2024-04-15) 中的完整更改列表。

@@ -1,49 +1,38 @@
 ---
 title: Program Derived Address
-description:
-  Learn how to use Program Derived Addresses (PDAs) in Anchor programs to create
-  deterministic account addresses.
+description: 学习如何在 Anchor 程序中使用 Program Derived Addresses (PDA) 来创建确定性账户地址。
 ---
 
-Program Derived Addresses (PDA) refer to a feature of Solana development that
-allows you to create a unique address derived deterministically from pre-defined
-inputs (seeds) and a program ID.
+Program Derived Addresses (PDA) 是 Solana 开发中的一项功能，它允许你从预定义的输入（种子）和程序 ID 确定性地生成一个唯一的地址。
 
-This section will cover basic examples of how to use PDAs in an Anchor program.
+本节将介绍如何在 Anchor 程序中使用 PDA 的基本示例。
 
-## Anchor PDA Constraints
+## Anchor PDA 约束
 
-When using PDAs in an Anchor program, you generally use Anchor's account
-constraints to define the seeds to derive the PDA. These constraints serve as
-security checks to ensure that the correct address is derived.
+在 Anchor 程序中使用 PDA 时，通常使用 Anchor 的账户约束来定义生成 PDA 的种子。这些约束充当安全检查，以确保生成正确的地址。
 
-The constraints used to define the PDA seeds include:
+用于定义 PDA 种子的约束包括：
 
-- `seeds`: An array of optional seeds used to derive the PDA. Seeds can be
-  static values or dynamic references to account data.
-- `bump`: The bump seed used to derive the PDA. Used to ensure the address falls
-  off the Ed25519 curve and is a valid PDA.
-- `seeds::program` - (Optional) The program ID used to derive the PDA address.
-  This constraint is only used to derive a PDA where the program ID is not the
-  current program.
+- `seeds`：用于生成 PDA 的可选种子数组。种子可以是静态值或对账户数据的动态引用。
+- `bump`：用于生成 PDA 的 bump seed。用于确保地址远离 Ed25519 曲线，并且是一个有效的 PDA。
+- `seeds::program` -（可选）用于生成 PDA 地址的程序 ID。此约束仅在程序 ID 不是当前程序时使用。
 
 <Callout type="info">
-  The `seeds` and `bump` constraints are required to be used together.
+  `seeds` 和 `bump` 约束必须一起使用。
 </Callout>
 
-### Usage Examples
+### 使用示例
 
-Below are examples demonstrating how to use PDA constraints in an Anchor
-program.
+以下是演示如何在 Anchor 程序中使用 PDA 约束的示例。
 
 <Tabs items={['seeds', 'bump', 'seeds::program', 'init']}>
 <Tab value="seeds">
 
-The `seeds` constraint specifies the optional values used to derive the PDA.
+`seeds` 约束指定了用于生成 PDA 的可选值。
 
-#### No Optional Seeds
+#### 无可选种子
 
-- Use an empty array `[]` to define a PDA without optional seeds.
+- 使用空数组 `[]` 来定义没有可选种子的 PDA。
 
 ```rust
 #[derive(Accounts)]
@@ -57,9 +46,9 @@ pub struct InstructionAccounts<'info> {
 }
 ```
 
-#### Single Static Seed
+#### 单个静态种子
 
-- Specify optional seeds in the `seeds` constraint.
+- 在 `seeds` 约束中指定可选种子。
 
 ```rust
 #[derive(Accounts)]
@@ -74,10 +63,9 @@ pub struct InstructionAccounts<'info> {
 }
 ```
 
-#### Multiple Seeds and Account References
+#### 多个种子和账户引用
 
-- Multiple seeds can be specified in the `seeds` constraint. The `seeds`
-  constraint can also reference other account addresses or account data.
+- 可以在 `seeds` 约束中指定多个种子。`seeds` 约束还可以引用其他账户地址或账户数据。
 
 ```rust
 #[derive(Accounts)]
@@ -92,18 +80,16 @@ pub struct InstructionAccounts<'info> {
 }
 ```
 
-The example above uses both a static seed (`b"hello_world"`) and a dynamic seed
-(the signer's public key).
+上面的示例同时使用了一个静态种子 (`b"hello_world"`) 和一个动态种子（签名者的公钥）。
 
 </Tab>
 <Tab value="bump">
 
-The `bump` constraint specifies the bump seed used to derive the PDA.
+`bump` 约束指定了用于生成 PDA 的 bump seed。
 
-#### Automatic Bump Calculation
+#### 自动计算 Bump
 
-When using the `bump` constraint without a value, the bump is automatically
-calculated each time the instruction is invoked.
+当使用不带值的 `bump` 约束时，每次调用指令时都会自动计算 bump。
 
 ```rust
 #[derive(Accounts)]
@@ -117,11 +103,9 @@ pub struct InstructionAccounts<'info> {
 }
 ```
 
-#### Specify Bump Value
+#### 指定 Bump 值
 
-You can explicitly provide the bump value, which is useful for optimizing
-compute unit usage. This assumes that the PDA account has been created and the
-bump seed is stored as a field on an existing account.
+你可以显式提供 bump 值，这对于优化计算单元使用很有用。假定 PDA 账户已创建，并且 bump seed 存储在现有账户的字段中。
 
 ```rust
 #[derive(Accounts)]
@@ -140,18 +124,14 @@ pub struct CustomAccount {
 }
 ```
 
-By storing the bump value in the account's data, the program doesn't need to
-recalculate it, saving compute units. The saved bump value can be stored on the
-account itself or another account.
+通过将 bump 值存储在账户数据中，程序无需重新计算它，从而节省了计算单元。保存的 bump 值可以存储在账户本身或另一个账户上。
 
 </Tab>
 <Tab value="seeds::program">
 
-The `seeds::program` constraint specifies the program ID used to derive the PDA.
-This constraint is only used when deriving a PDA from a different program.
+`seeds::program` 约束指定了用于生成 PDA 的程序 ID。此约束仅在从不同程序生成 PDA 时使用。
 
-Use this constraint when your instruction needs to interact with PDA accounts
-created by another program.
+当你的指令需要与另一个程序创建的 PDA 账户交互时，使用此约束。
 
 ```rust
 #[derive(Accounts)]
@@ -171,9 +151,7 @@ pub struct InstructionAccounts<'info> {
 </Tab>
 <Tab value="init">
 
-The `init` constraint is commonly used with `seeds` and `bump` to create a new
-account with an address that is a PDA. Under the hood, the `init` constraint
-invokes the System Program to create the account.
+`init` 约束通常与 `seeds` 和 `bump` 一起使用，以创建地址为 PDA 的新账户。在底层，`init` 约束调用系统程序来创建账户。
 
 ```rust
 #[derive(Accounts)]
@@ -200,29 +178,22 @@ pub struct CustomAccount {
 ```
 
 <Callout type="info">
-  The `init` constraint must be used with `payer` and `space`. The `payer`
-  specifies the account that will pay for the account creation. The `space`
-  specifies the bytes to allocate for the account (including the 8-byte
-  discriminator).
+  `init` 约束必须与 `payer` 和 `space` 一起使用。`payer` 指定将支付账户创建费用的账户。`space` 指定为账户分配的字节数（包括 8 字节的 discriminator）。
 </Callout>
 
 </Tab>
 </Tabs>
 
-## PDA seeds in the IDL
+## IDL 中的 PDA 种子
 
-Program Derived Address (PDA) seeds defined in the `seeds` constraint are
-included in the program's IDL file. This allows the Anchor client to
-automatically resolve account addresses using these seeds when constructing
-instructions.
+在 `seeds` 约束中定义的 Program Derived Address (PDA) 种子包含在程序的 IDL 文件中。这使得 Anchor 客户端在构建指令时能够自动使用这些种子解析账户地址。
 
-This example below shows the relationship between the program, IDL, and client.
+下面的示例展示了程序、IDL 和客户端之间的关系。
 
 <Tabs items={['Program', 'IDL', 'Client']}>
 <Tab value="Program">
 
-The program below defines a `pda_account` using a static seed (`b"hello_world"`)
-and the signer's public key as a dynamic seed.
+下面的程序使用静态种子 (`b"hello_world"`) 和签名者的公钥作为动态种子来定义 `pda_account`。
 
 ```rust
 use anchor_lang::prelude::*;
@@ -254,10 +225,10 @@ pub struct InstructionAccounts<'info> {
 </Tab>
 <Tab value="IDL">
 
-The program's IDL file includes the PDA seeds defined in the `seeds` constraint.
+程序的 IDL 文件包含了在 `seeds` 约束中定义的 PDA 种子。
 
-- The static seed `b"hello_world"` is converted to byte values.
-- The dynamic seed is included as reference to the signer account.
+- 将静态种子 `b"hello_world"` 转换为字节值。
+- 动态种子包含对签名者账户的引用。
 
 ```json
 {
@@ -305,12 +276,9 @@ The program's IDL file includes the PDA seeds defined in the `seeds` constraint.
 </Tab>
 <Tab value="Client">
 
-The Anchor client can automatically resolve the PDA address using the IDL file.
+Anchor 客户端可以使用 IDL 文件自动解析 PDA 地址。
 
-In the example below, Anchor automatically resolves the PDA address using the
-provider wallet as the signer, and its public key as the dynamic seed for PDA
-derivation. This removes the need to explicitly derive the PDA when building the
-instruction.
+在下面的示例中，Anchor 自动使用提供者钱包作为签名者，并使用其公钥作为 PDA 生成的动态种子来解析 PDA 地址。这使得在构建指令时无需显式生成 PDA。
 
 ```ts {13}
 import * as anchor from "@coral-xyz/anchor";
@@ -331,8 +299,7 @@ describe("hello_anchor", () => {
 });
 ```
 
-When the instruction is invoked, the PDA is printed to program logs as defined
-in the program instruction.
+当指令被调用时，PDA 会按照程序指令中的定义打印到程序日志中。
 
 ```{3}
 Program BZLiJ62bzRryYp9mRobz47uA66WDgtfTXhhgM25tJyx5 invoke [1]

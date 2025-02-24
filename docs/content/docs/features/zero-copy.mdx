@@ -1,19 +1,13 @@
 ---
-title: Zero Copy
-description:
-  Learn how to use Anchor's zero-copy deserialization feature to handle large
-  account data in Solana programs.
+title: 零拷贝
+description: 学习如何在 Solana 程序中使用 Anchor 的零拷贝反序列化功能来处理大型账户数据。
 ---
 
-## Usage
+## 使用方法
 
-Zero copy is a deserialization feature that allows programs to read account data
-directly from memory without copying it. This is particularly useful when
-working with large accounts.
+零拷贝是一种反序列化功能，允许程序直接从内存中读取账户数据而无需复制。这在处理大型账户时特别有用。
 
-To use zero-copy add the `bytemuck` crate to your dependencies. Add the
-`min_const_generics` feature to allow working with arrays of any size in your
-zero-copy types.
+要使用零拷贝，请将 `bytemuck` crate 添加到你的依赖项中。添加 `min_const_generics` 功能以允许在你的零拷贝类型中使用任意大小的数组。
 
 ```toml title="Cargo.toml"
 [dependencies]
@@ -21,22 +15,20 @@ bytemuck = { version = "1.20.0", features = ["min_const_generics"] }
 anchor-lang = "0.30.1"
 ```
 
-### Define a Zero Copy Account
+### 定义零拷贝账户
 
-To define an account type that uses zero-copy, annotate the struct with
-[`#[account(zero_copy)]`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/account/src/lib.rs#L319).
+要定义使用零拷贝的账户类型，请使用 [`#[account(zero_copy)]`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/account/src/lib.rs#L319) 注解结构体。
 
 ```rust
 // [!code highlight]
 #[account(zero_copy)]
 pub struct Data {
-    // 10240 bytes - 8 bytes account discriminator
+    // 10240 字节 - 8 字节账户标识符
     pub data: [u8; 10232],
 }
 ```
 
-The `#[account(zero_copy)]` attribute automatically implements several traits
-required for zero-copy deserialization:
+`#[account(zero_copy)]` 属性自动实现了零拷贝反序列化所需的几个特性：
 
 ```rust
 // [!code highlight:4]
@@ -49,14 +41,11 @@ struct Data {
 }
 ```
 
-### Use AccountLoader for Zero Copy Accounts
+### 使用 AccountLoader 处理零拷贝账户
 
-To deserialize a zero-copy account, use
-[`AccountLoader<'info, T>`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L96-L100),
-where `T` is the zero-copy account type defined with the `#[account(zero_copy)]`
-attribute.
+要反序列化一个零拷贝账户，请使用 [`AccountLoader<'info, T>`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L96-L100)，其中 `T` 是使用 `#[account(zero_copy)]` 属性定义的零拷贝账户类型。
 
-For example:
+例如：
 
 ```rust
 #[derive(Accounts)]
@@ -67,10 +56,9 @@ pub struct InstructionAccounts<'info> {
 }
 ```
 
-#### Initialize a Zero Copy Account
+#### 初始化零拷贝账户
 
-The `init` constraint can be used with the `AccountLoader` type to create a
-zero-copy account.
+`init` 约束可以与 `AccountLoader` 类型一起使用来创建零拷贝账户。
 
 ```rust
 #[derive(Accounts)]
@@ -79,7 +67,7 @@ pub struct Initialize<'info> {
         // [!code word:init:1]
         // [!code highlight:4]
         init,
-        // 10240 bytes is max space to allocate with init constraint
+        // 10240 字节是使用 init 约束分配的最大空间
         space = 8 + 10232,
         payer = payer,
     )]
@@ -91,15 +79,10 @@ pub struct Initialize<'info> {
 ```
 
 <Callout type="info">
-  The `init` constraint is limited to allocating a maximum of 10240 bytes due to
-  CPI limitations. Under the hood, the `init` constraint makes a CPI call to the
-  SystemProgram to create the account.
+  由于 CPI 限制，`init` 约束最多只能分配 10240 字节。在底层，`init` 约束会调用 SystemProgram 创建账户。
 </Callout>
 
-When initializing a zero-copy account for the first time, use
-[`load_init`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L194-L214)
-to get a mutable reference to the account data. The `load_init` method also sets
-the account discriminator.
+首次初始化零拷贝账户时，使用 [`load_init`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L194-L214) 获取账户数据的可变引用。`load_init` 方法还会设置账户标识符。
 
 ```rust
 pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
@@ -111,10 +94,7 @@ pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
 }
 ```
 
-For accounts that require more than 10240 bytes, use the
-[`zero`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/codegen/accounts/constraints.rs#L200-L217)
-constraint instead of `init`. The `zero` constraint verifies the account has not
-been initialized by checking that its discriminator has not been set.
+对于需要超过 10240 字节的账户，请使用 [`zero`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/codegen/accounts/constraints.rs#L200-L217) 约束而不是 `init`。`zero` 约束通过检查账户标识符是否已设置来验证账户是否未初始化。
 
 ```rust
 #[derive(Accounts)]
@@ -126,14 +106,9 @@ pub struct Initialize<'info> {
 }
 ```
 
-With the `zero` constraint, you'll need to first create the account in a
-separate instruction by directly calling the System Program. This allows you to
-create accounts up to Solana's maximum account size of 10MB (10_485_760 bytes),
-bypassing the CPI limitation.
+使用 `zero` 约束时，你需要先在单独的指令中通过直接调用 System Program 来创建账户。这允许你创建最大为 Solana 最大账户大小 10MB (10_485_760 字节) 的账户，绕过了 CPI 的限制。
 
-Just as before, use `load_init` to get a mutable reference to the account data
-and set the account discriminator. Since 8 bytes are reserved for the account
-discriminator, the maximum data size is 10_485_752 bytes (10MB - 8 bytes).
+和之前一样，使用 `load_init` 获取账户数据的可变引用并设置账户标识符。由于 8 字节保留给账户标识符，最大数据大小为 10_485_752 字节 (10MB - 8 字节)。
 
 ```rust
 pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
@@ -145,11 +120,9 @@ pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
 }
 ```
 
-#### Update a Zero Copy Account
+#### 更新零拷贝账户
 
-Use
-[`load_mut`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L170-L190)
-when you need mutable access to update an existing zero-copy account:
+当你需要可变访问来更新现有的零拷贝账户时，使用 [`load_mut`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L170-L190):
 
 ```rust
 #[derive(Accounts)]
@@ -170,11 +143,9 @@ pub fn update(ctx: Context<Update>) -> Result<()> {
 }
 ```
 
-#### Read a Zero Copy Account
+#### 读取零拷贝账户
 
-Use
-[`load`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L153-L167)
-to only read the account data.
+使用 [`load`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/src/accounts/account_loader.rs#L153-L167) 仅读取账户数据。
 
 ```rust
 #[derive(Accounts)]
@@ -188,21 +159,19 @@ pub fn read_only(ctx: Context<ReadOnly>) -> Result<()> {
     // [!code word:load]
     // [!code highlight]
     let account = &ctx.accounts.data_account.load()?;
-    msg!("First 10 bytes: {:?}", &account.data[..10]);
+    msg!("前 10 字节: {:?}", &account.data[..10]);
     Ok(())
 }
 ```
 
-## Examples
+## 示例
 
-The examples below demonstrate two approaches for initializing zero-copy
-accounts in Anchor:
+以下示例展示了在 Anchor 中初始化零拷贝账户的两种方法：
 
-1. Using the `init` constraint to initialize the account in a single instruction
-2. Using the `zero` constraint to initialize an account with data greater than
-   10240 bytes
+1. 使用 `init` 约束在单个指令中初始化账户
+2. 使用 `zero` 约束初始化数据大于 10240 字节的账户
 
-### Zero Copy
+### 零拷贝
 
 <Tabs items={["Program", "Client"]}>
 <Tab value="Program">
@@ -232,7 +201,7 @@ pub mod zero_copy {
 pub struct Initialize<'info> {
     #[account(
         init,
-        // 10240 bytes is max space to allocate with init constraint
+        // 10240 字节是使用 init 约束分配的最大空间
         space = 8 + 10232,
         payer = payer,
     )]
@@ -250,7 +219,7 @@ pub struct Update<'info> {
 
 #[account(zero_copy)]
 pub struct Data {
-    // 10240 bytes - 8 bytes account discriminator
+    // 10240 字节 - 8 字节账户标识符
     pub data: [u8; 10232],
 }
 ```
@@ -260,11 +229,11 @@ pub struct Data {
 
 ```ts title="test.ts"
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/ancher";
 import { ZeroCopy } from "../target/types/zero_copy";
 
 describe("zero-copy", () => {
-  // Configure the client to use the local cluster.
+  // 配置客户端使用本地集群
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.ZeroCopy as Program<ZeroCopy>;
@@ -278,10 +247,10 @@ describe("zero-copy", () => {
       })
       .signers([dataAccount])
       .rpc();
-    console.log("Your transaction signature", tx);
+    console.log("你的交易签名", tx);
 
     const account = await program.account.data.fetch(dataAccount.publicKey);
-    console.log("Account", account);
+    console.log("账户", account);
   });
 
   it("Update!", async () => {
@@ -291,10 +260,10 @@ describe("zero-copy", () => {
         dataAccount: dataAccount.publicKey,
       })
       .rpc();
-    console.log("Your transaction signature", tx);
+    console.log("你的交易签名", tx);
 
     const account = await program.account.data.fetch(dataAccount.publicKey);
-    console.log("Account", account);
+    console.log("账户", account);
   });
 });
 ```
@@ -302,16 +271,14 @@ describe("zero-copy", () => {
 </Tab>
 </Tabs>
 
-### Initialize Large Account
+### 初始化大型账户
 
-When initializing an account that requires more than 10,240 bytes of space, you
-must split the initialization into two steps:
+当初始化一个需要超过 10,240 字节空间的账户时，你必须将初始化过程分为两步：
 
-1. Create the account in a separate instruction invoking the System Program
-2. Initialize the account data in your program instruction
+1. 在单独的指令中调用 System Program 创建账户
+2. 在你的程序指令中初始化账户数据
 
-Note that the maximum Solana account size is 10MB (10_485_760 bytes), 8 bytes
-are reserved for the account discriminator.
+注意，Solana 的最大账户大小为 10MB (10_485_760 字节)，8 字节保留给账户标识符。
 
 <Tabs items={["Program", "Client"]}>
 <Tab value="Program">
@@ -339,7 +306,7 @@ pub struct Initialize<'info> {
 
 #[account(zero_copy)]
 pub struct Data {
-    // 10240 bytes - 8 bytes account discriminator
+    // 10240 字节 - 8 字节账户标识符
     pub data: [u8; 10_485_752],
 }
 ```
@@ -353,14 +320,14 @@ import { Program } from "@coral-xyz/anchor";
 import { ZeroCopyTwo } from "../target/types/zero_copy_two";
 
 describe("zero-copy-two", () => {
-  // Configure the client to use the local cluster.
+  // 配置客户端使用本地集群
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.ZeroCopyTwo as Program<ZeroCopyTwo>;
   const dataAccount = anchor.web3.Keypair.generate();
 
   it("Is initialized!", async () => {
-    const space = 10_485_760; // 10MB max account size
+    const space = 10_485_760; // 10MB 最大账户大小
     const lamports =
       await program.provider.connection.getMinimumBalanceForRentExemption(
         space,
@@ -392,10 +359,10 @@ describe("zero-copy-two", () => {
       dataAccount,
     ]);
 
-    console.log("Your transaction signature", tx);
+    console.log("你的交易签名", tx);
 
     const account = await program.account.data.fetch(dataAccount.publicKey);
-    console.log("Account", account);
+    console.log("账户", account);
   });
 });
 ```

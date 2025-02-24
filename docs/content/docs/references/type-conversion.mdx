@@ -1,50 +1,50 @@
 ---
-title: Rust to JS Type Conversion
-description: Reference for how Anchor converts between Rust and TypeScript types
+title: Rust 到 JS 类型转换
+description: Anchor 在 Rust 和 TypeScript 类型之间如何转换的参考
 ---
 
-This reference shows to converts between Rust and TypeScript types.
+本参考展示了如何在 Rust 和 TypeScript 类型之间进行转换。
 
-## Primitive Types
+## 基本类型
 
-### Boolean
+### 布尔值
 
-| Rust   | TypeScript | Example |
+| Rust   | TypeScript | 示例    |
 | ------ | ---------- | ------- |
 | `bool` | `boolean`  | `true`  |
 
-### Numbers
+### 数字
 
-| Rust                    | TypeScript  | Example             |
-| ----------------------- | ----------- | ------------------- |
-| `u8/u16/u32/i8/i16/i32` | `number`    | `99`                |
+| Rust                    | TypeScript  | 示例             |
+| ----------------------- | ----------- | ----------------- |
+| `u8/u16/u32/i8/i16/i32` | `number`    | `99`              |
 | `u64/u128/i64/i128`     | `anchor.BN` | `new anchor.BN(99)` |
-| `f32/f64`               | `number`    | `1.0`               |
+| `f32/f64`               | `number`    | `1.0`             |
 
-### Strings
+### 字符串
 
-| Rust     | TypeScript | Example   |
-| -------- | ---------- | --------- |
+| Rust     | TypeScript | 示例   |
+| -------- | ---------- | ------ |
 | `String` | `string`   | `"hello"` |
 
-## Collections
+## 集合
 
-### Arrays and Vectors
+### 数组和向量
 
-| Rust                   | TypeScript | Example     |
-| ---------------------- | ---------- | ----------- |
-| `[T; N]` (fixed array) | `Array<T>` | `[1, 2, 3]` |
-| `Vec<T>` (vector)      | `Array<T>` | `[1, 2, 3]` |
+| Rust                   | TypeScript | 示例     |
+| ---------------------- | ---------- | -------- |
+| `[T; N]` (固定数组)    | `Array<T>` | `[1, 2, 3]` |
+| `Vec<T>` (向量)        | `Array<T>` | `[1, 2, 3]` |
 
-### Optional Values
+### 可选值
 
-| Rust        | TypeScript               | Example                       |
-| ----------- | ------------------------ | ----------------------------- |
+| Rust        | TypeScript               | 示例                       |
+| ----------- | ------------------------ | ------------------------- |
 | `Option<T>` | `T \| null \| undefined` | `null` (None)<br/>`42` (Some) |
 
-## Complex Types
+## 复杂类型
 
-### Structs
+### 结构体
 
 ```rust title="Rust"
 // Rust
@@ -59,11 +59,11 @@ type MyStruct = {
   val: number;
 };
 
-// Example
+// 示例
 const instance = { val: 99 };
 ```
 
-### Enums
+### 枚举
 
 ```rust title="Rust"
 // Rust
@@ -75,24 +75,24 @@ enum MyEnum {
 ```
 
 ```typescript title="TypeScript"
-// TypeScript Representations
-// Unit variant
+// TypeScript 表示
+// 单元变体
 const one = { one: {} };
 
-// Named variant
+// 命名变体
 const two = {
   two: { val: 99 },
 };
 
-// Tuple variant
+// 元组变体
 const three = {
   three: [12, -34],
 };
 ```
 
-## Notes
+## 注意事项
 
-- Rust integers (`u8` through `i32`) map to JavaScript `number`
-- Larger integers (`u64` and above) use Anchor's `BN` type for precision
-- Rust's `Option<T>` maps to TypeScript's union type with `null`/`undefined`
-- Structs and enums become JavaScript objects
+- Rust 整数 (`u8` 到 `i32`) 映射到 JavaScript 的 `number`
+- 更大的整数 (`u64` 及以上) 使用 Anchor 的 `BN` 类型以保证精度
+- Rust 的 `Option<T>` 映射到 TypeScript 的联合类型，包含 `null`/`undefined`
+- 结构体和枚举成为 JavaScript 对象

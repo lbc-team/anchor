@@ -1,16 +1,13 @@
 ---
 title: LiteSVM
-description: Write tests for Solana programs in Rust, TS/JS or Python using LiteSVM.
+description: 使用LiteSVM在Rust、TS/JS或Python中为Solana程序编写测试。
 ---
 
-## Overview
+## 概述
 
-[`litesvm`](https://github.com/LiteSVM/litesvm) is a fast and lightweight library for testing Solana programs.
-It works by creating an in-process Solana VM optimized for program developers.
-This makes it much faster to run and compile than alternatives like `solana-program-test` and `solana-test-validator`.
-`litesvm` is available in Rust, TS/JS and Python (as part of the [`solders`](https://pypi.org/project/solders/) library).
+[`litesvm`](https://github.com/LiteSVM/litesvm) 是一个快速且轻量级的测试Solana程序的库。它通过创建一个优化用于程序开发者的内存中的Solana虚拟机来工作。这使得它的运行和编译速度远快于诸如`solana-program-test`和`solana-test-validator`等替代方案。`litesvm`提供Rust、TS/JS和Python版本（作为[`solders`](https://pypi.org/project/solders/)库的一部分）。
 
-### Installation
+### 安装
 
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
@@ -29,7 +26,7 @@ uv add solders # from solders import litesvm
 
 </Tabs>
 
-### Minimal Example
+### 最小示例
 
 <Tabs items={["Rust", "TypeScript", "Python"]}>
 
@@ -131,17 +128,15 @@ def test_transfer() -> None:
 
 </Tabs>
 
-## Deploying Programs
+## 部署程序
 
-Most of the time we want to do more than just mess around with token transfers -
-we want to test our own programs.
+大多数情况下，我们希望做的不仅仅是玩弄代币转账——我们希望测试自己的程序。
 
-**Tip**: if you want to pull a Solana program from mainnet or devnet, use the `solana program dump` command from the Solana CLI.
+**提示**：如果您想从mainnet或devnet拉取一个Solana程序，请使用Solana CLI中的`solana program dump`命令。
 
-To add a compiled program to our tests we can use [`.add_program_from_file`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.add_program_from_file).
+要将编译的程序添加到我们的测试中，可以使用[`.add_program_from_file`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.add_program_from_file)。
 
-Here's an example using a [simple program](https://github.com/solana-labs/solana-program-library/tree/bd216c8103cd8eb9f5f32e742973e7afb52f3b81/examples/rust/logging)
-from the Solana Program Library that just does some logging:
+下面是一个使用来自Solana程序库的[简单程序](https://github.com/solana-labs/solana-program-library/tree/bd216c8103cd8eb9f5f32e742973e7afb52f3b81/examples/rust/logging)的示例，它只进行一些日志记录：
 
 <Tabs items={["Rust", "TypeScript", "Python"]}>
 
@@ -176,12 +171,12 @@ fn test_logging() {
     let blockhash = svm.latest_blockhash();
     let msg = Message::new_with_blockhash(&[ix], Some(&payer.pubkey()), &blockhash);
     let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[payer]).unwrap();
-    // let's sim it first
+    // 首先进行仿真
     let sim_res = svm.simulate_transaction(tx.clone()).unwrap();
     let meta = svm.send_transaction(tx).unwrap();
     assert_eq!(sim_res.meta, meta);
     assert_eq!(meta.logs[1], "Program log: static string");
-    assert!(meta.compute_units_consumed < 10_000) // not being precise here in case it changes
+    assert!(meta.compute_units_consumed < 10_000) // 这里不精确以防可能变化
 }
 ```
 
@@ -214,14 +209,14 @@ test("spl logging", () => {
   tx.recentBlockhash = blockhash;
   tx.add(...ixs);
   tx.sign(payer);
-  // let's sim it first
+  // 首先进行仿真
   const simRes = svm.simulateTransaction(tx);
   const sendRes = svm.sendTransaction(tx);
   if (sendRes instanceof TransactionMetadata) {
     expect(simRes.meta().logs()).toEqual(sendRes.logs());
     expect(sendRes.logs()[1]).toBe("Program log: static string");
   } else {
-    throw new Error("Unexpected tx failure");
+    throw new Error("意外的交易失败");
   }
 });
 
@@ -255,7 +250,7 @@ def test_logging() -> None:
     blockhash = client.latest_blockhash()
     msg = Message.new_with_blockhash([ix], payer.pubkey(), blockhash)
     tx = VersionedTransaction(msg, [payer])
-    # let's sim it first
+    # 首先进行仿真
     sim_res = client.simulate_transaction(tx)
     meta = client.send_transaction(tx)
     assert isinstance(meta, TransactionMetadata)
@@ -263,19 +258,14 @@ def test_logging() -> None:
     assert meta.logs()[1] == "Program log: static string"
     assert (
         meta.compute_units_consumed() < 10_000
-    )  # not being precise here in case it changes
+    )  # 这里不精确以防可能变化
 ```
 
 </Tabs>
 
-## Time travel
+## 时间旅行
 
-Many programs rely on the `Clock` sysvar: for example, a mint that doesn't become available until after
-a certain time. With `litesvm` you can dynamically overwrite the `Clock` sysvar
-using [`svm.set_sysvar::<Clock>()`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.set_sysvar)
-(or `.setClock` in TS, or `.set_clock` in Python).
-Here's an example using a program that panics if `clock.unix_timestamp` is greater than 100
-(which is on January 1st 1970):
+许多程序依赖于`Clock` sysvar：例如，某个代币在特定时间之后才可用。使用`litesvm`，您可以动态覆盖`Clock` sysvar，方法是使用[`svm.set_sysvar::<Clock>()`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.set_sysvar)（或在TS中使用`.setClock`，在Python中使用`.set_clock`）。下面是一个示例，使用一个在`clock.unix_timestamp`大于100时会崩溃的程序（该时间为1970年1月1日）：
 
 <Tabs items={["Rust", "TypeScript", "Python"]}>
 ```rust tab="Rust"
@@ -307,25 +297,25 @@ fn test_set_clock() {
     let msg = Message::new_with_blockhash(&ixs, Some(&payer_address), &blockhash);
     let versioned_msg = VersionedMessage::Legacy(msg);
     let tx = VersionedTransaction::try_new(versioned_msg, &[&payer]).unwrap();
-    // set the time to January 1st 2000
+    // 设置时间为2000年1月1日
     let mut initial_clock = svm.get_sysvar::<Clock>();
     initial_clock.unix_timestamp = 1735689600;
     svm.set_sysvar::<Clock>(&initial_clock);
-    // this will fail because it's not January 1970 anymore
+    // 这将失败，因为不再是1970年1月
     svm.send_transaction(tx).unwrap_err();
-    // so let's turn back time
+    // 所以让我们回到过去
     let mut clock = svm.get_sysvar::<Clock>();
     clock.unix_timestamp = 50;
     svm.set_sysvar::<Clock>(&clock);
     let ixs2 = [Instruction {
         program_id,
-        data: vec![1], // unused, this is just to dedup the transaction
+        data: vec![1], // 未使用，仅用于去重交易
         accounts: vec![],
     }];
     let msg2 = Message::new_with_blockhash(&ixs2, Some(&payer_address), &blockhash);
     let versioned_msg2 = VersionedMessage::Legacy(msg2);
     let tx2 = VersionedTransaction::try_new(versioned_msg2, &[&payer]).unwrap();
-    // now the transaction goes through
+    // 此时交易通过
     svm.send_transaction(tx2).unwrap();
 }
 
@@ -359,18 +349,18 @@ test("clock", () => {
   tx.recentBlockhash = blockhash;
   tx.add(...ixs);
   tx.sign(payer);
-  // set the time to January 1st 2000
+  // 设置时间为2000年1月1日
   const initialClock = svm.getClock();
   initialClock.unixTimestamp = 1735689600n;
   svm.setClock(initialClock);
-  // this will fail because the contract wants it to be January 1970
+  // 这将失败，因为合同期望是1970年1月
   const failed = svm.sendTransaction(tx);
   if (failed instanceof FailedTransactionMetadata) {
     expect(failed.err().toString()).toContain("ProgramFailedToComplete");
   } else {
-    throw new Error("Expected transaction failure here");
+    throw new Error("在这里预期交易失败");
   }
-  // so let's turn back time
+  // 所以让我们回到过去
   const newClock = svm.getClock();
   newClock.unixTimestamp = 50n;
   svm.setClock(newClock);
@@ -378,14 +368,14 @@ test("clock", () => {
     new TransactionInstruction({
       keys: [],
       programId,
-      data: Buffer.from("foobar"), // unused, just here to dedup the tx
+      data: Buffer.from("foobar"), // 未使用，仅用于去重交易
     }),
   ];
   const tx2 = new Transaction();
   tx2.recentBlockhash = blockhash;
   tx2.add(...ixs2);
   tx2.sign(payer);
-  // now the transaction goes through
+  // 此时交易通过
   const success = svm.sendTransaction(tx2);
   expect(success).toBeInstanceOf(TransactionMetadata);
 });
@@ -416,44 +406,40 @@ def test_set_clock() -> None:
     ixs = [Instruction(program_id=program_id, data=b"", accounts=[])]
     msg = Message.new_with_blockhash(ixs, payer.pubkey(), blockhash)
     tx = VersionedTransaction(msg, [payer])
-    # set the time to January 1st 2000
+    # 设置时间为2000年1月1日
     initial_clock = client.get_clock()
     initial_clock.unix_timestamp = 1735689600
     client.set_clock(initial_clock)
-    # this will fail because it's not January 1970 anymore
+    # 这将失败，因为不再是1970年1月
     bad_res = client.send_transaction(tx)
     assert isinstance(bad_res, FailedTransactionMetadata)
-    # so let's turn back time
+    # 所以让我们回到过去
     clock = client.get_clock()
     clock.unix_timestamp = 50
     client.set_clock(clock)
     ixs2 = [
         Instruction(
             program_id=program_id,
-            data=b"foobar",  # unused, this is just to dedup the transaction
+            data=b"foobar",  # 未使用，仅用于去重交易
             accounts=[],
         )
     ]
     msg2 = Message.new_with_blockhash(ixs2, payer.pubkey(), blockhash)
     tx2 = VersionedTransaction(msg2, [payer])
-    # now the transaction goes through
+    # 此时交易通过
     good_res = client.send_transaction(tx2)
     assert isinstance(good_res, TransactionMetadata)
 
 ```
 </Tabs>
 
-See also: [`warp_to_slot`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.warp_to_slot), which lets you jump to a future slot.
+另请参见：[`warp_to_slot`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.warp_to_slot)，它允许您跳到未来的区块。
 
-## Writing arbitrary accounts
+## 写入任意账户
 
-LiteSVM lets you write any account data you want, regardless of
-whether the account state would even be possible.
+LiteSVM允许您编写任意账户数据，无论账户状态是否有可能。
 
-Here's an example where we give an account a bunch of USDC,
-even though we don't have the USDC mint keypair. This is
-convenient for testing because it means we don't have to
-work with fake USDC in our tests:
+这里是一个示例，我们为一个账户提供了一堆USDC，尽管我们没有USDC铸币的密钥对。这在测试中非常方便，因为这意味着我们不必在测试中使用假的USDC：
 
 <Tabs items={["Rust", "TypeScript", "Python"]}>
 ```rust tab="Rust"
@@ -600,24 +586,20 @@ def test_infinite_usdc_mint() -> None:
 ```
 </Tabs>
 
-## Copying Accounts from a live environment
+## 从实时环境复制账户
 
-If you want to copy accounts from mainnet or devnet, you can use the `solana account` command in the Solana CLI to save account data to a file.
+如果您想从mainnet或devnet复制账户，可以使用Solana CLI中的`solana account`命令将账户数据保存到文件中。
 
-## Other features
+## 其他功能
 
-Other things you can do with `litesvm` include:
+与`litesvm`相关的其他操作包括：
 
-* Changing the max compute units and other compute budget behaviour using [`.with_compute_budget`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.with_compute_budget).
-* Disable transaction signature checking using [`.with_sigverify(false)`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.with_sigverify).
-* Find previous transactions using [`.get_transaction`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.get_transaction).
+* 使用[`.with_compute_budget`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.with_compute_budget)更改最大计算单位和其他计算预算行为。
+* 使用[`.with_sigverify(false)`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.with_sigverify)禁用交易签名验证。
+* 使用[`.get_transaction`](https://docs.rs/litesvm/latest/litesvm/struct.LiteSVM.html#method.get_transaction)查找以前的交易。
 
-## When should I use `solana-test-validator`?
+## 何时使用 `solana-test-validator`？
 
-While `litesvm` is faster and more convenient, it is also less like a real RPC node.
-So `solana-test-validator` is still useful when you need to call RPC methods that LiteSVM
-doesn't support, or when you want to test something that depends on real-life validator behaviour
-rather than just testing your program and client code.
+虽然`litesvm`速度更快、更方便，但它也与真正的RPC节点相比，降低了相似性。因此，当您需要调用`LiteSVM`不支持的RPC方法，或当您想要测试某些依赖于实际验证者行为的内容，而不仅仅是测试您的程序和客户端代码时，`solana-test-validator`仍然是有用的。
 
-In general though it is recommended to use `litesvm` wherever possible, as it will make your life
-much easier.
+不过，通常建议在可能的情况下使用`litesvm`，因为这将使您的生活更轻松。

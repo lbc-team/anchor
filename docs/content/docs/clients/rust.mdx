@@ -1,25 +1,20 @@
 ---
 title: Rust
 description:
-  Learn how to use Anchor's Rust client library to interact with Solana programs
+  学习如何使用 Anchor 的 Rust 客户端库与 Solana 程序进行交互
 ---
 
-The [`anchor-client`](https://docs.rs/anchor-client/latest/anchor_client/) crate
-is the Rust client library for interacting with Anchor programs. You can find
-the source code [here](https://github.com/coral-xyz/anchor/tree/v0.30.1/client).
+[`anchor-client`](https://docs.rs/anchor-client/latest/anchor_client/) crate
+是用于与 Anchor 程序进行交互的 Rust 客户端库。你可以在 [这里](https://github.com/coral-xyz/anchor/tree/v0.30.1/client) 找到源代码。
 
-## Example
+## 示例
 
-The example below demonstrates how to use the `anchor-client` crate to interact
-with a simple Anchor program. The program client can be automatically generated
-from the program's IDL using the `declare_program!` macro. This macro generates
-dependency free modules that enable you to interact with the program's
-instructions and accounts.
+下面的示例演示了如何使用 `anchor-client` crate 与一个简单的 Anchor 程序进行交互。程序客户端可以使用 `declare_program!` 宏从程序的 IDL 自动生成。该宏生成无依赖的模块，使您能够与程序的指令和账户进行交互。
 
-The program has two instructions:
+该程序有两个指令：
 
-- `initialize` – Creates and initializes a counter account to store a value
-- `increment` – Increments the value stored on the counter account
+- `initialize` – 创建并初始化一个计数器账户以存储值
+- `increment` – 增加存储在计数器账户上的值
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -32,16 +27,16 @@ pub mod example {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let counter = &ctx.accounts.counter;
-        msg!("Counter account created! Current count: {}", counter.count);
+        msg!("计数器账户已创建！当前计数：{}", counter.count);
         Ok(())
     }
 
     pub fn increment(ctx: Context<Increment>) -> Result<()> {
         let counter = &mut ctx.accounts.counter;
-        msg!("Previous counter: {}", counter.count);
+        msg!("前一个计数器：{}", counter.count);
 
         counter.count += 1;
-        msg!("Counter incremented! Current count: {}", counter.count);
+        msg!("计数器已增加！当前计数：{}", counter.count);
         Ok(())
     }
 }
@@ -72,8 +67,7 @@ pub struct Counter {
 }
 ```
 
-Below is an example folder structure for a Rust client that interacts with the
-Anchor program:
+下面是一个与 Anchor 程序交互的 Rust 客户端的示例文件夹结构：
 
 <Files>
   <Folder name="client-example" defaultOpen={true}>
@@ -88,8 +82,7 @@ Anchor program:
   </Folder>
 </Files>
 
-The program IDL must be in a `/idls` folder. The `declare_program!` macro
-searches for the IDL in the `/idls` folder to generate the client modules.
+程序 IDL 必须在 `/idls` 文件夹中。`declare_program!` 宏会在 `/idls` 文件夹中查找 IDL，以生成客户端模块。
 
 ```json title="idls/example.json"
 {
@@ -98,7 +91,7 @@ searches for the IDL in the `/idls` folder to generate the client modules.
     "name": "example",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "使用 Anchor 创建"
   },
   "instructions": [
     {
@@ -157,16 +150,14 @@ searches for the IDL in the `/idls` folder to generate the client modules.
 }
 ```
 
-Below is the `src/main.rs` file for interacting with the program:
+下面是与程序交互的 `src/main.rs` 文件：
 
-1. The `declare_program!` macro - Generates client modules for the program using
-   the IDL file
+1. `declare_program!` 宏 - 使用 IDL 文件为程序生成客户端模块
 
-2. The `anchor_client` crate - Provides utilities for interacting with the
-   program, including:
-   - Building program instructions
-   - Sending transactions
-   - Fetching program accounts
+2. `anchor_client` crate - 提供与程序交互的工具，包括：
+   - 构建程序指令
+   - 发送交易
+   - 获取程序账户
 
 ```rust title="src/main.rs"
 use anchor_client::{
@@ -186,27 +177,27 @@ use example::{accounts::Counter, client::accounts, client::args};
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let connection = RpcClient::new_with_commitment(
-        "http://127.0.0.1:8899", // Local validator URL
+        "http://127.0.0.1:8899", // 本地验证者 URL
         CommitmentConfig::confirmed(),
     );
 
-    // Generate Keypairs and request airdrop
+    // 生成密钥对并请求空投
     let payer = Keypair::new();
     let counter = Keypair::new();
-    println!("Generated Keypairs:");
-    println!("   Payer: {}", payer.pubkey());
-    println!("   Counter: {}", counter.pubkey());
+    println!("生成的密钥对：");
+    println!("   付款者: {}", payer.pubkey());
+    println!("   计数器: {}", counter.pubkey());
 
-    println!("\nRequesting 1 SOL airdrop to payer");
+    println!("\n请求空投 1 SOL 到付款者");
     let airdrop_signature = connection.request_airdrop(&payer.pubkey(), LAMPORTS_PER_SOL)?;
 
-    // Wait for airdrop confirmation
+    // 等待空投确认
     while !connection.confirm_transaction(&airdrop_signature)? {
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
-    println!("   Airdrop confirmed!");
+    println!("   空投已确认！");
 
-    // Create program client
+    // 创建程序客户端
     let provider = Client::new_with_options(
         Cluster::Localnet,
         Rc::new(payer),
@@ -214,8 +205,8 @@ async fn main() -> anyhow::Result<()> {
     );
     let program = provider.program(example::ID)?;
 
-    // Build and send instructions
-    println!("\nSend transaction with initialize and increment instructions");
+    // 构建并发送指令
+    println!("\n发送交易，包含 initialize 和 increment 指令");
     let initialize_ix = program
         .request()
         .accounts(accounts::Initialize {
@@ -243,16 +234,16 @@ async fn main() -> anyhow::Result<()> {
         .signer(&counter)
         .send()
         .await?;
-    println!("   Transaction confirmed: {}", signature);
+    println!("   交易已确认：{}", signature);
 
-    println!("\nFetch counter account data");
+    println!("\n获取计数器账户数据");
     let counter_account: Counter = program.account::<Counter>(counter.pubkey()).await?;
-    println!("   Counter value: {}", counter_account.count);
+    println!("   计数器值：{}", counter_account.count);
     Ok(())
 }
 ```
 
-Below are the dependencies for the `Cargo.toml` file:
+下面是 `Cargo.toml` 文件的依赖项：
 
 ```toml title="Cargo.toml"
 [package]

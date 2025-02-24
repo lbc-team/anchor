@@ -1,89 +1,73 @@
 ---
-title: Installation
+title: 安装
 description:
-  Learn how to install Rust, the Solana CLI, and Anchor Framework on Windows
-  (WSL), Linux, or Mac.
+  学习如何在 Windows (WSL)、Linux 或 Mac 上安装 Rust、Solana CLI 和 Anchor 框架。
 ---
 
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
-This section covers the steps to set up your local environment for Solana
-development.
+本节覆盖了设置您本地环境以进行 Solana 开发的步骤。
 
-## Install Dependencies
+## 安装依赖包
 
-- Windows users must first install WSL (Windows subsystem for Linux) and then
-  install the dependencies specified in the Linux section below.
-- Linux users should first install the dependencies specified in the Linux
-  section below.
-- Mac users should start with the Rust installation instructions below.
+- Windows 用户必须首先安装 WSL（Windows 子系统 Linux），然后安装以下 Linux 部分中指定的依赖包。
+- Linux 用户应该首先安装以下 Linux 部分中指定的依赖包。
+- Mac 用户应首先按照以下的 Rust 安装说明进行操作。
 
 <Accordions>
-  <Accordion title="Windows Subsystem for Linux (WSL)">
-    To develop Solana programs on Windows **you must use
-    [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)** (Windows
-    subsystem for Linux). All additional dependencies must be installed through the
-    Linux terminal.
+  <Accordion title="Windows 子系统 Linux (WSL)">
+    要在 Windows 上开发 Solana 程序，**您必须使用
+    [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)**（Windows 子系统 Linux）。所有额外的依赖项必须通过 Linux 终端安装。
 
-    Once WSL is installed, install the dependencies specified in the Linux section
-    below before proceeding to install Rust, Solana CLI, and Anchor CLI.
+    一旦安装了 WSL，请在继续安装 Rust、Solana CLI 和 Anchor CLI 之前，安装以下 Linux 部分中指定的依赖项。
 
-    To install WSL, run the following command in Windows PowerShell:
+    要安装 WSL，请在 Windows PowerShell 中运行以下命令：
 
     ```shell
     wsl --install
     ```
 
-    The install process will prompt you to create a default user account.
+    安装过程将提示您创建一个默认用户帐户。
 
-    ![WSL Install](/docs/installation/wsl-install.png)
+    ![WSL 安装](/docs/installation/wsl-install.png)
 
-    By default, WSL installs Ubuntu. You can open a Linux terminal by searching
-    "Ubuntu" in the Search bar.
+    默认情况下，WSL 安装 Ubuntu。您可以通过在搜索框中搜索 "Ubuntu" 打开 Linux 终端。
 
     ![WSL Ubuntu](/docs/installation/wsl-ubuntu-search.png)
 
-    If your Ubuntu terminal looks like the image below, you may encounter an issue
-    where `ctrl + v` (paste keyboard shortcut) doesn't work in the terminal.
+    如果您的 Ubuntu 终端如下图所示，您可能会遇到 `ctrl + v`（粘贴快捷键）在终端中不起作用的问题。
 
-    ![Ubuntu Terminal](/docs/installation/wsl-ubuntu-terminal-1.png)
+    ![Ubuntu 终端](/docs/installation/wsl-ubuntu-terminal-1.png)
 
-    If you encounter this issue, open Windows Terminal by searching for "Terminal"
-    in the Search bar.
+    如果遇到此问题，请通过在搜索框中搜索 "Terminal" 打开 Windows 终端。
 
-    ![Windows Terminal](/docs/installation/wsl-windows-terminal.png)
+    ![Windows 终端](/docs/installation/wsl-windows-terminal.png)
 
-    Next, close the Windows Terminal and reopen a Linux terminal by searching for
-    Ubuntu again. The terminal should now look like the image below, where
-    `ctrl + v` (paste keyboard shortcut) works.
+    接下来，关闭 Windows 终端并再次搜索 Ubuntu 以重新打开 Linux 终端。此时终端应如下图所示，`ctrl + v`（粘贴快捷键）可以正常使用。
 
-    ![Ubuntu Terminal](/docs/installation/wsl-ubuntu-terminal-2.png)
+    ![Ubuntu 终端](/docs/installation/wsl-ubuntu-terminal-2.png)
 
-    If you are using VS Code, the
-    [WSL extension](https://code.visualstudio.com/docs/remote/wsl-tutorial) enables
-    you to use WSL and VS Code together.
+    如果您使用的是 VS Code， [WSL 扩展](https://code.visualstudio.com/docs/remote/wsl-tutorial) 可以让您将 WSL 和 VS Code 一起使用。
 
-    ![WSL Setup in VS Code](/docs/installation/wsl-vscode.png)
+    ![在 VS Code 中设置 WSL](/docs/installation/wsl-vscode.png)
 
-    You should then see the following in the VS Code status bar:
+    然后您会在 VS Code 状态栏中看到以下内容：
 
     ![WSL: Ubuntu](/docs/installation/wsl-vscode-ubuntu.png)
 
-    Once you have WSL set up, all additional dependencies must be installed through
-    the Linux terminal. Install the dependencies specified in the Linux section
-    below before proceeding to install Rust, Solana CLI, and Anchor CLI.
+    一旦设置完成 WSL，所有额外的依赖项必须通过 Linux 终端安装。在继续安装 Rust、Solana CLI 和 Anchor CLI 之前，安装以下 Linux 部分中指定的依赖项。
 
   </Accordion>
   <Accordion title="Linux">
-    The following dependencies are required for the Anchor CLI installation.
+    安装 Anchor CLI 所需以下依赖项。
 
-    First, run the following command:
+    首先，运行以下命令：
 
     ```shell
     sudo apt-get update
     ```
 
-    Next, install the following dependencies:
+    接下来，安装以下依赖项：
 
     ```shell
     sudo apt-get install -y \
@@ -93,13 +77,11 @@ development.
         protobuf-compiler libssl-dev
     ```
 
-    If you encounter the following error when installing `protobuf-compiler`, make
-    sure you first run `sudo apt-get update`:
+    如果在安装 `protobuf-compiler` 时遇到以下错误，请确保您首先运行 `sudo apt-get update`：
 
     ```
-    Package protobuf-compiler is not available, but is referred to by another package.
-    This may mean that the package is missing, has been obsoleted, or
-    is only available from another source
+    包 protobuf-compiler 不可用，但被另一个包引用。
+    这可能意味着该包缺失、已被淘汰或仅从其他来源可用。
     ```
 
   </Accordion>
@@ -108,57 +90,55 @@ development.
 <Steps>
 <Step>
 
-### Install Rust
+### 安装 Rust
 
-Solana programs are written in the
-[Rust programming language](https://www.rust-lang.org/).
+Solana 程序是用
+[Rust programming language](https://www.rust-lang.org/) 编写的。
 
-The recommended installation method for Rust is
-[rustup](https://www.rust-lang.org/tools/install).
+推荐的 Rust 安装方法是
+[rustup](https://www.rust-lang.org/tools/install)。
 
-Run the following command to install Rust:
+运行以下命令以安装 Rust：
 
 ```shell
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ```
 
-You should see the following message after the installation completes:
+安装完成后，您应看到以下消息：
 
 <Accordions>
-<Accordion title="Successful Rust Install Message">
+<Accordion title="成功安装 Rust 消息">
 
 ```
-Rust is installed now. Great!
+Rust 现在已安装。太好了！
 
-To get started you may need to restart your current shell.
-This would reload your PATH environment variable to include
-Cargo's bin directory ($HOME/.cargo/bin).
+要开始使用，您可能需要重新启动当前的 shell。
+这将重新加载您的 PATH 环境变量以包含除 Cargo bin 目录 ($HOME/.cargo/bin) 外的所有内容。
 
-To configure your current shell, you need to source
-the corresponding env file under $HOME/.cargo.
+要配置当前的 shell，您需要源代码
+$HOME/.cargo 下相应的 env 文件。
 
-This is usually done by running one of the following (note the leading DOT):
-. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
-source "$HOME/.cargo/env.fish"  # For fish
+通常通过运行以下命令之一来完成（注意前面的 DOT）：
+. "$HOME/.cargo/env"            # 对于 sh/bash/zsh/ash/dash/pdksh
+source "$HOME/.cargo/env.fish"  # 对于 fish
 ```
 
 </Accordion>
 </Accordions>
 
-Run the following command to reload your PATH environment variable to include
-Cargo's bin directory:
+运行以下命令以重新加载您的 PATH 环境变量以包含 Cargo 的 bin 目录：
 
 ```shell
 . "$HOME/.cargo/env"
 ```
 
-To verify that the installation was successful, check the Rust version:
+要验证安装是否成功，请检查 Rust 版本：
 
 ```shell
 rustc --version
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
 rustc 1.80.1 (3f5fd8dd4 2024-08-06)
@@ -167,26 +147,22 @@ rustc 1.80.1 (3f5fd8dd4 2024-08-06)
 </Step>
 <Step>
 
-### Install the Solana CLI
+### 安装 Solana CLI
 
-The Solana CLI provides all the tools required to build and deploy Solana
-programs.
+Solana CLI 提供构建和部署 Solana 程序所需的所有工具。
 
-Install the Solana CLI tool suite using the official install command:
+使用官方安装命令安装 Solana CLI 工具套件：
 
 ```shell
 sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 ```
 
-You can replace `stable` with the release tag matching the software version of
-your desired release (i.e. `v2.0.3`), or use one of the three symbolic channel
-names: `stable`, `beta`, or `edge`.
+您可以将 `stable` 替换为与您所需版本的软件发行版匹配的版本标签（例如 `v2.0.3`），或者使用以下三个符号通道名称中的一个：`stable`、`beta` 或 `edge`。
 
-If it is your first time installing the Solana CLI, you may see the following
-message prompting you to add a PATH environment variable:
+如果您第一次安装 Solana CLI，您可能会看到以下消息提示您添加 PATH 环境变量：
 
 ```
-Close and reopen your terminal to apply the PATH changes or run the following in your existing shell:
+关闭并重新打开终端以应用 PATH 更改，或在现有 shell 中运行以下命令：
 
 export PATH="/Users/test/.local/share/solana/install/active_release/bin:$PATH"
 ```
@@ -194,9 +170,7 @@ export PATH="/Users/test/.local/share/solana/install/active_release/bin:$PATH"
 <Tabs groupId="language" items={['Linux', 'Mac']}>
 <Tab value="Linux">
 
-If you are using a Linux or WSL terminal, you can add the PATH environment
-variable to your shell configuration file by running the command logged from the
-installation or by restarting your terminal.
+如果您使用的是 Linux 或 WSL 终端，您可以通过运行安装时记录的命令或重启终端将 PATH 环境变量添加到 shell 配置文件中。
 
 ```shell
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
@@ -205,18 +179,15 @@ export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 </Tab>
 <Tab value="Mac">
 
-If you're on Mac using `zsh`, running the default `export PATH` command logged
-from the installation does not persist once you close your terminal.
+如果您在 Mac 上使用 `zsh`，安装时记录的默认 `export PATH` 命令在关闭终端后不会保留。
 
-Instead, you can add the PATH to your shell configuration file by running the
-following command:
+相反，您可以通过运行以下命令将 PATH 添加到 shell 配置文件中：
 
 ```shell
 echo 'export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"' >> ~/.zshrc
 ```
 
-Then run the following command to refresh the terminal session or restart your
-terminal.
+然后运行以下命令以刷新终端会话，或重启终端。
 
 ```shell
 source ~/.zshrc
@@ -225,30 +196,27 @@ source ~/.zshrc
 </Tab>
 </Tabs>
 
-To verify that the installation was successful, check the Solana CLI version:
+要验证安装是否成功，请检查 Solana CLI 版本：
 
 ```shell
 solana --version
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
 solana-cli 1.18.22 (src:9efdd74b; feat:4215500110, client:Agave)
 ```
 
-You can view all available versions on the
-[Agave Github repo](https://github.com/anza-xyz/agave/releases).
+您可以在 [Agave Github repo](https://github.com/anza-xyz/agave/releases) 查看所有可用版本。
 
 <Callout>
 
-Agave is the validator client from [Anza](https://www.anza.xyz/), formerly known
-as Solana Labs validator client.
+Agave 是 [Anza](https://www.anza.xyz/) 的验证客户端，以前称为 Solana Labs 验证客户端。
 
 </Callout>
 
-To later update the Solana CLI to the latest version, you can use the following
-command:
+要稍后将 Solana CLI 更新到最新版本，您可以使用以下命令：
 
 ```shell
 agave-install update
@@ -257,64 +225,56 @@ agave-install update
 </Step>
 <Step>
 
-### Install Anchor CLI
+### 安装 Anchor CLI
 
-Anchor is a framework for developing Solana
-programs. The Anchor framework leverages Rust macros to simplify the process of
-writing Solana programs.
+Anchor 是一个用于开发 Solana 程序的框架。Anchor 框架利用 Rust 宏简化了编写 Solana 程序的过程。
 
-There are two ways to install the Anchor CLI and tooling:
+安装 Anchor CLI 和工具有两种方式：
 
-1. Using Anchor Version Manager (AVM) - is the **recommended installation**
-   method since it simplifies updating Anchor versions in the future
-2. Without AVM - this requires more a manual process to update Anchor versions
-   later
+1. 使用 Anchor 版本管理器 (AVM) - 这是**推荐的安装**方法，因为它简化了将来 Anchor 版本的更新
+2. 无 AVM - 这需要更多的手动过程来稍后更新 Anchor 版本
 
 <Tabs groupId="anchor" items={['AVM', 'Without AVM']}>
 <Tab value="AVM">
 
-The Anchor version manager (AVM) allows you to install and manage different
-Anchor versions on your system, including more easily updating Anchor versions
-in the future.
+Anchor 版本管理器 (AVM) 允许您在系统上安装和管理不同的 Anchor 版本，包括更轻松地在将来更新 Anchor 版本。
 
-Install AVM with the following command:
+使用以下命令安装 AVM：
 
 ```shell
 cargo install --git https://github.com/coral-xyz/anchor avm --force
 ```
 
-Test to ensure AVM was installed and is accessible:
+测试以确保 AVM 已成功安装并可访问：
 
 ```shell
 avm --version
 ```
 
-Install the latest version of Anchor CLI using AVM:
+使用 AVM 安装最新版本的 Anchor CLI：
 
 ```shell
 avm install latest
 avm use latest
 ```
 
-Or install a specific version of the Anchor CLI by declaring which version you
-want to install:
+或通过声明您想要安装的版本来安装特定版本的 Anchor CLI：
 
 ```shell
 avm install 0.30.1
 avm use 0.30.1
 ```
 
-> Don't forget to run the `avm use` command to declare which Anchor CLI version
-> should be used on your system.
+> 请不要忘记运行 `avm use` 命令以声明系统上应该使用哪个 Anchor CLI 版本。
 >
-> - If you installed the `latest` version, run `avm use latest`.
-> - If you installed the version `0.30.1`, run `avm use 0.30.1`.
+> - 如果您安装了 `latest` 版本，请运行 `avm use latest`。
+> - 如果您安装了 `0.30.1` 版本，请运行 `avm use 0.30.1`。
 
 </Tab>
 
 <Tab value="Without AVM">
 
-Install a specific version of the Anchor CLI with the following command:
+使用以下命令安装特定版本的 Anchor CLI：
 
 ```shell
 cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli
@@ -323,115 +283,112 @@ cargo install --git https://github.com/coral-xyz/anchor --tag v0.30.1 anchor-cli
 </Tab>
 </Tabs>
 
-You may see the following warning during installation. However, it does not
-affect the installation process.
+您可能在安装过程中看到以下警告。但是，这不会影响安装过程。
 
 <Accordions>
 <Accordion title="warning: unexpected `cfg` condition name: `nightly`">
 
 ```
-warning: unexpected `cfg` condition name: `nightly`
+警告：意外的 `cfg` 条件名称：`nightly`
  --> cli/src/lib.rs:1:13
   |
 1 | #![cfg_attr(nightly, feature(proc_macro_span))]
   |             ^^^^^^^
   |
-  = help: expected names are: `clippy`, `debug_assertions`, `doc`, `docsrs`, `doctest`, `feature`, `miri`, `overflow_checks`, `panic`, `proc_macro`, `relocation_model`, `rustfmt`, `sanitize`, `sanitizer_cfi_generalize_pointers`, `sanitizer_cfi_normalize_integers`, `target_abi`, `target_arch`, `target_endian`, `target_env`, `target_family`, `target_feature`, `target_has_atomic`, `target_has_atomic_equal_alignment`, `target_has_atomic_load_store`, `target_os`, `target_pointer_width`, `target_thread_local`, `target_vendor`, `test`, `ub_checks`, `unix`, and `windows`
-  = help: consider using a Cargo feature instead
-  = help: or consider adding in `Cargo.toml` the `check-cfg` lint config for the lint:
+  = 帮助：预期名称为：`clippy`、`debug_assertions`、`doc`、`docsrs`、`doctest`、`feature`、`miri`、`overflow_checks`、`panic`、`proc_macro`、`relocation_model`、`rustfmt`、`sanitize`、`sanitizer_cfi_generalize_pointers`、`sanitizer_cfi_normalize_integers`、`target_abi`、`target_arch`、`target_endian`、`target_env`、`target_family`、`target_feature`、`target_has_atomic`、`target_has_atomic_equal_alignment`、`target_has_atomic_load_store`、`target_os`、`target_pointer_width`、`target_thread_local`、`target_vendor`、`test`、`ub_checks`、`unix` 和 `windows`
+  = 帮助：考虑改用 Cargo 特性
+  = 帮助：或考虑在 `Cargo.toml` 中添加 `check-cfg` lint 配置：
            [lints.rust]
            unexpected_cfgs = { level = "warn", check-cfg = ['cfg(nightly)'] }
-  = help: or consider adding `println!("cargo::rustc-check-cfg=cfg(nightly)");` to the top of the `build.rs`
-  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
-  = note: `#[warn(unexpected_cfgs)]` on by default
+  = 帮助：或考虑在 `build.rs` 顶部添加 `println!("cargo::rustc-check-cfg=cfg(nightly)");`
+  = 注意：有关检查条件配置的更多信息，请参见 <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html>
+  = 注意：`#[warn(unexpected_cfgs)]` 默认情况下已启用
 
-warning: `anchor-cli` (lib) generated 1 warning
+警告：`anchor-cli` (lib) 生成了 1 个警告
 ```
 
 </Accordion>
 </Accordions>
 
-To verify that the installation was successful, check the Anchor CLI version:
+要验证安装是否成功，请检查 Anchor CLI 版本：
 
 ```shell
 anchor --version
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
 anchor-cli 0.30.1
 ```
 
-When installing the Anchor CLI on Linux or WSL, you may encounter this error:
+在 Linux 或 WSL 上安装 Anchor CLI 时，您可能会遇到此错误：
 
 ```
 error: could not exec the linker cc = note: Permission denied (os error 13)
 ```
 
-If you see this error message, follow these steps:
+如果您看到此错误消息，请遵循以下步骤：
 
-1. Install the dependencies listed in the Linux section at the top of this page.
-2. Retry installing the Anchor CLI.
+1. 安装在此页面顶部列出的 Linux 部分中的依赖项。
+2. 重试安装 Anchor CLI。
 
-#### Node.js and Yarn
+#### Node.js 和 Yarn
 
-Node.js and Yarn are required to run the default Anchor project test file
-(TypeScript) created with the `anchor init` command. (Rust test template is also
-available using `anchor init --test-template rust`)
+Node.js 和 Yarn 是运行使用 `anchor init` 命令创建的默认 Anchor 项目测试文件（TypeScript）所必需的。（Rust 测试模板也可以使用 `anchor init --test-template rust` 可用）
 
 <Accordions>
-<Accordion title="Node Installation">
+<Accordion title="Node 安装">
 
-The recommended way to install node is using
-[Node Version Manager (nvm)](https://github.com/nvm-sh/nvm).
+安装节点的推荐方法是使用
+[Node Version Manager (nvm)](https://github.com/nvm-sh/nvm)。
 
-Install nvm using the following command:
+使用以下命令安装 nvm：
 
 ```shell
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 ```
 
-Restart your terminal and verify that nvm is installed:
+重启您的终端并验证 nvm 是否安装成功：
 
 ```shell
 command -v nvm
 ```
 
-Next, use `nvm` to install node:
+接下来，使用 `nvm` 安装节点：
 
 ```shell
 nvm install node
 ```
 
-To verify that the installation was successful, check the Node version:
+要验证安装是否成功，请检查 Node 版本：
 
 ```
 node --version
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
 v22.7.0
 ```
 
 </Accordion>
-<Accordion title="Yarn Installation">
+<Accordion title="Yarn 安装">
 
-Install Yarn:
+安装 Yarn：
 
 ```shell
 npm install --global yarn
 ```
 
-To verify that the installation was successful, check the Yarn version:
+要验证安装是否成功，请检查 Yarn 版本：
 
 ```
 yarn --version
 ```
 
-You should the following output:
+您应看到以下输出：
 
 ```
 1.22.1
@@ -440,32 +397,29 @@ You should the following output:
 </Accordion>
 </Accordions>
 
-When running `anchor build`, if you encounter `error: not a directory` similar
-following:
+当运行 `anchor build` 时，如果您遇到类似于以下 "error: not a directory" 的错误：
 
 ```
 error: not a directory: '.../solana-release/bin/sdk/sbf/dependencies/platform-tools/rust/lib'
 ```
 
-Try these solutions:
+请尝试以下解决方案：
 
-1. Force install using the following command:
+1. 使用以下命令强制安装：
 
 ```shell
 cargo build-sbf --force-tools-install
 ```
 
-2. If the above doesn't work, clear the Solana cache:
+2. 如果上面的办法无效，请清除 Solana 缓存：
 
 ```shell
 rm -rf ~/.cache/solana/*
 ```
 
-After applying either solution, attempt to run `anchor build` again.
+应用其中任何解决方案后，请再次尝试运行 `anchor build`。
 
-If you are on Linux or WSL and encounter the following errors when running
-`anchor test` after creating a new Anchor project, it's may be due to missing
-Node.js or Yarn:
+如果您在 Linux 或 WSL 上且创建新的 Anchor 项目后运行 `anchor test` 时遇到以下错误，可能是因缺失 Node.js 或 Yarn 所致：
 
 ```
 Permission denied (os error 13)
@@ -478,36 +432,34 @@ No such file or directory (os error 2)
 </Step>
 </Steps>
 
-## Solana CLI Basics
+## Solana CLI 基础知识
 
-This section will walk through some common Solana CLI commands to get you
-started.
+本节将介绍一些常见的 Solana CLI 命令，以帮助您入门。
 
 <Steps>
 <Step>
 
-### Solana Config
+### Solana 配置
 
-To see your current config:
+要查看当前配置：
 
 ```shell
 solana config get
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
-Config File: /Users/test/.config/solana/cli/config.yml
+配置文件: /Users/test/.config/solana/cli/config.yml
 RPC URL: https://api.mainnet-beta.solana.com
-WebSocket URL: wss://api.mainnet-beta.solana.com/ (computed)
-Keypair Path: /Users/test/.config/solana/id.json
-Commitment: confirmed
+WebSocket URL: wss://api.mainnet-beta.solana.com/ (计算得出)
+Keypair 路径: /Users/test/.config/solana/id.json
+承诺: 确认
 ```
 
-The RPC URL and Websocket URL specific the Solana cluster the CLI will make
-requests to. By default this will be mainnet-beta.
+RPC URL 和 Websocket URL 指定了 CLI 将请求的 Solana 集群。默认情况下将使用 mainnet-beta。
 
-You can update the Solana CLI cluster using the following commands:
+您可以使用以下命令更新 Solana CLI 集群：
 
 ```
 solana config set --url mainnet-beta
@@ -516,65 +468,61 @@ solana config set --url localhost
 solana config set --url testnet
 ```
 
-You can also use the following short options:
+您也可以使用以下短选项：
 
 ```
-solana config set -um    # For mainnet-beta
-solana config set -ud    # For devnet
-solana config set -ul    # For localhost
-solana config set -ut    # For testnet
+solana config set -um    # 适用于 mainnet-beta
+solana config set -ud    # 适用于 devnet
+solana config set -ul    # 适用于 localhost
+solana config set -ut    # 适用于 testnet
 ```
 
-The Keypair Path specifies the location of the default wallet used by the Solana
-CLI (to pay transaction fees and deploy programs). The default path is
-`~/.config/solana/id.json`. The next step walks through how to generate a
-keypair at the default location.
+Keypair 路径指定了 Solana CLI 用于支付交易费用和部署程序的默认钱包的位置。默认路径是
+`~/.config/solana/id.json`。接下来的步骤将介绍如何在默认位置生成一个 keypair。
 
 </Step>
 <Step>
 
-### Create Wallet
+### 创建钱包
 
-To interact with the Solana network using the Solana CLI, you need a Solana
-wallet funded with SOL.
+要使用 Solana CLI 与 Solana 网络进行交互，您需要一个资金充足的 Solana 钱包。
 
-To generate a keypair at the default Keypair Path, run the following command:
+要在默认 Keypair 路径生成一个 keypair，请运行以下命令：
 
 ```shell
 solana-keygen new
 ```
 
-You should see output similar to the following:
+您应看到类似于以下的输出：
 
 ```
-Generating a new keypair
+生成一个新的 keypair
 
-For added security, enter a BIP39 passphrase
+为了增强安全性，请输入一个 BIP39 密码短语
 
-NOTE! This passphrase improves security of the recovery seed phrae NOT the
-keypair file itself, which is stored as insecure plain text
+注意！此密码短语仅提高恢复种子短语的安全性，而不是
+keypair 文件本身，该文件以不安全的明文存储
 
-BIP39 Passphrase (empty for none):
+BIP39 密码短语（留空表示不使用）：
 
-Wrote new keypair to /Users/test/.config/solana/id.json
+已将新 keypair 写入 /Users/test/.config/solana/id.json
 ===========================================================================
-pubkey: 8dBTPrjnkXyuQK3KDt9wrZBfizEZijmmUQXVHpFbVwGT
+公钥: 8dBTPrjnkXyuQK3KDt9wrZBfizEZijmmUQXVHpFbVwGT
 ===========================================================================
-Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+请保存此种子短语和您的 BIP39 密码短语以恢复您的新 keypair：
 cream bleak tortoise ocean nasty game gift forget fancy salon mimic amazing
 ===========================================================================
 ```
 
 <Callout type="note">
 
-If you already have a file system wallet saved at the default location, this
-command will **NOT** override it unless you explicitly force override using the
-`--force` flag.
+如果您已经在默认位置保存了文件系统钱包，则此
+命令**不会**覆盖它，除非您明确强制覆盖使用
+`--force` 标志。
 
 </Callout>
 
-Once a keypair is generated, you can get the address (public key) of the keypair
-with the following command:
+生成 keypair 后，您可以使用以下命令获取 keypair 的地址（公钥）：
 
 ```shell
 solana address
@@ -583,24 +531,23 @@ solana address
 </Step>
 <Step>
 
-### Airdrop SOL
+### 空投 SOL
 
-Once you've set up your local wallet, request an airdrop of SOL to fund your
-wallet. You need SOL to pay for transaction fees and to deploy programs.
+一旦您设置好了本地钱包，请请求 SOL 的空投以资助您的钱包。您需要 SOL 来支付交易费用和部署程序。
 
-Set your cluster to the devnet:
+将您的集群设置为 devnet：
 
 ```shell
 solana config set -ud
 ```
 
-Then request an airdrop of devnet SOL:
+然后请求 devnet SOL 的空投：
 
 ```shell
 solana airdrop 2
 ```
 
-To check your wallet's SOL balance, run the following command:
+要检查钱包的 SOL 余额，请运行以下命令：
 
 ```shell
 solana balance
@@ -608,30 +555,27 @@ solana balance
 
 <Callout>
 
-The `solana airdrop` command is currently limited to 5 SOL per request on
-devnet. Errors are likely due to rate limits.
+`solana airdrop` 命令目前在 devnet 上每次请求的限制为 5 SOL。错误通常是由于限速造成的。
 
-Alternatively, you can get devnet SOL using the
-[Solana Web Faucet](https://faucet.solana.com).
+替代方案，您可以通过
+[Solana Web Faucet](https://faucet.solana.com) 获取 devnet SOL。
 
 </Callout>
 </Step>
 <Step>
 
-### Run Local Validator
+### 运行本地验证器
 
-The Solana CLI comes with the
-[test validator](https://docs.solanalabs.com/cli/examples/test-validator)
-built-in. Running a local validator will allow you to deploy and test your
-programs locally.
+Solana CLI 内置了
+[test validator](https://docs.solanalabs.com/cli/examples/test-validator)。运行本地验证器将允许您在本地部署和测试程序。
 
-In a separate terminal, run the following command to start a local validator:
+在一个单独的终端中，运行以下命令以启动本地验证器：
 
 ```shell
 solana-test-validator
 ```
 
-Make sure to update the Solana CLI config to localhost before commands.
+请确保在运行命令之前将 Solana CLI 配置更新为 localhost。
 
 ```shell
 solana config set -ul

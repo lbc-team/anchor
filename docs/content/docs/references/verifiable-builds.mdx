@@ -1,60 +1,50 @@
 ---
-title: Verifiable Builds
-description: Anchor - Verifiable Builds
+title: 可验证构建
+description: Anchor - 可验证构建
 ---
 
-Building programs with the Solana CLI may embed machine specific code into the
-resulting binary. As a result, building the same program on different machines
-may produce different executables. To get around this problem, one can build
-inside a docker image with pinned dependencies to produce a verifiable build.
+使用 Solana CLI 构建程序可能会将特定机器的代码嵌入到生成的二进制文件中。因此，在不同机器上构建相同的程序可能会产生不同的可执行文件。为了解决这个问题，可以在使用固定依赖的 Docker 镜像中进行构建，从而生成可验证的构建。
 
 ---
 
-Anchor makes this easy by providing CLI commands to build and take care of
-docker for you. To get started, first make sure you
-[install](https://docs.docker.com/get-docker/) docker on your local machine.
+Anchor 通过提供 CLI 命令来简化这一过程，并为您处理 Docker。要开始使用，首先请确保您已在本地机器上[安装](https://docs.docker.com/get-docker/)了 Docker。
 
-## Building
+## 构建
 
-To produce a verifiable build, run
+要生成可验证的构建，请运行
 
 ```shell
 anchor build --verifiable
 ```
 
-## Verifying
+## 验证
 
-To verify a build against a program deployed on mainnet, run
+要验证与主网上部署的程序匹配的构建，请运行
 
 ```shell
 anchor verify -p <lib-name> <program-id>
 ```
 
-where the `<lib-name>` is defined by your program's Cargo.toml.
+其中 `<lib-name>` 由您的程序的 Cargo.toml 定义。
 
-If the program has an IDL, it will also check the IDL deployed on chain matches.
+如果程序有 IDL，它还将检查链上部署的 IDL 是否匹配。
 
-## Images
+## 镜像
 
-A docker image for each version of Anchor is published on
-[Docker Hub](https://hub.docker.com/r/backpackapp/build). They are tagged in the
-form `backpackapp/build:<version>`. For example, to get the image for Anchor
-`v0.30.1` one can run
+每个 Anchor 版本的 Docker 镜像都发布在 [Docker Hub](https://hub.docker.com/r/backpackapp/build) 上。镜像的标签格式为 `backpackapp/build:<version>`。例如，要获取 Anchor `v0.30.1` 的镜像，可以运行
 
 ```shell
 docker pull backpackapp/build:v0.30.1
 ```
 
-## Removing an Image
+## 删除镜像
 
-In the event you run a verifiable build from the CLI and exit prematurely, it's
-possible the docker image may still be building in the background.
+如果您从 CLI 运行可验证构建并提前退出，Docker 镜像可能仍在后台构建。
 
-To remove, run
+要移除镜像，请运行
 
 ```shell
 docker rm -f anchor-program
 ```
 
-where `anchor-program` is the name of the image created by default from within
-the Anchor CLI.
+其中 `anchor-program` 是 Anchor CLI 默认创建的镜像名称。

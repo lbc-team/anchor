@@ -1,116 +1,100 @@
 ---
 title: Solana Playground
 description:
-  Learn how to build your first Solana program using the Anchor framework
-  directly in your browser.
+  了解如何直接在浏览器中使用 Anchor 框架构建您的第一个 Solana 程序。
 ---
 
-In this section, we'll build, deploy, and test a simple Solana program using the
-Anchor framework. By the end, you'll have deployed your first program to the
-Solana blockchain!
+在本节中，我们将使用 Anchor 框架构建、部署和测试一个简单的 Solana 程序。到最后，你将把你的第一个程序部署到 Solana 区块链上！
 
-Solana Playground (Solpg) is a browser-based development environment that allows
-you to quickly develop, deploy, and test Solana programs!
+Solana Playground (Solpg) 是一个基于浏览器的开发环境，允许你快速开发、部署和测试 Solana 程序！
 
-## Getting Started
+## 开始使用
 
-Open a new tab in your web browser and navigate to https://beta.solpg.io/.
+在您的网页浏览器中打开一个新标签页并导航至 https://beta.solpg.io/。
 
 <Steps>
 
 <Step>
-### Create Playground Wallet
+### 创建 Playground 钱包
 
-If you're new to Solana Playground, the first step is to create your Playground
-Wallet. This wallet will allow you to interact with the Solana network right
-from your browser.
+如果你是 Solana Playground 的新手，第一步是创建你的 Playground 钱包。这个钱包将允许你直接在浏览器中与 Solana 网络进行交互。
 
-#### Step 1. Connect to Playground
+#### 第 1 步. 连接到 Playground
 
-Click the "Not connected" button at the bottom left of the screen.
+点击屏幕左下角的“未连接”按钮。
 
-![Not Connected](/docs/quickstart/pg-not-connected.png)
+![未连接](/docs/quickstart/pg-not-connected.png)
 
-#### Step 2. Create Your Wallet
+#### 第 2 步. 创建您的钱包
 
-You'll see an option to save your wallet's keypair. Optionally, save your
-wallet's keypair for backup and then click "Continue".
+你将看到一个保存钱包密钥对的选项。可选地，保存你的钱包密钥对以备份，然后点击“继续”。
 
-![Create Playground Wallet](/docs/quickstart/pg-create-wallet.png)
+![创建 Playground 钱包](/docs/quickstart/pg-create-wallet.png)
 
-You should now see your wallet's address, SOL balance, and connected cluster
-(devnet by default) at the bottom of the window.
+你现在应该看到你钱包的地址、SOL 余额以及底部连接的集群（默认为 devnet）。
 
-![Connected](/docs/quickstart/pg-connected.png)
+![已连接](/docs/quickstart/pg-connected.png)
 
 <Callout>
-  Your Playground Wallet will be saved in your browser's local storage. Clearing
-  your browser cache will remove your saved wallet.
+  你的 Playground 钱包将保存在浏览器的本地存储中。清除浏览器缓存将删除你保存的钱包。
 </Callout>
 
-Some definitions you may find helpful:
+一些你可能会觉得有用的定义：
 
-- _wallet address_: a public key that serves as your unique identity on the
-  Solana blockchain. Just like an email address is used to receive emails, your
-  wallet address is used to receive SOL.
-- _connection cluster_: a network of Solana nodes (computers running Solana
-  validator client). Devnet is the cluster for developer testing.
+- **钱包地址**：一个公钥，作为你在 Solana 区块链上的唯一身份。就像使用电子邮件地址接收电子邮件一样，你的钱包地址用于接收 SOL。
+- **连接集群**：一组 Solana 节点（运行 Solana 验证者客户端的计算机）。Devnet 是用于开发者测试的集群。
 
 </Step>
 <Step>
 
-### Get Devnet SOL
+### 获取 Devnet SOL
 
-Before we start building, we first need some devnet SOL.
+在我们开始构建之前，我们首先需要一些 devnet SOL。
 
-From a developer's perspective, SOL is required for two main use cases:
+从开发者的角度来看，SOL 主要用于两个用途：
 
-- To create accounts on the network where we store data or deploy programs
-- To pay for transaction fees when we interact with the network
+- 在网络上创建账户以存储数据或部署程序
+- 在与网络交互时支付交易费用
 
-Below are two methods to fund your wallet with devnet SOL:
+以下是为你的钱包提供 devnet SOL 的两种方法：
 
-#### Option 1: Using the Playground Terminal
+#### 选项 1：使用 Playground 终端
 
-To fund your Playground wallet with devnet SOL. In the Playground terminal, run:
+为你的 Playground 钱包提供 devnet SOL。在 Playground 终端中运行：
 
 ```shell filename="Terminal"
 solana airdrop 5
 ```
 
-#### Option 2: Using the Devnet Faucet
+#### 选项 2：使用 Devnet 软件发放器
 
-If the airdrop command doesn't work (due to rate limits or errors), you can use
-the [Web Faucet](https://faucet.solana.com/).
+如果 airdrop 命令不工作（由于速率限制或错误），你可以使用 [Web Faucet](https://faucet.solana.com/)。
 
-- Enter your wallet address (found at the bottom of the Playground screen) and
-  select an amount
-- Click "Confirm Airdrop" to receive your devnet SOL
+- 输入你的钱包地址（在 Playground 窗口的底部找到）并选择一个金额
+- 点击“确认发放”以接收你的 devnet SOL
 
-![Faucet Airdrop](/docs/quickstart/faucet-airdrop.gif)
+![水龙头发放](/docs/quickstart/faucet-airdrop.gif)
 
 </Step>
 
 <Step>
 
-### Create Anchor Project
+### 创建 Anchor 项目
 
-First, open https://beta.solpg.io in a new browser tab.
+首先，在新的浏览器标签页中打开 https://beta.solpg.io。
 
-- Click the "Create a new project" button on the left-side panel.
+- 点击左侧面板上的“创建新项目”按钮。
 
-- Enter a project name, select Anchor as the framework, then click the "Create"
-  button.
+- 输入项目名称，选择 Anchor 作为框架，然后点击“创建”按钮。
 
-![New Project](/docs/quickstart/pg-new-project.gif)
+![新项目](/docs/quickstart/pg-new-project.gif)
 
-You'll see a new project created with the program code in the `src/lib.rs` file.
+你将看到创建的新项目，其程序代码位于 `src/lib.rs` 文件中。
 
 ```rust filename="lib.rs"
 use anchor_lang::prelude::*;
 
-// This is your program's public key and it will update
-// automatically when you build the project.
+// 这是你程序的公钥，当你构建项目时，它会自动更新。
 declare_id!("11111111111111111111111111111111");
 
 #[program]
@@ -118,17 +102,17 @@ mod hello_anchor {
     use super::*;
     pub fn initialize(ctx: Context<Initialize>, data: u64) -> Result<()> {
         ctx.accounts.new_account.data = data;
-        msg!("Changed data to: {}!", data); // Message will show up in the tx logs
+        msg!("Changed data to: {}!", data); // 消息将在交易日志中显示
         Ok(())
     }
 }
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    // We must specify the space in order to initialize an account.
-    // First 8 bytes are default account discriminator,
-    // next 8 bytes come from NewAccount.data being type u64.
-    // (u64 = 64 bits unsigned integer = 8 bytes)
+    // 我们必须指定空间以初始化账户。
+    // 前 8 个字节是默认的账户离散器，
+    // 后 8 个字节来自 NewAccount.data，其类型为 u64。
+    // (u64 = 64 位无符号整数 = 8 字节)
     #[account(init, payer = signer, space = 8 + 8)]
     pub new_account: Account<'info, NewAccount>,
     #[account(mut)]
@@ -143,19 +127,17 @@ pub struct NewAccount {
 ```
 
 <Accordions>
-<Accordion title="Explanation">
+<Accordion title="解释">
 
-For now, we'll only cover the high-level overview of the program code:
+目前，我们将仅覆盖程序代码的高层概述：
 
-- The `declare_id!` macro specifies the on-chain address of your program. It
-  will be automatically updated when we build the program in the next step.
+- `declare_id!` 宏指定你的程序的链上地址。当我们在下一步中构建程序时，它会被自动更新。
 
   ```rust
   declare_id!("11111111111111111111111111111111");
   ```
 
-- The `#[program]` attribute annotates a module containing functions that
-  represent the program's instructions.
+- `#[program]` 属性注释一个包含表示程序指令的函数的模块。
 
   ```rust
   #[program]
@@ -163,29 +145,22 @@ For now, we'll only cover the high-level overview of the program code:
       use super::*;
       pub fn initialize(ctx: Context<Initialize>, data: u64) -> Result<()> {
           ctx.accounts.new_account.data = data;
-          msg!("Changed data to: {}!", data); // Message will show up in the tx logs
+          msg!("Changed data to: {}!", data); // 消息将在交易日志中显示
           Ok(())
       }
   }
   ```
 
-  In this example, the `initialize` instruction takes two parameters:
+  在这个例子中，`initialize` 指令接受两个参数：
 
-  1. `ctx: Context<Initialize>` - Provides access to the accounts required for
-     this instruction, as specified in the `Initialize` struct.
-  2. `data: u64` - An instruction parameter that will be passed in when the
-     instruction is invoked.
+  1. `ctx: Context<Initialize>` - 提供对此指令所需账户的访问，如 `Initialize` 结构体中所指定。
+  2. `data: u64` - 在调用指令时将传递的指令参数。
 
-  The function body sets the `data` field of `new_account` to the provided
-  `data` argument and then prints a message to the program logs.
+  函数主体将 `new_account` 的 `data` 字段设置为提供的 `data` 参数，并打印消息到程序日志。
 
-- The `#[derive(Accounts)]` macro is used to annotate a struct that specifies
-  the accounts required for a particular instruction, where each field
-  represents a separate account.
+- `#[derive(Accounts)]` 宏用于注释一个结构体，指定特定指令所需的账户，其中每个字段代表一个单独的账户。
 
-  The field types (ex. `Signer<'info>`) and constraints (ex. `#[account(mut)]`)
-  are used by Anchor to automatically handle common security checks related to
-  account validation.
+  字段的类型（例如 `Signer<'info>`）和约束（例如 `#[account(mut)]`）被 Anchor 用于自动处理与账户验证相关的常见安全检查。
 
   ```rust
   #[derive(Accounts)]
@@ -198,8 +173,7 @@ For now, we'll only cover the high-level overview of the program code:
   }
   ```
 
-- The `#[account]` attribute is used to annotate a struct that represents the
-  data structure of an account created and owned by the program.
+- `#[account]` 属性用于注释一个代表由程序创建和拥有的账户数据结构的结构体。
 
   ```rust
   #[account]
@@ -213,78 +187,70 @@ For now, we'll only cover the high-level overview of the program code:
 
 </Step>
 <Step>
-### Build and Deploy Program
+### 构建和部署程序
 
-To build the program, simply run `build` in the terminal.
+要构建程序，只需在终端中运行 `build`。
 
 ```shell filename="Terminal"
 build
 ```
 
-Notice that the address in `declare_id!()` has been updated. This is your
-program's on-chain address.
+注意 `declare_id!()` 中的地址已被更新。这是你程序的链上地址。
 
 <Accordions>
-<Accordion title="Output">
+<Accordion title="输出">
 
 ```shell filename="Terminal"
 $ build
-Building...
-Build successful. Completed in 1.46s.
+构建中...
+构建成功。完成时间为 1.46s。
 ```
 
 </Accordion>
 </Accordions>
 
-Once the program is built, run `deploy` in the terminal to deploy the program to
-the network (devnet by default). To deploy a program, SOL must be allocated to
-the on-chain account that stores the program.
+程序构建完成后，在终端中运行 `deploy` 将程序部署到网络（默认为 devnet）。为了部署程序，必须为存储程序的链上账户分配 SOL。
 
-Before deployment, ensure you have enough SOL. You can get devnet SOL by either
-running `solana airdrop 5` in the Playground terminal or using the
-[Web Faucet](https://faucet.solana.com/).
+在部署之前，请确保你有足够的 SOL。你可以通过在 Playground 终端中运行 `solana airdrop 5` 或使用 [Web Faucet](https://faucet.solana.com/) 来获取 devnet SOL。
 
 ```shell filename="Terminal"
 deploy
 ```
 
 <Accordions>
-<Accordion title="Output">
+<Accordion title="输出">
 
 ```shell filename="Terminal"
 $ deploy
-Deploying... This could take a while depending on the program size and network conditions.
-Warning: 1 transaction not confirmed, retrying...
-Deployment successful. Completed in 19s.
+正在部署... 这可能会根据程序的大小和网络条件花费一些时间。
+警告：1 笔交易未确认，正在重试...
+部署成功。完成时间为 19s。
 ```
 
 </Accordion>
 </Accordions>
 
-Alternatively, you can also use the `Build` and `Deploy` buttons on the
-left-side panel.
+另外，你也可以使用左侧面板上的 `Build` 和 `Deploy` 按钮。
 
-![Build and Deploy](/docs/quickstart/pg-build-deploy.png)
+![构建和部署](/docs/quickstart/pg-build-deploy.png)
 
-Once the program is deployed, you can now invoke its instructions.
+程序部署后，你现在可以调用其指令。
 
 </Step>
 <Step>
-### Test Program
+### 测试程序
 
-Included with the starter code is a test file found in `tests/anchor.test.ts`.
-This file demonstrates how to invoke the `initialize` instruction on the starter
-program from the client.
+初始代码中包含一个测试文件，位于 `tests/anchor.test.ts` 中。该文件演示了如何从客户端调用初始程序上的 `initialize` 指令。
 
 ```ts filename="anchor.test.ts"
-// No imports needed: web3, anchor, pg and more are globally available
+// 无需导入：web3、anchor、pg 等在全局中可用
 
-describe("Test", () => {
+describe("测试", () => {
   it("initialize", async () => {
-    // Generate keypair for the new account
+    // 为新账户生成密钥对
     const newAccountKp = new web3.Keypair();
 
-    // Send transaction
+    // 发送交易
     const data = new BN(42);
     const txHash = await pg.program.methods
       .initialize(data)
@@ -295,168 +261,155 @@ describe("Test", () => {
       })
       .signers([newAccountKp])
       .rpc();
-    console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
+    console.log(`使用 'solana confirm -v ${txHash}' 查看日志`);
 
-    // Confirm transaction
+    // 确认交易
     await pg.connection.confirmTransaction(txHash);
 
-    // Fetch the created account
+    // 获取创建的账户
     const newAccount = await pg.program.account.newAccount.fetch(
       newAccountKp.publicKey,
     );
 
-    console.log("On-chain data is:", newAccount.data.toString());
+    console.log("链上数据为:", newAccount.data.toString());
 
-    // Check whether the data on-chain is equal to local 'data'
+    // 检查链上的数据是否等于本地的 'data'
     assert(data.eq(newAccount.data));
   });
 });
 ```
 
-To run the test file once the program is deployed, run `test` in the terminal.
+要在程序部署后运行测试文件，请在终端中运行 `test`。
 
 ```shell filename="Terminal"
 test
 ```
 
-You should see an output indicating that the test passed successfully.
+你应该会看到一个输出，指示测试成功通过。
 
 <Accordions>
-<Accordion title="Output">
+<Accordion title="输出">
 
 ```shell filename="Terminal"
 $ test
-Running tests...
+运行测试...
   hello_anchor.test.ts:
   hello_anchor
-    Use 'solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc' to see the logs
-    On-chain data is: 42
+    使用 'solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc' 查看日志
+    链上数据为: 42
     ✔ initialize (961ms)
-  1 passing (963ms)
+  1 通过 (963ms)
 ```
 
 </Accordion>
 </Accordions>
 
-You can also use the `Test` button on the left-side panel.
+你也可以使用左侧面板上的 `Test` 按钮。
 
-![Run Test](/docs/quickstart/pg-test.png)
+![运行测试](/docs/quickstart/pg-test.png)
 
-You can then view the transaction logs by running the `solana confirm -v`
-command and specifying the transaction hash (signature) from the test output:
+然后你可以通过运行 `solana confirm -v` 命令并指定测试输出中的事务哈希（签名）来查看交易日志：
 
 ```shell filename="Terminal"
 solana confirm -v [TxHash]
 ```
 
-For example:
+例如：
 
 ```shell filename="Terminal"
 solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
 ```
 
 <Accordions>
-<Accordion title="Output">
+<Accordion title="输出">
 
 ```shell filename="Terminal" {29-35}
 $ solana confirm -v 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
 RPC URL: https://api.devnet.solana.com
-Default Signer: Playground Wallet
-Commitment: confirmed
+默认签名者: Playground Wallet
+认证: 确认
 
-Transaction executed in slot 308150984:
-  Block Time: 2024-06-25T12:52:05-05:00
-  Version: legacy
-  Recent Blockhash: 7AnZvY37nMhCybTyVXJ1umcfHSZGbngnm4GZx6jNRTNH
-  Signature 0: 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
-  Signature 1: 3TrRbqeMYFCkjsxdPExxBkLAi9SB2pNUyg87ryBaTHzzYtGjbsAz9udfT9AkrjSo1ZjByJgJHBAdRVVTZv6B87PQ
-  Account 0: srw- 3z9vL1zjN6qyAFHhHQdWYRTFAcy69pJydkZmSFBKHg1R (fee payer)
-  Account 1: srw- c7yy8zdP8oeZ2ewbSb8WWY2yWjDpg3B43jk3478Nv7J
-  Account 2: -r-- 11111111111111111111111111111111
-  Account 3: -r-x 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
-  Instruction 0
-    Program:   2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r (3)
-    Account 0: c7yy8zdP8oeZ2ewbSb8WWY2yWjDpg3B43jk3478Nv7J (1)
-    Account 1: 3z9vL1zjN6qyAFHhHQdWYRTFAcy69pJydkZmSFBKHg1R (0)
-    Account 2: 11111111111111111111111111111111 (2)
-    Data: [175, 175, 109, 31, 13, 152, 155, 237, 42, 0, 0, 0, 0, 0, 0, 0]
-  Status: Ok
-    Fee: ◎0.00001
-    Account 0 balance: ◎5.47001376 -> ◎5.46900152
-    Account 1 balance: ◎0 -> ◎0.00100224
-    Account 2 balance: ◎0.000000001
-    Account 3 balance: ◎0.00139896
-  Log Messages:
-    Program 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r invoke [1]
-    Program log: Instruction: Initialize
-    Program 11111111111111111111111111111111 invoke [2]
-    Program 11111111111111111111111111111111 success
-    Program log: Changed data to: 42!
-    Program 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r consumed 5661 of 200000 compute units
-    Program 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r success
+交易在槽 308150984 中执行：
+  块时间: 2024-06-25T12:52:05-05:00
+  版本: 旧版
+  最近的区块哈希: 7AnZvY37nMhCybTyVXJ1umcfHSZGbngnm4GZx6jNRTNH
+  签名 0: 3TewJtiUz1EgtT88pLJHvKFzqrzDNuHVi8CfD2mWmHEBAaMfC5NAaHdmr19qQYfTiBace6XUmADvR4Qrhe8gH5uc
+  签名 1: 3TrRbqeMYFCkjsxdPExxBkLAi9SB2pNUyg87ryBaTHzzYtGjbsAz9udfT9AkrjSo1ZjByJgJHBAdRVVTZv6B87PQ
+  账户 0: srw- 3z9vL1zjN6qyAFHhHQdWYRTFAcy69pJydkZmSFBKHg1R (费用支付账号)
+  账户 1: srw- c7yy8zdP8oeZ2ewbSb8WWY2yWjDpg3B43jk3478Nv7J
+  账户 2: -r-- 11111111111111111111111111111111
+  账户 3: -r-x 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
+  指令 0
+    程序:   2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r (3)
+    账户 0: c7yy8zdP8oeZ2ewbSb8WWY2yWjDpg3B43jk3478Nv7J (1)
+    账户 1: 3z9vL1zjN6qyAFHhHQdWYRTFAcy69pJydkZmSFBKHg1R (0)
+    账户 2: 11111111111111111111111111111111 (2)
+    数据: [175, 175, 109, 31, 13, 152, 155, 237, 42, 0, 0, 0, 0, 0, 0, 0]
+  状态: 好
+    费用: ◎0.00001
+    账户 0 余额: ◎5.47001376 -> ◎5.46900152
+    账户 1 余额: ◎0 -> ◎0.00100224
+    账户 2 余额: ◎0.000000001
+    账户 3 余额: ◎0.00139896
+  日志消息:
+    程序 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r 调用 [1]
+    程序日志: 指令: 初始化
+    程序 11111111111111111111111111111111 调用 [2]
+    程序 11111111111111111111111111111111 成功
+    程序日志: 改变数据为: 42!
+    程序 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r 消耗了 5661 的 200000 计算单位
+    程序 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r 成功
 
-Confirmed
+已确认
 ```
 
 </Accordion>
 </Accordions>
 
-Alternatively, you can view the transaction details on
-[SolanaFM](https://solana.fm/) or
-[Solana Explorer](https://explorer.solana.com/?cluster=devnet) by searching for
-the transaction signature (hash).
+另外，你也可以通过搜索事务签名（哈希）在 [SolanaFM](https://solana.fm/) 或 [Solana Explorer](https://explorer.solana.com/?cluster=devnet) 中查看交易详情。
 
 <Callout>
-  Reminder to update the cluster (network) connection on the Explorer you are
-  using to match Solana Playground. Solana Playground's default cluster is
-  devnet.
+  请记得在你使用的 Explorer 上更新集群（网络）连接，以匹配 Solana Playground。Solana Playground 的默认集群为 devnet。
 </Callout>
 
-### Close Program
+### 关闭程序
 
-Lastly, the SOL allocated to the on-chain program can be fully recovered by
-closing the program.
+最后，分配给链上程序的 SOL 可以通过关闭程序完全回收。
 
-You can close a program by running the following command and specifying the
-program address found in `declare_id!()`:
+你可以通过运行以下命令并指定在 `declare_id!()` 中找到的程序地址来关闭程序：
 
 ```shell filename="Terminal"
 solana program close [ProgramID]
 ```
 
-For example:
+例如：
 
 ```shell filename="Terminal"
 solana program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
 ```
 
 <Accordions>
-<Accordion title="Output">
+<Accordion title="输出">
 
 ```shell filename="Terminal"
 $ solana program close 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r
-Closed Program Id 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r, 2.79511512 SOL reclaimed
+关闭程序 ID 2VvQ11q8xrn5tkPNyeraRsPaATdiPx8weLAD8aD4dn2r，回收 2.79511512 SOL
 ```
 
 </Accordion>
 </Accordions>
 
 <Accordions>
-<Accordion title="Explanation">
+<Accordion title="解释">
 
-Only the upgrade authority of the program can close it. The upgrade authority is
-set when the program is deployed, and it's the only account with permission to
-modify or close the program. If the upgrade authority is revoked, then the
-program becomes immutable and can never be closed or upgraded.
+只有程序的升级权限可以关闭它。在部署程序时设置了升级权限，只有它是唯一可以修改或关闭程序的账户。如果撤销升级权限，则程序变得不可变且永远不能关闭或升级。
 
-When deploying programs on Solana Playground, your Playground wallet is the
-upgrade authority for all your programs.
+在 Solana Playground 上部署程序时，你的 Playground 钱包是所有程序的升级权限。
 
 </Accordion>
 </Accordions>
 
-Congratulations! You've just built and deployed your first Solana program using
-the Anchor framework!
+恭喜你！你刚刚使用 Anchor 框架构建和部署了你的第一个 Solana 程序！
 
 </Step>
 </Steps>

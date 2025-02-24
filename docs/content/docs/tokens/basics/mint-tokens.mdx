@@ -1,57 +1,36 @@
 ---
-title: Mint Tokens
+title: 铸造代币
 description:
-  Learn how to mint tokens in Solana programs using Anchor. Covers creating new
-  tokens via cross program invocations (CPI) to the Token Program with code
-  examples.
+  学习如何使用 Anchor 在 Solana 程序中铸造代币。涵盖通过跨程序调用（CPI）向 Token Program 创建新代币的代码示例。
 ---
 
-## How to Mint Tokens
+## 如何铸造代币
 
-Minting tokens refers to the process of creating new units of a token by
-invoking the
-[`mint_to`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1087-L1114)
-instruction on a token program. Only the address specified as the mint authority
-on the mint account can mint new tokens. The instruction also requires the
-existence of a token account for the mint as the destination of the minted
-tokens.
+铸造代币是指通过调用 Token Program 上的 [`mint_to`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1087-L1114) 指令创建新代币单位的过程。只有被指定为铸币账户上的铸币权限的地址才能铸造新代币。该指令还要求在代币接收地址上存在一个目标代币账户。
 
 <Callout type="info">
-  The [Token
-  Program](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L523-L585)
-  and [Token Extension
-  Program](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L962-L1048)
-  share similar implementations to achieve the same functionality.
+  [Token Program](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L523-L585) 和 [Token Extension Program](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L962-L1048) 通过类似的实现来达到相同的功能。
 </Callout>
 
-## Examples
+## 示例
 
-To mint tokens through an Anchor program, you need to make a cross program
-invocation (CPI) to the `mint_to` instruction on either the Token Program or
-Token Extension Program.
+要通过 Anchor 程序铸造代币，你需要向 Token Program 或 Token Extension Program 的 `mint_to` 指令发起跨程序调用（CPI）。
 
-This means you are invoking the `mint_to` instruction on the Token Program or
-Token Extension Program from an instruction in your program. Your program acts
-as an intermediary, passing along the required accounts, instruction data, and
-signatures to the token program.
+这意味着你要从程序中的指令调用 Token Program 或 Token Extension Program 上的 `mint_to` 指令。你的程序作为中介，向代币程序传递所需的账户、指令数据和签名。
 
-### Mint Tokens via CPI
+### 通过 CPI 铸造代币
 
-Use the `token_interface::mint_to` function make a CPI to either the Token
-Program or Token Extension Program. This function requires:
+使用 `token_interface::mint_to` 函数向 Token Program 或 Token Extension Program 发起 CPI。该函数需要：
 
-1. The `MintTo` struct which specifies the required accounts:
+1. `MintTo` 结构体，指定所需的账户：
 
-   - `mint` - The mint account to create new units of tokens for
-   - `to` - The destination token account to receive the minted tokens
-   - `authority` - The mint authority with permission to mint tokens
+   - `mint` - 用于创建新代币单位的铸币账户
+   - `to` - 用于接收新铸造代币的目标代币账户
+   - `authority` - 拥有铸造代币权限的铸币授权
 
-2. The `amount` of tokens to mint, in base units of the token adjusted by
-   decimals. (e.g. if the mint has 2 decimals, amount of 100 = 1 token)
+2. 铸造代币的 `amount`，以代币的基本单位（根据小数位数调整）表示。（例如：如果铸币有2位小数，amount 为100 = 1个代币）
 
-The mint authority passed to the `mint_to` instruction must match the
-`mint_authority` stored on the mint account. Additionally, the mint authority
-must be a signer on the transaction. For example:
+传递给 `mint_to` 指令的铸币授权必须与铸币账户上存储的 `mint_authority` 匹配。此外，铸币授权必须是交易中的签名者。例如：
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -90,58 +69,54 @@ pub struct MintTokens<'info> {
 }
 ```
 
-At minimum, the following accounts are required:
+至少需要以下账户：
 
 ```rust title="snippet"
 #[derive(Accounts)]
 pub struct MintTokens<'info> {
-    // The mint authority
+    // 铸币授权
     #[account(mut)]
     pub signer: Signer<'info>,
-    // The mint account
+    // 铸币账户
     #[account(mut)]
     pub mint: InterfaceAccount<'info, Mint>,
-    // The destination token account
+    // 目标代币账户
     #[account(mut)]
     pub token_account: InterfaceAccount<'info, TokenAccount>,
-    // The token program
+    // 代币程序
     pub token_program: Interface<'info, TokenInterface>,
 }
 ```
 
-Within the instruction logic, use the:
+在指令逻辑中，使用：
 
-- `MintTo` struct to specify the required accounts
-- `token_interface::mint_to` function to make the CPI
+- `MintTo` 结构体指定所需的账户
+- `token_interface::mint_to` 函数发起 CPI
 
 ```rust title="snippet"
 pub fn mint_tokens(ctx: Context<MintTokens>, amount: u64) -> Result<()> {
-    // Create the MintTo struct with the accounts required for the CPI
+    // 创建 MintTo 结构体，包含 CPI 所需的账户
     let cpi_accounts = MintTo {
         mint: ctx.accounts.mint.to_account_info(),
         to: ctx.accounts.token_account.to_account_info(),
         authority: ctx.accounts.signer.to_account_info(),
     };
 
-    // The program being invoked in the CPI
+    // 在 CPI 中调用的程序
     let cpi_program = ctx.accounts.token_program.to_account_info();
 
-    // Combine the accounts and program into a "CpiContext"
+    // 将账户和程序组合成 "CpiContext"
     let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
 
-    // Make CPI to mint_to instruction on the token program
+    // 调用 Token Program 上的 mint_to 指令
     token_interface::mint_to(cpi_context, amount)?;
     Ok(())
 }
 ```
 
-### Mint Tokens with PDA mint authority via CPI
+### 通过 CPI 使用 PDA 铸币授权铸造代币
 
-You can create a mint account with a Program Derived Address (PDA) as the mint
-authority. This allows your program to programmatically mint tokens by "signing"
-with the PDA's seeds in the Cross Program Invocation (CPI). This pattern is
-useful when you want the program itself, rather than an external wallet, to
-control token minting.
+你可以创建一个以 Program Derived Address (PDA) 作为铸币授权的铸币账户。这允许你的程序通过跨程序调用（CPI）中使用 PDA 的种子“签名”来编程化地铸造代币。当你希望程序本身（而非外部钱包）控制代币铸造时，这种模式非常有用。
 
 <Tabs items={["Program", "Client"]}>
 <Tab value="Program">
@@ -301,9 +276,7 @@ describe("token-example", () => {
 </Tab>
 </Tabs>
 
-In this example, mint authority is set to a Program Derived Address (PDA). The
-PDA is derived using the seed `b"mint"`. This means the program itself controls
-minting through this PDA.
+在这个示例中，铸币授权被设置为一个 Program Derived Address (PDA)。PDA 使用种子 `b"mint"` 派生。这意味着程序本身通过这个 PDA 控制铸造。
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -328,30 +301,7 @@ pub struct CreateMint<'info> {
 }
 ```
 
-To mint tokens, the program must "sign" with the PDA by including the seeds and
-bump in the CPI context. This is done by passing the seeds and bump to the
-`with_signer` method when creating the CPI context.
+要铸造代币，程序必须通过包含种子和 bump 的 CPI 上下文“签名”。这通过在创建 CPI 上下文时将种子和 bump 传递给 `with_signer` 方法来实现。
 
 ```rust title="snippet"
-pub fn mint_tokens(ctx: Context<MintTokens>, amount: u64) -> Result<()> {
-    // [!code word:signer_seeds]
-    // [!code highlight]
-    let signer_seeds: &[&[&[u8]]] = &[&[b"mint", &[ctx.bumps.mint]]];
-
-    let cpi_accounts = MintTo {
-        mint: ctx.accounts.mint.to_account_info(),
-        to: ctx.accounts.token_account.to_account_info(),
-        authority: ctx.accounts.mint.to_account_info(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    // [!code highlight:2]
-    let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
-    token_interface::mint_to(cpi_context, amount)?;
-    Ok(())
-}
-```
-
-<Callout type="info">
-  Note in this example the same PDA is used as both the address of the mint
-  account and the mint authority.
-</Callout>
+pub fn mint_tokens(ctx: Context<MintTokens>, amount: u64)

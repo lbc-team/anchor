@@ -1,63 +1,40 @@
 ---
-title: Contribution Guide
-description: Anchor - Contribution Guide
+title: 贡献指南
+description: Anchor - 贡献指南
 ---
 
-Thank you for your interest in contributing to Anchor! All contributions are
-welcome no matter how big or small. This includes (but is not limited to) filing
-issues, adding documentation, fixing bugs, creating examples, and implementing
-features.
+感谢您对 Anchor 做出贡献的兴趣！无论大小，所有贡献都是受欢迎的。这包括（但不限于）提交问题、添加文档、修复 bug、创建示例和实现功能。
 
 ---
 
-## Finding issues to work on
+## 寻找可处理的问题
 
-If you're looking to get started, check out
-[good first issues](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-or issues where
-[help is wanted](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
-For simple documentation changes or typos, feel free to just open a pull
-request.
+如果您想开始贡献，请查看 [good first issues](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) 或需要 [help is wanted](https://github.com/coral-xyz/anchor/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)。对于简单的文档更改或拼写错误，请随时直接打开一个 pull request。
 
-If you're considering larger changes or self motivated features, please file an
-issue and engage with the maintainers in
-[Discord](https://discord.gg/NHHGSXAnXk).
+如果您考虑较大的更改或自发的功能，请提交一个问题，并在 [Discord](https://discord.gg/NHHGSXAnXk) 中与维护者交流。
 
-## Choosing an issue
+## 选择一个问题
 
-If you'd like to contribute, please claim an issue by commenting, forking, and
-opening a pull request, even if empty. This allows the maintainers to track who
-is working on what issue as to not overlap work.
+如果您想贡献，请通过评论、fork 并打开一个 pull request（即使是空的）来认领一个问题。这使维护者能够跟踪谁在处理什么问题，以避免工作重叠。
 
-## Issue Guidelines
+## 问题指南
 
-Please follow these guidelines:
+请遵循以下指南：
 
-Before coding:
+编码前：
 
-- choose a branch name that describes the issue you're working on
-- enable
-  [commit signing](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+- 选择一个描述您正在处理的问题的分支名称
+- 启用 [commit signing](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
 
-While coding:
+编码时：
 
-- Submit a draft PR asap
-- Only change code directly relevant to your PR. Sometimes you might find some
-  code that could really need some refactoring. However, if it's not relevant to
-  your PR, do not touch it. File an issue instead. This allows the reviewer to
-  focus on a single problem at a time.
-- If you write comments, do not exceed 80 chars per line. This allows
-  contributors who work with multiple open windows to still read the comments
-  without horizontally scrolling.
-- Write adversarial tests. For example, if you're adding a new account type, do
-  not only write tests where the instruction succeeds. Also write tests that
-  test whether the instruction fails, if a check inside the new type is
-  violated.
+- 尽快提交一个 draft PR
+- 只更改与您的 PR 直接相关的代码。有时您可能会发现一些代码确实需要重构。然而，如果它与您的 PR 无关，请不要动它。而是提交一个问题。这使审阅者能够一次专注于一个问题。
+- 如果您写注释，每行不要超过 80 个字符。这样可以让使用多个打开窗口的贡献者仍然可以阅读注释，而不需要水平滚动。
+- 编写对抗性测试。例如，如果您添加了一个新的账户类型，不仅要编写指令成功通过的测试，还要编写测试来测试如果新类型中的检查被违反，指令是否会失败。
 
-After coding:
+编码后：
 
-- If you've moved code around, build the docs with `cargo doc --open` and adjust
-  broken links
-- Adjust the cli templates if necessary
-- If you made a change to anchor's periphery (avm or cli), make a PR to the
-  `anchor-book` repo if necessary
+- 如果您移动了代码，请使用 `cargo doc --open` 构建文档并调整破损的链接
+- 如果需要，请调整 CLI 模板
+- 如果您对 Anchor 的外围（avm 或 cli）进行了更改，请在必要时向 `anchor-book` 仓库提交 PR

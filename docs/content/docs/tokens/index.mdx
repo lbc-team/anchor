@@ -1,34 +1,28 @@
 ---
-title: Token Integration with Anchor
+title: 使用 Anchor 进行代币集成
 description:
-  Learn how to interact with Solana's Token Programs from an Anchor Program.
+  学习如何从 Anchor 程序中与 Solana 的 Token Program 进行交互。
 ---
 
-## What are Token Programs?
+## 什么是 Token Program？
 
-On Solana, there are two main token programs (developed by
-[Anza](https://www.anza.xyz/), previously Solana Labs):
+在 Solana 上，有两个主要的 Token Program（由 [Anza](https://www.anza.xyz/) 开发，之前是 Solana Labs）：
 
-1. [Token Program (Original)](https://github.com/solana-program/token)
-   - Basic token functionality (mint, transfer, etc.)
-   - Immutable and widely used
+1. [Token Program (原始版)](https://github.com/solana-program/token)
+   - 提供基本的代币功能（铸币、转账等）
+   - 不可变且广泛使用
 2. [Token Extension Program (Token 2022)](https://github.com/solana-program/token-2022)
-   - Includes all original Token Program features
-   - Adds additional functionality through "extensions"
-   - Recommended for new tokens
+   - 包含所有原始 Token Program 的功能
+   - 通过“扩展”添加了额外的功能
+   - 推荐用于新代币
 
-## Invoking Token Programs in an Anchor Program
+## 在 Anchor 程序中调用 Token Program
 
-The [`anchor-spl`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl) crate
-simplifies the process of interacting with Solana's Token Programs in an Anchor
-program. This crate includes instructions and account types for both the
-original Token Program and the newer Token Extension Program (Token 2022).
+[`anchor-spl`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl) crate 简化了在 Anchor 程序中与 Solana 的 Token Program 交互的过程。此 crate 包含了原始 Token Program 和新版 Token Extension Program (Token 2022) 的指令和账户类型。
 
-Simply add the `anchor-spl` crate as a dependency to your program and add `"anchor-spl/idl-build"` to idl-build feature list in `Cargo.toml`. For a
-walkthrough of how to create an Anchor program locally, see the
-[quickstart page](/docs/quickstart/local).
+只需将 `anchor-spl` crate 添加为您的程序的依赖项，并在 `Cargo.toml` 中将 `"anchor-spl/idl-build"` 添加到 idl-build 特性列表中。有关如何在本地创建 Anchor 程序的步骤，请参阅 [快速入门页面](/docs/quickstart/local)。
 
-```shell title="Terminal"
+```shell title="终端"
 cargo add anchor-spl
 ```
 
@@ -44,17 +38,16 @@ anchor-lang = "0.30.1"
 anchor-spl = "0.30.1"
 ```
 
-### Core Modules
+### 核心模块
 
-The most commonly used modules provided by the `anchor-spl` crate include:
+`anchor-spl` crate 提供的最常用的模块包括：
 
-| Module                                                                                                    | Description                                                                              |
+| 模块                                                                                                    | 描述                                                                              |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`token`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token.rs)                              | Token Program (legacy) instructions and account types                                    |
-| [`token_2022`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token_2022.rs)                    | Token 2022 base instructions (instructions matching the Token Program functionality)     |
-| [`token_2022_extensions`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl/src/token_2022_extensions) | Token 2022 extensions instructions                                                       |
-| [`token_interface`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token_interface.rs)          | Implementation of account types that work with both Token Program and Token 2022 Program |
-| [`associated_token`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/associated_token.rs)        | Associated token account instruction                                                     |
+| [`token`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token.rs)                              | Token Program（旧版）的指令和账户类型                                    |
+| [`token_2022`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token_2022.rs)                    | Token 2022 基础指令（与 Token Program 功能匹配的指令）     |
+| [`token_2022_extensions`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl/src/token_2022_extensions) | Token 2022 扩展指令                                                       |
+| [`token_interface`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/token_interface.rs)          | 适用于 Token Program 和 Token 2022 Program 的账户类型实现 |
+| [`associated_token`](https://github.com/coral-xyz/anchor/blob/v0.30.1/spl/src/associated_token.rs)        | 关联代币账户指令                                                     |
 
-The following pages provide examples of how to use the `anchor-spl` crate in an
-Anchor program.
+以下页面提供了如何在 Anchor 程序中使用 `anchor-spl` crate 的示例。

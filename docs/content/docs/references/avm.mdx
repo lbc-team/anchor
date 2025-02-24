@@ -1,73 +1,67 @@
 ---
-title: Anchor Version Manager
-description: AVM reference documentation
+title: Anchor 版本管理器
+description: AVM 参考文档
 ---
 
-Anchor Version Manager (avm) is provided to manage multiple installations of the
-anchor-cli binary. This may be required to produce verifiable builds, or if
-you'd prefer to work with an alternate version.
+Anchor 版本管理器（avm）用于管理多个版本的 anchor-cli 二进制文件安装。这在需要生成可验证的构建时可能会用到，或者如果你更倾向于使用替代版本的情况下。
 
 ---
 
 ```shell
-Anchor version manager
+Anchor 版本管理器
 
-USAGE:
-    avm <SUBCOMMAND>
+用法：
+    avm <子命令>
 
-OPTIONS:
-    -h, --help       Print help information
-    -V, --version    Print version information
+选项：
+    -h, --help       打印帮助信息
+    -V, --version    打印版本信息
 
-SUBCOMMANDS:
-    help         Print this message or the help of the given subcommand(s)
-    install      Install a version of Anchor
-    list         List available versions of Anchor
-    uninstall    Uninstall a version of Anchor
-    use          Use a specific version of Anchor
+子命令：
+    help         打印此消息或给定子命令的帮助信息
+    install      安装一个版本的 Anchor
+    list         列出可用的 Anchor 版本
+    uninstall    卸载一个版本的 Anchor
+    use          使用指定版本的 Anchor
 ```
 
-## Install
+## 安装
 
 ```shell
-avm install <VERSION_OR_COMMIT>
+avm install <版本或提交>
 ```
 
-Install the specified version of anchor-cli. The version argument should follow
-semver versioning. It is also possible to use `latest` as the version argument
-to install the latest version.
+安装指定版本的 anchor-cli。版本参数应遵循 semver 版本控制。也可以使用 `latest` 作为版本参数来安装最新版本。
 
-It's also possible to install based on a specific commit hash:
+还可以根据特定的提交哈希进行安装：
 
 ```shell
-# <VERSION>-<COMMIT>
+# <版本>-<提交>
 avm install 0.30.1-cfe82aa682138f7c6c58bf7a78f48f7d63e9e466
 
-# Full commit hash
+# 完整的提交哈希
 avm install cfe82aa682138f7c6c58bf7a78f48f7d63e9e466
 
-# Short commit hash
+# 简短的提交哈希
 avm install cfe82aa
 ```
 
-## List
+## 列表
 
 ```shell
 avm list
 ```
 
-## Uninstall
+## 卸载
 
 ```shell
-avm uninstall <version>
+avm uninstall <版本>
 ```
 
-## Use
+## 使用
 
 ```shell
-avm use <version>
+avm use <版本>
 ```
 
-Use a specific version. This version will remain in use until you change it by
-calling the same command again. Similarly to `avm install`, you can also use
-`latest` for the version.
+使用指定版本。该版本将保持使用状态，直到你通过再次调用相同的命令来更改它。类似于 `avm install`，你也可以使用 `latest` 作为版本参数。

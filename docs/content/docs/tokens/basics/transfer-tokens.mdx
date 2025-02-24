@@ -1,51 +1,35 @@
 ---
-title: Transfer Tokens
+title: 转移代币
 description:
-  Learn how to transfer tokens between token accounts through cross program
-  invocations (CPIs) in Anchor.
+  了解如何通过 Anchor 中的跨程序调用 (CPIs) 在代币账户之间转移代币。
 ---
 
-## How to Transfer Tokens
+## 如何转移代币
 
-Transferring tokens involves moving tokens from one token account to another
-token account that share the same mint. This is done by invoking the
-[`transfer_checked`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1235-L1265)
-instruction on a token program. Only the address specified as the owner
-(authority) of the source token account can transfer tokens out of the account.
+转移代币涉及将代币从一个代币账户移动到另一个共享相同铸造的代币账户。这是通过在代币程序上调用 [`transfer_checked`](https://github.com/solana-program/token/blob/main/program/src/instruction.rs#L1235-L1265) 指令来完成的。只有指定为源代币账户所有者（权限）的地址可以从该账户中转移代币。
 
 <Callout type="info">
-  The [Token
-  Program](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L229-L343)
-  and [Token Extension
-  Program](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L290-L561)
-  share similar implementations to achieve the same functionality.
+  [代币程序](https://github.com/solana-program/token/blob/main/program/src/processor.rs#L229-L343) 和 [代币扩展程序](https://github.com/solana-program/token-2022/blob/main/program/src/processor.rs#L290-L561) 具有相似的实现以实现相同的功能。
 </Callout>
 
-## Examples
+## 示例
 
-To transfer tokens through an Anchor program, you need to make a cross program
-invocation (CPI) to the `transfer_checked` instruction on either the Token
-Program or Token Extension Program.
+要通过 Anchor 程序转移代币，你需要对代币程序或代币扩展程序上的 `transfer_checked` 指令进行跨程序调用 (CPI)。
 
-This means you are invoking the `transfer_checked` instruction on the Token
-Program or Token Extension Program from an instruction in your program. Your
-program acts as an intermediary, passing along the required accounts,
-instruction data, and signatures to the token program.
+这意味着你从你程序中的一个指令调用代币程序或代币扩展程序上的 `transfer_checked` 指令。你的程序作为中介，传递所需的账户、指令数据和签名到代币程序。
 
-### Transfer Tokens via CPI
+### 通过 CPI 转移代币
 
-Use the `token_interface::transfer_checked` function make a CPI to either the
-Token Program or Token Extension Program. This function requires:
+使用 `token_interface::transfer_checked` 函数对代币程序或代币扩展程序进行 CPI。此函数需要：
 
-1. The `TransferChecked` struct which specifies the required accounts:
+1. `TransferChecked` 结构体，该结构体指定所需的账户：
 
-   - `mint` - The mint account specifying the type of token to transfer
-   - `from` - The source token account to transfer tokens from
-   - `to` - The destination token account to receive the transferred tokens
-   - `authority` - The owner of the source token account
+   - `mint` - 指定要转移的代币类型的铸造账户
+   - `from` - 要转移代币的源代币账户
+   - `to` - 接收转移代币的目标代币账户
+   - `authority` - 源代币账户的所有者
 
-2. The `amount` of tokens to transfer, in base units of the token adjusted by
-   decimals. (e.g. if the mint has 2 decimals, amount of 100 = 1 token)
+2. 要转移的代币 `amount`，以代币的基本单位调整小数。(例如，如果铸造有 2 位小数，则 100 的数量 = 1 个代币)
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -68,7 +52,7 @@ pub mod token_example {
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-        // [!code highlight]
+        // [!代码高亮]
         token_interface::transfer_checked(cpi_context, amount, decimals)?;
         Ok(())
     }
@@ -88,39 +72,39 @@ pub struct TransferTokens<'info> {
 }
 ```
 
-At minimum, the following accounts are required:
+至少需要以下账户：
 
 ```rust title="snippet"
 #[derive(Accounts)]
 pub struct TransferTokens<'info> {
-    // The source token account owner
+    // 源代币账户的所有者
     #[account(mut)]
     pub signer: Signer<'info>,
-    // The mint account specifying the type of token
+    // 指定代币类型的铸造账户
     #[account(mut)]
     pub mint: InterfaceAccount<'info, Mint>,
-    // The source token account to transfer tokens from
+    // 要转移代币的源代币账户
     #[account(mut)]
     pub sender_token_account: InterfaceAccount<'info, TokenAccount>,
-    // The destination token account to receive tokens
+    // 接收代币的目标代币账户
     #[account(mut)]
     pub recipient_token_account: InterfaceAccount<'info, TokenAccount>,
-    // The token program that will process the transfer
+    // 将处理转移的代币程序
     pub token_program: Interface<'info, TokenInterface>,
 }
 ```
 
-Within the instruction logic, use the:
+在指令逻辑中，使用：
 
-- `TransferChecked` struct to specify the required accounts
-- `token_interface::transfer_checked` function to make the CPI
+- `TransferChecked` 结构体来指定所需的账户
+- `token_interface::transfer_checked` 函数进行 CPI
 
 ```rust title="snippet"
 pub fn transfer_tokens(ctx: Context<TransferTokens>, amount: u64) -> Result<()> {
-    // Get the number of decimals for this mint
+    // 获取此铸造的位数
     let decimals = ctx.accounts.mint.decimals;
 
-    // Create the TransferChecked struct with required accounts
+    // 创建带有所需账户的 TransferChecked 结构体
     let cpi_accounts = TransferChecked {
         mint: ctx.accounts.mint.to_account_info(),
         from: ctx.accounts.sender_token_account.to_account_info(),
@@ -128,25 +112,21 @@ pub fn transfer_tokens(ctx: Context<TransferTokens>, amount: u64) -> Result<()> 
         authority: ctx.accounts.signer.to_account_info(),
     };
 
-    // The program being invoked in the CPI
+    // 在 CPI 中被调用的程序
     let cpi_program = ctx.accounts.token_program.to_account_info();
 
-     // Combine the accounts and program into a "CpiContext"
+     // 将账户和程序组合成 "CpiContext"
     let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
 
-    // Make CPI to transfer_checked instruction on token program
+    // 对代币程序的 transfer_checked 指令进行 CPI
     token_interface::transfer_checked(cpi_context, amount, decimals)?;
     Ok(())
 }
 ```
 
-### Transfer Tokens with PDA token owner via CPI
+### 通过 CPI 使用 PDA 代币所有者转移代币
 
-You can create a token account with a PDA as the owner. This allows your program
-to transfer tokens from a program controlled token account by "signing" with the
-PDA's seeds in the Cross Program Invocation (CPI). This pattern is useful when
-you want the program itself to control token transfers based on conditions
-defined within the program.
+你可以创建一个以 PDA 作为所有者的代币账户。这允许你的程序通过在跨程序调用 (CPI) 中 "签署" PDA 的种子来从程序控制的代币账户转移代币。当你希望程序本身根据程序内部定义的条件控制代币转移时，这种模式非常有用。
 
 <Tabs items={["Program", "Client"]}>
 <Tab value="Program">
@@ -284,14 +264,14 @@ describe("token-example", () => {
     program.programId,
   );
 
-  it("Is initialized!", async () => {
+  it("已初始化！", async () => {
     const tx = await program.methods
       .createAndMintTokens(new anchor.BN(100))
       .accounts({
         tokenProgram: TOKEN_2022_PROGRAM_ID,
       })
       .rpc({ commitment: "confirmed" });
-    console.log("Your transaction signature", tx);
+    console.log("你的交易签名", tx);
 
     const mintAccount = await getMint(
       program.provider.connection,
@@ -300,10 +280,10 @@ describe("token-example", () => {
       TOKEN_2022_PROGRAM_ID,
     );
 
-    console.log("Mint Account", mintAccount);
+    console.log("铸造账户", mintAccount);
   });
 
-  it("Mint Tokens", async () => {
+  it("铸造代币", async () => {
     const tx = await program.methods
       .transferTokens()
       .accounts({
@@ -311,7 +291,7 @@ describe("token-example", () => {
       })
       .rpc({ commitment: "confirmed" });
 
-    console.log("Your transaction signature", tx);
+    console.log("你的交易签名", tx);
 
     const associatedTokenAccount = await getAssociatedTokenAddress(
       mint,
@@ -334,8 +314,8 @@ describe("token-example", () => {
       TOKEN_2022_PROGRAM_ID,
     );
 
-    console.log("Recipient Token Account", recipientTokenAccount);
-    console.log("Sender Token Account", senderTokenAccount);
+    console.log("接收者代币账户", recipientTokenAccount);
+    console.log("发送者代币账户", senderTokenAccount);
   });
 });
 ```
@@ -343,10 +323,7 @@ describe("token-example", () => {
 </Tab>
 </Tabs>
 
-In this example, the source token account owner is set to a Program Derived
-Address (PDA). The PDA is derived using the seed `b"token"`. This means the
-program itself controls token transfers out of the token account through this
-PDA.
+在这个例子中，源代币账户的所有者被设置为程序派生地址 (PDA)。PDA 是使用种子 `b"token"` 派生的。这意味着程序本身通过这个 PDA 控制代币账户的代币转移。
 
 ```rust title="snippet"
 #[derive(Accounts)]
@@ -367,8 +344,8 @@ pub struct CreateAndMintTokens<'info> {
         init,
         payer = signer,
         token::mint = mint,
-        // [!code word:token_account]
-        // [!code highlight]
+        // [!代码 单词:token_account]
+        // [!代码高亮]
         token::authority = token_account,
         seeds = [b"token"],
         bump
@@ -379,14 +356,12 @@ pub struct CreateAndMintTokens<'info> {
 }
 ```
 
-To transfer tokens, the program must "sign" with the PDA by including the seeds
-and bump in the CPI context. This is done by passing the seeds and bump to the
-`with_signer` method when creating the CPI context.
+要转移代币，程序必须通过包含种子和 bump 来 "签署" PDA。在创建 CPI 上下文时，通过将种子和 bump 传递给 `with_signer` 方法来做到这一点。
 
 ```rust title="snippet"
 pub fn transfer_tokens(ctx: Context<TransferTokens>) -> Result<()> {
-    // [!code word:signer_seeds]
-    // [!code highlight]
+    // [!代码 单词:signer_seeds]
+    // [!代码高亮]
     let signer_seeds: &[&[&[u8]]] = &[&[b"token", &[ctx.bumps.sender_token_account]]];
 
     let amount = ctx.accounts.sender_token_account.amount;
@@ -399,7 +374,7 @@ pub fn transfer_tokens(ctx: Context<TransferTokens>) -> Result<()> {
         authority: ctx.accounts.sender_token_account.to_account_info(),
     };
     let cpi_program = ctx.accounts.token_program.to_account_info();
-    // [!code highlight:2]
+    // [!代码高亮:2]
     let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
     token_interface::transfer_checked(cpi_context, amount, decimals)?;
     Ok(())
@@ -407,6 +382,5 @@ pub fn transfer_tokens(ctx: Context<TransferTokens>) -> Result<()> {
 ```
 
 <Callout type="info">
-  Note in this example the same PDA is used as both the address of the source
-  token account and the source token account owner.
+  请注意，在此示例中， 동일한 PDA 同时用作源代币账户的地址和源代币账户的所有者。
 </Callout>

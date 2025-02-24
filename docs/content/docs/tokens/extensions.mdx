@@ -1,168 +1,120 @@
 ---
-title: Extensions
+title: 扩展
 description:
-  Learn how to enable token extensions to add optional features to token mints
-  and accounts using the Token Extensions Program (Token 2022) in an Anchor
-  program.
+  了解如何在 Anchor 程序中使用 Token Extensions Program (Token 2022) 启用代币扩展，为代币铸币和账户添加可选功能。
 ---
 
-## What are Token Extensions?
+## 什么是 Token Extensions？
 
-The Token Extensions Program (Token 2022) provides additional features through
-additional instructions referred to as extensions. Extensions are optional
-functionality that can be added to a token mint or token account.You can find
-the implementation of these extension instructions in the Token Extensions
-Program
-[source code](https://github.com/solana-program/token-2022/tree/main/program/src/extension).
+Token Extensions Program (Token 2022) 通过称为扩展的附加指令提供了额外的功能。扩展是可以添加到代币铸币或代币账户的可选功能。你可以在 Token Extensions Program 的 [源代码](https://github.com/solana-program/token-2022/tree/main/program/src/extension) 中找到这些扩展指令的实现。
 
-Each extension adds specific state that must be initialized during mint or token
-account creation. When initializing either type of account, you can enable
-multiple extensions simultaneously to add different functionality. However,
-extensions cannot be added after an account is created - you must include all
-desired extensions during the initial account creation. This is an important
-consideration when designing your token, as you'll need to plan ahead for which
-features you want your token to support.
+每个扩展都会添加特定的状态，这些状态必须在铸币或代币账户创建时初始化。在初始化任一类型的账户时，你可以同时启用多个扩展以添加不同的功能。然而，扩展不能在账户创建后添加——你必须在初始账户创建时包含所有所需的扩展。这是设计代币时的一个重要考虑因素，因为你需要提前规划希望代币支持的功能。
 
 <Callout type="info">
-  Some extensions are incompatible with each other and cannot be enabled
-  simultaneously on the same token mint or token account. For example, you
-  cannot combine the NonTransferable extension with the TransferFeeConfig
-  extension, since they have conflicting behaviors.
+  某些扩展彼此不兼容，不能在同一个代币铸币或代币账户上同时启用。例如，你不能将 NonTransferable 扩展与 TransferFeeConfig 扩展结合使用，因为它们的操作行为是冲突的。
 </Callout>
 
-The Token Extensions Program defines an
-[`ExtensionType`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L1054-L1139)
-enum that specifies all available extensions that can be added to a token mint
-or token account. Each variant represents a different extension with unique
-functionality.
+Token Extensions Program 定义了一个 [`ExtensionType`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L1054-L1139) 枚举，指定了可以添加到代币铸币或代币账户的所有可用扩展。每个枚举变体代表一个具有独特功能的不同扩展。
 
-The `ExtensionType` enum is defined as follows:
+`ExtensionType` 枚举定义如下：
 
 ```rust title="Token Extensions"
-/// Extensions that can be applied to mints or accounts.  Mint extensions must
-/// only be applied to mint accounts, and account extensions must only be
-/// applied to token holding accounts.
+/// 可以应用于铸币或账户的扩展。铸币扩展只能应用于铸币账户，账户扩展只能应用于代币持有账户。
 #[repr(u16)]
 #[cfg_attr(feature = "serde-traits", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde-traits", serde(rename_all = "camelCase"))]
 #[derive(Clone, Copy, Debug, PartialEq, TryFromPrimitive, IntoPrimitive)]
 pub enum ExtensionType {
-    /// Used as padding if the account size would otherwise be 355, same as a
-    /// multisig
+    /// 如果账户大小恰好为 355 时用于填充，与多重签名相同
     Uninitialized,
-    /// Includes transfer fee rate info and accompanying authorities to withdraw
-    /// and set the fee
+    /// 包括转账费率信息和伴随的提款和设置费率的权限
     TransferFeeConfig,
-    /// Includes withheld transfer fees
+    /// 包括被扣留的转账费用
     TransferFeeAmount,
-    /// Includes an optional mint close authority
+    /// 包括一个可选的铸币关闭权限
     MintCloseAuthority,
-    /// Auditor configuration for confidential transfers
+    /// 加密转账的审计员配置
     ConfidentialTransferMint,
-    /// State for confidential transfers
+    /// 加密转账的状态
     ConfidentialTransferAccount,
-    /// Specifies the default Account::state for new Accounts
+    /// 指定新账户的默认 Account::state
     DefaultAccountState,
-    /// Indicates that the Account owner authority cannot be changed
+    /// 表示账户所有者权限无法更改
     ImmutableOwner,
-    /// Require inbound transfers to have memo
+    /// 要求入账转账必须附带备忘录
     MemoTransfer,
-    /// Indicates that the tokens from this mint can't be transferred
+    /// 表示该铸币的代币不可转账
     NonTransferable,
-    /// Tokens accrue interest over time,
+    /// 代币随时间累积利息，
     InterestBearingConfig,
-    /// Locks privileged token operations from happening via CPI
+    /// 通过 CPI 锁定特权代币操作
     CpiGuard,
-    /// Includes an optional permanent delegate
+    /// 包括一个可选的永久委托者
     PermanentDelegate,
-    /// Indicates that the tokens in this account belong to a non-transferable
-    /// mint
+    /// 表示该账户中的代币属于不可转账的铸币
     NonTransferableAccount,
-    /// Mint requires a CPI to a program implementing the "transfer hook"
-    /// interface
+    /// 铸币要求 CPI 调用一个实现 "transfer hook" 接口的程序
     TransferHook,
-    /// Indicates that the tokens in this account belong to a mint with a
-    /// transfer hook
+    /// 表示该账户中的代币属于具有转移钩子的铸币
     TransferHookAccount,
-    /// Includes encrypted withheld fees and the encryption public that they are
-    /// encrypted under
+    /// 包括加密的被扣留费用及其加密的公钥
     ConfidentialTransferFeeConfig,
-    /// Includes confidential withheld transfer fees
+    /// 包括加密的被扣留转账费用
     ConfidentialTransferFeeAmount,
-    /// Mint contains a pointer to another account (or the same account) that
-    /// holds metadata
+    /// 铸币包含指向另一个账户（或同一账户）的指针，该账户持有元数据
     MetadataPointer,
-    /// Mint contains token-metadata
+    /// 铸币包含代币元数据
     TokenMetadata,
-    /// Mint contains a pointer to another account (or the same account) that
-    /// holds group configurations
+    /// 铸币包含指向另一个账户（或同一账户）的指针，该账户持有组配置
     GroupPointer,
-    /// Mint contains token group configurations
+    /// 铸币包含代币组配置
     TokenGroup,
-    /// Mint contains a pointer to another account (or the same account) that
-    /// holds group member configurations
+    /// 铸币包含指向另一个账户（或同一账户）的指针，该账户持有组成员配置
     GroupMemberPointer,
-    /// Mint contains token group member configurations
+    /// 铸币包含代币组成员配置
     TokenGroupMember,
-    /// Mint allowing the minting and burning of confidential tokens
+    /// 允许铸造和销毁加密代币的铸币
     ConfidentialMintBurn,
-    /// Tokens whose UI amount is scaled by a given amount
+    /// UI 数量按给定比例缩放的代币
     ScaledUiAmount,
-    /// Tokens where minting / burning / transferring can be paused
+    /// 可以暂停铸造 / 销毁 / 转账的代币
     Pausable,
-    /// Indicates that the account belongs to a pausable mint
+    /// 表示该账户属于可暂停的铸币
     PausableAccount,
 
-    /// Test variable-length mint extension
+    /// 测试可变长度铸币扩展
     #[cfg(test)]
     VariableLenMintTest = u16::MAX - 2,
-    /// Padding extension used to make an account exactly Multisig::LEN, used
-    /// for testing
+    /// 用于使账户大小恰好为 Multisig::LEN 的填充扩展，用于测试
     #[cfg(test)]
     AccountPaddingTest,
-    /// Padding extension used to make a mint exactly Multisig::LEN, used for
-    /// testing
+    /// 用于使铸币大小恰好为 Multisig::LEN 的填充扩展，用于测试
     #[cfg(test)]
     MintPaddingTest,
 }
 ```
 
-Each extension adds specialized functionality by including additional state that
-must be initialized when creating a mint or token account. All extension
-specific state is stored in the in the
-[`tlv_data`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L541-L549)
-field, which follows the base account data type. The `tlv_data` (containing
-extension state) must be further deserialized according to the specific
-extension types enabled for that account.
+每个扩展都会通过包含必须在创建铸币或代币账户时初始化的附加状态来增加专门的功能。所有扩展特定的状态都存储在 [`tlv_data`](https://github.com/solana-program/token-2022/blob/main/program/src/extension/mod.rs#L541-L549) 字段中，该字段紧随基本账户数据类型之后。`tlv_data`（包含扩展状态）必须根据为该账户启用的特定扩展类型进一步反序列化。
 
 ```rust title="Token Extensions"
-/// Encapsulates immutable base state data (mint or account) with possible
-/// extensions, where the base state is Pod for zero-copy serde.
+/// 封装了包含可能扩展的不可变基本状态数据（铸币或账户），其中基本状态是 Pod 以进行零拷贝序列化。
 #[derive(Debug, PartialEq)]
 pub struct PodStateWithExtensions<'data, S: BaseState + Pod> {
-    /// Unpacked base data
+    /// 解包的基本数据
     pub base: &'data S,
-    /// Slice of data containing all TLV data, deserialized on demand
+    /// 包含所有 TLV 数据的片段，按需反序列化
     // [!code word:tlv_data]
     // [!code highlight]
     tlv_data: &'data [u8],
 }
 ```
 
-## Examples
+## 示例
 
-The `anchor-spl` crate provides a
-[`token_2022_extensions`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl/src/token_2022_extensions)
-module that contains helper functions and types for working with token extension
-instructions.
+`anchor-spl` crate 提供了一个 [`token_2022_extensions`](https://github.com/coral-xyz/anchor/tree/v0.30.1/spl/src/token_2022_extensions) 模块，其中包含用于处理代币扩展指令的辅助函数和类型。
 
-You can find examples for how to work with Token Extensions in an Anchor program
-in this
-[program examples repository](https://github.com/solana-developers/program-examples/tree/main/tokens/token-2022).
+你可以在 [程序示例仓库](https://github.com/solana-developers/program-examples/tree/main/tokens/token-2022) 中找到有关如何在 Anchor 程序中使用 Token Extensions 的示例。
 
 <Callout type="info">
-  Note that while the anchor-spl crate provides helper functions for working
-  with Token Extensions, not all extension instructions have been fully
-  implemented yet. You may need to manually implement CPI calls for some
-  extension instructions.
+  请注意，虽然 anchor-spl crate 提供了用于处理 Token Extensions 的辅助函数，但并非所有扩展指令都已完全实现。你可能需要为某些扩展指令手动实现 CPI 调用。
 </Callout>

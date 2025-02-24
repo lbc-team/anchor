@@ -1,22 +1,21 @@
 ---
-title: Account Constraints
-description: Anchor Account Constraints Examples
+title: 账户约束
+description: Anchor 账户约束示例
 ---
 
-Minimal reference examples for Anchor account
-[constraints](https://docs.rs/anchor-lang/latest/anchor_lang/derive.Accounts.html).
+Anchor 账户的极简参考示例
+[约束](https://docs.rs/anchor-lang/latest/anchor_lang/derive.Accounts.html).
 
-See the account constraints
-[source code](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/codegen/accounts/constraints.rs)
-for implementation details.
+查看账户约束的
+[源代码](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/codegen/accounts/constraints.rs)
+以获取实现细节。
 
-## Normal Constraints
+## 常规约束
 
 ### `#[account(signer)]`
 
-Description: Checks the given account signed the transaction. Consider using the
-Signer type if you would only have this constraint on the account.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/signer)
+描述：检查给定账户是否签署了交易。如果只需要对账户使用此约束，请考虑使用 Signer 类型。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/signer)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/signer)
 
@@ -27,9 +26,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(mut)]`
 
-Description: Checks the given account is mutable. Makes anchor persist any state
-changes.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mut)
+描述：检查给定账户是否可变。使 Anchor 持久化任何状态更改。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mut)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mut)
 
@@ -40,9 +38,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(init)]`
 
-Description: Creates the account via a CPI to the system program and initializes
-it (sets its account discriminator).  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init)
+描述：通过向系统程序进行 CPI 创建账户并初始化它（设置其账户判别器）。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init)
 
@@ -56,9 +53,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(init_if_needed)]`
 
-Description: Same as init but only runs if the account does not exist yet.
-Requires init-if-needed cargo feature.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init_if_needed)
+描述：与 init 相同，但仅在账户尚不存在时运行。需要 init-if-needed cargo 特性。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init_if_needed)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/init_if_needed)
 
@@ -77,9 +73,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(seeds, bump)]`
 
-Description: Checks that given account is a PDA derived from the currently
-executing program, the seeds, and if provided, the bump.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/seed-bump)
+描述：检查给定账户是否是从当前执行程序、种子和（如果提供）bump 派生的 PDA。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/seed-bump)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/seed-bump)
 
@@ -109,9 +104,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(has_one = target)]`
 
-Description: Checks the target field on the account matches the key of the
-target field in the Accounts struct.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/has_one)
+描述：检查账户上的目标字段是否与 Accounts 结构体中目标字段的键匹配。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/has_one)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/has_one)
 
@@ -127,8 +121,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(address = expr)]`
 
-Description: Checks the account key matches the pubkey.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/address)
+描述：检查账户密钥是否与公钥匹配。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/t极简参考示例[极简参考示例](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/address)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/address)
 
@@ -139,22 +133,22 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(owner = expr)]`
 
-Description: Checks the account owner matches expr.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/owner)
+描述：检查账户所有者是否匹配 expr。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/owner)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/owner)
 
 ```rust title="attribute"
 #[account(owner = <expr>)]
-#[account(owner = <expr> @ <custom_error>)]
+#[account(owner =极简参考示例极简参考示例极简参考示例<expr> @ <custom_error>)]
 ```
 
 ### `#[account(executable)]`
 
-Description: Checks the account is executable (i.e. the account is a program).  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/executable)
+描述：检查账户是否可执行（即账户是一个程序）。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/executable)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/executable)
+[Solpg](https://beta.solpg.io/https://github.com/s极简参考示例极简参考示例极简参考示例ana-developers/anchor-examples/tree/main/account-constraints/executable)
 
 ```rust title="attribute"
 #[account(executable)]
@@ -162,9 +156,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(zero)]`
 
-Description: Checks the account discriminator is zero. Use for accounts larger
-than 10 Kibibyte.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/zero)
+描述：检查账户判别器是否为零。用于大于 10 Kibibyte 的账户。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/zero)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/zero)
 
@@ -174,9 +167,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(close = target)]`
 
-Description: Closes the account by sending lamports to target and resetting
-data.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/close)
+描述：通过将 lamports 发送到目标并重置数据来关闭账户。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-极简参考示例极简参考示例极简参考示例constraints/close)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/close)
 
@@ -186,9 +178,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(constraint = expr)]`
 
-Description: Custom constraint that checks whether the given expression
-evaluates to true.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/constraint)
+描述：自定义约束，检查给定表达式是否评估为 true。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account极简参考示例极简参考示例极简参考示例-constraints/constraint)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/constraint)
 
@@ -201,9 +192,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(realloc)]`
 
-Description: Used to realloc program account space at the beginning of an
-instruction.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/realloc)
+描述：用于在指令开始时重新分配程序账户空间。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/realloc)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/realloc)
 
@@ -215,15 +205,14 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 )]
 ```
 
-## SPL Constraints
+## SPL 约束
 
 ### `#[account(token::*)]`
 
-Description: Create or validate token accounts with specified mint and
-authority.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token)
+描述：使用指定的 mint 和 authority 创建或验证 token 账户。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account极简参考示例极简参考示例-constraints/token)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token)
+[Solpg](https://beta极简参考示例极简参考示例极简参考示例.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token)
 
 ```rust title="attribute"
 #[account(
@@ -240,8 +229,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(mint::*)]`
 
-Description: Create or validate mint accounts with specified parameters.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mint)
+描述：使用指定参数创建或验证 mint 账户。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mint)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/mint)
 
@@ -260,8 +249,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(associated_token::*)]`
 
-Description: Create or validate associated token accounts.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/associated_token)
+描述：创建或验证关联的 token 账户。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/associated_token)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/associated_token)
 
@@ -280,8 +269,8 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 
 ### `#[account(*::token_program = expr)]`
 
-Description: The token_program can optionally be overridden.  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token_program)
+描述：可以可选地覆盖 token_program。  
+示例：[Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token_program)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/token_program)
 
@@ -289,19 +278,16 @@ Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/mai
 #[account(*::token_program = <target_account>)]
 ```
 
-## Instruction Attribute
+## 指令属性
 
 ### `#[instruction(...)]`
 
-Description: You can access the instruction's arguments with the
-`#[instruction(..)]` attribute. You must list them in the same order as in the
-instruction handler but you can omit all arguments after the last one you need.
-Skipping arguments will result in an error.
+描述：你可以使用 `#[instruction(..)]` 属性访问指令的参数。你极简参考示例极简参考示例极简参考示例必须按照与指令处理程序相同的顺序列出它们，但可以省略你需要的最后一个参数之后的所有参数。跳过参数将导致错误。
 
-Examples:
+示例：
 [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/instruction)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-constraints/instruction)
+[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account极简参考示例极简参考示例极简参考示例-constraints/instruction)
 
 ```rust title="snippet"
 // [!code word:input]
@@ -328,14 +314,14 @@ pub struct Initialize<'info> {
 }
 ```
 
-Valid Usage:
+有效用法：
 
 ```rust title="snippet"
 // [!code word:input_one]
 // [!code word:input_two]
 #[program]
 pub mod example {
-    use super::*;
+    use super极简参考示例极简参考示例极简参考示例::*;
 
     pub fn initialize(ctx: Context<Initialize>, input_one: String, input_two: String) -> Result<()> {
         // --snip--
@@ -369,7 +355,7 @@ pub struct Initialize<'info> {
 }
 ```
 
-Invalid Usage, will result in an error:
+无效用法，将导致错误：
 
 ```rust title="snippet"
 // [!code word:input_two]
@@ -377,7 +363,7 @@ Invalid Usage, will result in an error:
 pub mod example {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>, input_one: String, input_two: String) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>, input_one: String,输入input_two: String) -> Result<()> {
         // --snip--
     }
 }

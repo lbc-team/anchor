@@ -1,25 +1,21 @@
 ---
 title: Account Types
-description: Anchor Account Type Examples
+description: Anchor 账户类型示例
 ---
 
-Minimal reference examples for Anchor
-[account types](https://docs.rs/anchor-lang/latest/anchor_lang/accounts/index.html).
+Anchor 的账户类型的最小化参考示例。  
+查看账户类型的 [源码](https://github.com/coral-xyz/anchor/tree/v0.30.1/lang/src/accounts) 了解实现细节。
 
-See the account types
-[source code](https://github.com/coral-xyz/anchor/tree/v0.30.1/lang/src/accounts)
-for implementation details.
-
-## Account Types
+## 账户类型
 
 ### `Account<'info, T>`
 
-Description: Account container that checks ownership on deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Account)
+描述：在反序列化时检查所有权的账户容器  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Account)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Account)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word: Account]
@@ -35,16 +31,15 @@ pub struct CustomAccountType {
 
 ### `AccountInfo<'info>`
 
-Description: AccountInfo can be used as a type but Unchecked Account should be
-used instead  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountInfo)
+描述：AccountInfo 可以作为类型使用，但应改用 Unchecked Account  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountInfo)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountInfo)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
-    /// CHECK: AccountInfo is an unchecked account
+    /// CHECK: AccountInfo 是一个未检查的账户
     // [!code word:AccountInfo]
     // [!code highlight]
     pub unchecked_account: AccountInfo<'info>,
@@ -53,12 +48,12 @@ pub struct InstructionAccounts<'info> {
 
 ### `AccountLoader<'info, T>`
 
-Description: Type facilitating on demand zero copy deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountLoader)
+描述：用于按需零拷贝反序列化的类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountLoader)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/AccountLoader)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:AccountLoader]
@@ -74,12 +69,12 @@ pub struct ZeroCopyAccountType {
 
 ### `Box<Account<'info, T>>`
 
-Description: Box type to save stack space  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Box)
+描述：用于节省栈空间的 Box 类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Box)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Box)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:Box]
@@ -90,14 +85,13 @@ pub struct InstructionAccounts<'info> {
 
 ### `Interface<'info, T>`
 
-Description: Type validating that the account is one of a set of given
-Programs  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Interface)
+描述：验证账户属于给定程序集之一的类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Interface)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Interface)
 
-```rust title="snippet"
-// Token program or Token2022 program
+```rust title="代码片段"
+// Token 程序或 Token2022 程序
 use anchor_spl::token_interface::TokenInterface;
 
 #[derive(Accounts)]
@@ -110,14 +104,14 @@ pub struct InstructionAccounts<'info> {
 
 ### `InterfaceAccount<'info, T>`
 
-Description: Account container that checks ownership on deserialization  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/InterfaceAccount)
+描述：在反序列化时检查所有权的账户容器  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/InterfaceAccount)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/InterfaceAccount)
 
-```rust title="snippet"
-// Token program or Token2022 program Mint/TokenAccount
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+```rust title="代码片段"
+// Token 程序或 Token2022 程序的 Mint/TokenAccount
+use anchor極spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
@@ -131,12 +125,12 @@ pub struct InstructionAccounts<'info> {
 
 ### `Option<Account<'info, T>>`
 
-Description: Option type for optional accounts  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
+描述：用于可选账户的 Option 类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
 |
-[Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
+[Solpg](https極://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Option)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:Option]
@@ -147,12 +141,12 @@ pub struct InstructionAccounts<'info> {
 
 ### `Program<'info, T>`
 
-Description: Type validating that the account is the given Program  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Program)
+描述：验证账户是指定程序类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Program)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Program)
 
-```rust title="snippet"
+```rust title="代码片段"
 use anchor_spl::token::Token;
 
 #[derive(Accounts)]
@@ -162,16 +156,16 @@ pub struct InstructionAccounts<'info> {
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
 }
-```
+極```
 
 ### `Signer<'info>`
 
-Description: Type validating that the account signed the transaction  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Signer)
+描述：验证账户已签署交易的类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Signer)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Signer)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:Signer]
@@ -182,12 +176,12 @@ pub struct InstructionAccounts<'info> {
 
 ### `SystemAccount<'info>`
 
-Description: Type validating that the account is owned by the system program  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/SystemAccount)
+描述：验证账户由系统程序拥有的类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/SystemAccount)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/SystemAccount)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:SystemAccount]
@@ -198,12 +192,12 @@ pub struct InstructionAccounts<'info> {
 
 ### `Sysvar<'info, T>`
 
-Description: Type validating that the account is a sysvar and deserializing it  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Sysvar)
+描述：验证账户是 sysvar 并对其进行反序列化的类型  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/Sysvar)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/Sysvar)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
     // [!code word:Sysvar]
@@ -215,16 +209,15 @@ pub struct InstructionAccounts<'info> {
 
 ### `UncheckedAccount<'info>`
 
-Description: Explicit wrapper for AccountInfo types to emphasize that no checks
-are performed  
-Examples: [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/UncheckedAccount)
+描述：AccountInfo 类型的显式包装器，强调不执行检查  
+示例： [Github](https://github.com/solana-developers/anchor-examples/tree/main/account-types/UncheckedAccount)
 |
 [Solpg](https://beta.solpg.io/https://github.com/solana-developers/anchor-examples/tree/main/account-types/UncheckedAccount)
 
-```rust title="snippet"
+```rust title="代码片段"
 #[derive(Accounts)]
 pub struct InstructionAccounts<'info> {
-    // CHECK: No checks are performed
+    // CHECK: 没有执行任何检查
     // [!code word:UncheckedAccount]
     // [!code highlight]
     pub account: UncheckedAccount<'info>,

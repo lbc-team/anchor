@@ -1,58 +1,52 @@
 ---
-title: Emit Events
-description:
-  Learn how to emit events in Anchor programs using emit! and emit_cpi! macros.
+title: 发出事件
+description: 学习如何在 Anchor 程序中使用 emit! 和 emit_cpi! 宏发出事件。
 ---
 
-## Examples
+## 示例
 
-Anchor provides two macros for emitting events in your programs:
+Anchor 提供了两个宏来在你的程序中发出事件：
 
-1. `emit!()` - Emits events directly to program logs. This is the simpler,
-   though program logs may be truncated by data providers in some cases
-2. `emit_cpi!()` - Emits events through a Cross Program Invocation (CPI) by
-   including the event data in the instruction data.
+1. `emit!()` - 直接向程序日志发出事件。这种方法更简单，
+   但数据提供商有时可能会截断程序日志
+2. `emit_cpi!()` - 通过跨程序调用 (CPI) 发出事件，
+   将事件数据包含在指令数据中。
 
 <Callout type="info">
 
-The `emit_cpi()` approach was introduced an alternative to program logs, which
-can sometimes be truncated by data providers. While CPI instruction data is less
-likely to be truncated, this approach does incur additional compute costs from
-the Cross Program Invocation.
+`emit_cpi()` 方法是作为程序日志的替代方案引入的，因为程序日志有时会被数据提供商截断。
+虽然 CPI 指令数据不太可能被截断，但这种方法确实会因为跨程序调用而产生额外的计算成本。
 
 </Callout>
 
 <Callout type="info">
 
-For more robust solutions for events, consider geyser gRPC services by
-[Triton](https://docs.triton.one/project-yellowstone/dragons-mouth-grpc-subscriptions)
-or [Helius](https://docs.helius.dev/data-streaming/geyser-yellowstone).
+对于更健壮的事件解决方案，请考虑使用 [Triton](https://docs.triton.one/project-yellowstone/dragons-mouth-grpc-subscriptions) 或 [Helius](https://docs.helius.dev/data-streaming/geyser-yellowstone) 提供的 geyser gRPC 服务。
 
 </Callout>
 
 ### `emit`
 
-The
 [`emit!()`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/event/src/lib.rs#L94-L102)
-macro provides a way to emit events through program logs. When called, it:
+宏提供了一种通过程序日志发出事件的方式。当调用时，它会：
 
-1. Uses the
+1. 使用
    [`sol_log_data()`](https://github.com/anza-xyz/agave/blob/v1.18.26/sdk/program/src/log.rs#L115-L124)
-   syscall to write the data to program logs
-2. Encodes the event data as a
-   [base64 string](https://github.com/anza-xyz/agave/blob/v1.18.26/program-runtime/src/stable_log.rs#L46-L61)
-   prefixed with `Program Data:`
+   系统调用将数据写入程序日志
+2. 将事件数据编码为
+   [base64 字符串](https://github.com/anza-xyz/agave/blob/v1.18.26/program-runtime/src/stable_log.rs#L46-L61)
+   并加上 `Program Data:` 前缀
 
-To receive emitted events in your client application, use the
+要在客户端应用程序中接收发出的事件，请使用
 [`addEventListener()`](https://github.com/coral-xyz/anchor/blob/v0.30.1/ts/packages/anchor/src/program/event.ts#L74-L123)
-method. This method automatically
-[parses and decodes](https://github.com/coral-xyz/anchor/blob/v0.30.1/ts/packages/anchor/src/program/event.ts#L230-L251)
-event data from the program logs.
+方法。该方法会自动
+[解析和解码](https://github.com/coral-xyz/anchor/blob/v0.30.1/ts/packages/anchor/src/program/event.ts#L230-L251)
+程序日志中的事件数据。
 
-Example usage:
+使用示例：
 
-<Tabs items={["Program", "Client"]}>
-<Tab value="Program">
+<Tabs items={["程序", "客户端"]}>
+<Tab value="程序">
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -82,7 +76,7 @@ pub struct CustomEvent {
 ```
 
 </Tab>
-<Tab value="Client">
+<Tab value="客户端">
 
 ```ts title="test.ts"
 import * as anchor from "@coral-xyz/anchor";
@@ -90,26 +84,26 @@ import { Program } from "@coral-xyz/anchor";
 import { Event } from "../target/types/event";
 
 describe("event", () => {
-  // Configure the client to use the local cluster.
+  // 配置客户端使用本地集群。
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.Event as Program<Event>;
 
-  it("Emits custom event", async () => {
-    // Set up listener before sending transaction
+  it("发出自定义事件", async () => {
+    // 在发送交易之前设置监听器
     // [!code word:addEventListener]
     // [!code highlight:4]
     const listenerId = program.addEventListener("customEvent", event => {
-      // Do something with the event data
-      console.log("Event Data:", event);
+      // 使用事件数据执行某些操作
+      console.log("事件数据:", event);
     });
 
-    // Message to be emitted in the event
+    // 事件中发出的消息
     const message = "Hello, Solana!";
-    // Send transaction
+    // 发送交易
     await program.methods.emitEvent(message).rpc();
 
-    // Remove listener
+    // 移除监听器
     await program.removeEventListener(listenerId);
   });
 });
@@ -118,11 +112,10 @@ describe("event", () => {
 </Tab>
 </Tabs>
 
-The following is the output of the program logs. The event data is base64
-encoded as `Zb1eU3aiYdwOAAAASGVsbG8sIFNvbGFuYSE=`.
+以下是程序日志的输出。事件数据被 base64 编码为 `Zb1eU3aiYdwOAAAASGVsbG8sIFNvbGFuYSE=`。
 
-```shell title="Program Logs"
-Log Messages:
+```shell title="程序日志"
+日志消息：
   Program 8T7MsCZyzxboviPJg5Rc7d8iqEcDReYR2pkQKrmbg7dy invoke [1]
   Program log: Instruction: EmitEvent
   Program data: Zb1eU3aiYdwOAAAASGVsbG8sIFNvbGFuYSE=
@@ -131,30 +124,25 @@ Log Messages:
 ```
 
 <Callout type="info">
-  Ensure the RPC provider you use does not truncate the program logs from the
-  transaction data.
+  确保你使用的 RPC 提供商不会从交易数据中截断程序日志。
 </Callout>
 
 ### `emit_cpi`
 
-The
 [`emit_cpi!()`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/event/src/lib.rs#L148-L184)
-macro emits events through Cross Program Invocations (CPIs) to the program
-itself. The event data is encoded and included in the CPI's instruction data
-(instead of program logs).
+宏通过跨程序调用 (CPI) 向程序本身发出事件。事件数据被编码并包含在 CPI 的指令数据中（而不是程序日志中）。
 
-To emit events through CPIs, you need to enable the `event-cpi` feature in your
-program's `Cargo.toml`:
+要通过 CPI 发出事件，你需要在程序的 `Cargo.toml` 中启用 `event-cpi` 功能：
 
 ```toml title="Cargo.toml"
 [dependencies]
 anchor-lang = { version = "0.30.1", features = ["event-cpi"] }
 ```
 
-Example usage:
+使用示例：
 
-<Tabs items={["Program", "Client"]}>
-<Tab value="Program">
+<Tabs items={["程序", "客户端"]}>
+<Tab value="程序">
 
 ```rust title="lib.rs"
 use anchor_lang::prelude::*;
@@ -165,7 +153,7 @@ declare_id!("2cDQ2LxKwQ8fnFUz4LLrZ157QzBnhPNeQrTSmWcpVin1");
 pub mod event_cpi {
     use super::*;
 
-    pub fn emit_event(ctx: Context<EmitEvent>, input: String) -> Result<()> {
+    pub fn emit_event(ctx: Context<EmitEvent>, input: String) → Result<()> {
         // [!code word:emit_cpi!]
         // [!code highlight]
         emit_cpi!(CustomEvent { message: input });
@@ -186,7 +174,7 @@ pub struct CustomEvent {
 ```
 
 </Tab>
-<Tab value="Client">
+<Tab value="客户端">
 
 ```ts title="test.ts"
 import * as anchor from "@coral-xyz/anchor";
@@ -194,28 +182,28 @@ import { Program } from "@coral-xyz/anchor";
 import { EventCpi } from "../target/types/event_cpi";
 
 describe("event-cpi", () => {
-  // Configure the client to use the local cluster.
+  // 配置客户端使用本地集群。
   anchor.setProvider(anchor.AnchorProvider.env());
   const program = anchor.workspace.EventCpi as Program<EventCpi>;
 
-  it("Emits custom event", async () => {
+  it("发出自定义事件", async () => {
     const message = "Hello, Solana!";
     const transactionSignature = await program.methods.emitEvent(message).rpc();
 
-    // Wait for the transaction to be confirmed
+    // 等待交易确认
     await program.provider.connection.confirmTransaction(
       transactionSignature,
       "confirmed",
     );
 
-    // Fetch the transaction data
+    // 获取交易数据
     // [!code highlight:4]
     const transactionData = await program.provider.connection.getTransaction(
       transactionSignature,
       { commitment: "confirmed" },
     );
 
-    // Decode the event data from the CPI instruction data
+    // 从 CPI 指令数据中解码事件数据
     // [!code highlight:4]
     const eventIx = transactionData.meta.innerInstructions[0].instructions[0];
     const rawData = anchor.utils.bytes.bs58.decode(eventIx.data);
@@ -229,12 +217,10 @@ describe("event-cpi", () => {
 </Tab>
 </Tabs>
 
-The
 [`event_cpi`](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/attribute/event/src/lib.rs#L217-L226)
-attribute must be added to the `#[derive(Accounts)]` struct for the instruction
-instruction that emits events using the `emit_cpi!()` macro. This attribute
-[automatically includes additional accounts](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/parser/accounts/event_cpi.rs#L28-L70)
-that are required for the self CPI.
+属性必须添加到使用 `emit_cpi!()` 宏发出事件的指令的 `#[derive(Accounts)]` 结构体中。该属性
+[自动包含所需的额外账户](https://github.com/coral-xyz/anchor/blob/v0.30.1/lang/syn/src/parser/accounts/event_cpi.rs#L28-L70)
+以支持自我 CPI。
 
 ```rust title="lib.rs"
 // [!code highlight]
@@ -245,36 +231,30 @@ pub struct RequiredAccounts {
 }
 ```
 
-To get the emitted event data in your client application, you need to fetch the
-transaction using the transaction signature and parse the event data from the
-CPI instruction data.
+要在客户端应用程序中获取发出的事件数据，你需要使用交易签名获取完整交易数据，并从 CPI 指令数据中解析事件数据。
 
 ```ts title="test.ts"
-// 1. Fetch the full transaction data using the transaction signature
+// 1. 使用交易签名获取完整交易数据
 const transactionData = await program.provider.connection.getTransaction(
   transactionSignature,
   { commitment: "confirmed" },
 );
 
-// 2. Extract the CPI (inner instruction) that contains the event data
+// 2. 提取包含事件数据的 CPI（内部指令）
 const eventIx = transactionData.meta.innerInstructions[0].instructions[0];
 
-// 3. Decode the event data
+// 3. 解码事件数据
 const rawData = anchor.utils.bytes.bs58.decode(eventIx.data);
 const base64Data = anchor.utils.bytes.base64.encode(rawData.subarray(8));
 const event = program.coder.events.decode(base64Data);
 console.log(event);
 ```
 
-Below is an example transaction showing how event data appears in the
-transaction details. When using `emit_cpi!()`, the event data is encoded and
-included in the `data` field of an inner instruction (CPI).
+以下是一个示例交易，展示了事件数据在交易详情中的呈现方式。使用 `emit_cpi!()` 时，事件数据会被编码并包含在内部指令（CPI）的 `data` 字段中。
 
-In the example transaction below, the encoded event data is
-`"data": "6AJcBqZP8afBKheoif1oA6UAiLAcqYr2RaR33pFnEY1taQp"` in the
-`innerInstructions` array.
+在下面的示例交易中，编码的事件数据为 `"data": "6AJcBqZP8afBKheoif1oA6UAiLAcqYr2RaR33pFnEY1taQp"`，位于 `innerInstructions` 数组中。
 
-```shell title="Transaction Data"
+```shell title="交易数据"
 {
   "blockTime": 1735854530,
   "meta": {
@@ -361,7 +341,6 @@ In the example transaction below, the encoded event data is
 ```
 
 <Callout type="info">
-  Currently, event data emitted through CPIs cannot be directly subscribed to.
-  To access this data, you must fetch the complete transaction data and manually
-  decode the event information from the instruction data of the CPI.
+  目前，通过 CPI 发出的事件数据无法直接订阅。
+  要访问此数据，你必须获取完整交易数据并手动从 CPI 的指令数据中解码事件信息。
 </Callout>

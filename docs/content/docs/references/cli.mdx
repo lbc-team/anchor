@@ -1,42 +1,38 @@
 ---
 title: Anchor CLI
-description: Anchor CLI reference documentation
+description: Anchor CLI 参考文档
 ---
 
-A CLI is provided to support building and managing an Anchor workspace. For a
-comprehensive list of commands and options, run `anchor -h` on any of the
-following subcommands.
+提供了 CLI 工具来支持构建和管理 Anchor 工作区。有关命令和选项的完整列表，可以在以下任何子命令上运行 `anchor -h`。
 
 ---
 
 ```shell
 anchor-cli
 
-USAGE:
-    anchor <SUBCOMMAND>
+用法：
+    anchor <子命令>
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+标志：
+    -h, --help       打印帮助信息
+    -V, --version    打印版本信息
 
-SUBCOMMANDS:
-    account    Fetch and deserialize an account using the IDL provided
-    build      Builds the workspace
-    cluster    Cluster commands
-    deploy     Deploys each program in the workspace
-    expand     Expands the macros of a program or the workspace
-    help       Prints this message or the help of the given subcommand(s)
-    idl        Commands for interacting with interface definitions
-    init       Initializes a workspace
-    keys       Program keypair commands
-    migrate    Runs the deploy migration script
-    new        Creates a new program
-    shell      Starts a node shell with an Anchor client setup according to the local config
-    test       Runs integration tests against a localnetwork
-    upgrade    Upgrades a single program. The configured wallet must be the upgrade authority
-    verify     Verifies the on-chain bytecode matches the locally compiled artifact. Run this
-               command inside a program subdirectory, i.e., in the dir containing the program's
-               Cargo.toml
+子命令：
+    account    使用提供的 IDL 获取并反序列化账户
+    build      构建工作区
+    cluster    集群命令
+    deploy     部署工作区中的每个程序
+    expand     展开程序或工作区的宏
+    help       打印此消息或给定子命令的帮助信息
+    idl        用于与接口定义交互的命令
+    init       初始化工作区
+    keys       程序密钥对命令
+    migrate    运行部署迁移脚本
+    new        创建一个新程序
+    shell      启动一个 node shell，其中根据本地配置设置了 Anchor 客户端
+    test       针对本地网络运行集成测试
+    upgrade    升级单个程序。配置的钱包必须是升级授权者
+    verify     验证链上字节码是否与本地编译的工件匹配。在程序子目录中运行此命令，即在包含程序 Cargo.toml 的目录中
 ```
 
 ## Account
@@ -45,31 +41,22 @@ SUBCOMMANDS:
 anchor account <program-name>.<AccountTypeName> <account_pubkey>
 ```
 
-Fetches an account with the given public key and deserializes the data to JSON
-using the type name provided. If this command is run from within a workspace,
-the workspace's IDL files will be used to get the data types. Otherwise, the
-path to the IDL file must be provided.
+使用给定的公钥获取账户，并使用提供的类型名称将数据反序列化为 JSON。如果在工作区内运行此命令，将使用工作区的 IDL 文件来获取数据类型。否则，必须提供 IDL 文件的路径。
 
-The `program-name` is the name of the program where the account struct resides,
-usually under `programs/<program-name>`. `program-name` should be provided in a
-case-sensitive manner exactly as the folder name, usually in kebab-case.
+`program-name` 是账户结构体所在的程序的名称，通常在 `programs/<program-name>` 下。`program-name` 应以区分大小写的方式提供，与文件夹名称完全相同，通常是 kebab-case。
 
-The `AccountTypeName` is the name of the account struct, usually in PascalCase.
+`AccountTypeName` 是账户结构体的名称，通常是 PascalCase。
 
-The `account_pubkey` refers to the Pubkey of the account to deserialize, in
-Base58.
+`account_pubkey` 指的是要反序列化的账户的 Pubkey，以 Base58 表示。
 
-Example Usage:
-`anchor account anchor-escrow.EscrowAccount 3PNkzWKXCsbjijbasnx55NEpJe8DFXvEEbJKdRKpDcfK`,
-deserializes an account in the given pubkey with the account struct
-`EscrowAccount` defined in the `anchor-escrow` program.
+示例用法：
+`anchor account anchor-escrow.EscrowAccount 3PNkzWKXCsbjijbasnx55NEpJe8DFXvEEbJKdRKpDcfK`，使用 `anchor-escrow` 程序中定义的 `EscrowAccount` 账户结构体反序列化给定公钥中的账户。
 
 ```
 anchor account <program-name>.<AccountTypeName> <account_pubkey> --idl <path/to/idl.json>
 ```
 
-Deserializes the account with the data types provided in the given IDL file even
-if inside a workspace.
+即使在工作区内，也使用给定 IDL 文件中提供的数据类型反序列化账户。
 
 ## Build
 
@@ -77,20 +64,16 @@ if inside a workspace.
 anchor build
 ```
 
-Builds programs in the workspace targeting Solana's BPF runtime and emitting
-IDLs in the `target/idl` directory.
+构建工作区中的程序，目标是 Solana 的 BPF 运行时，并在 `target/idl` 目录中生成 IDL。
 
 ```shell
 anchor build --verifiable
 ```
 
-Runs the build inside a docker image so that the output binary is deterministic
-(assuming a Cargo.lock file is used). This command must be run from within a
-single crate subdirectory within the workspace. For example,
-`programs/<my-program>/`.
+在 docker 镜像内运行构建，以便输出二进制文件是确定性的（假设使用了 Cargo.lock 文件）。此命令必须在工作区内的单个 crate 子目录中运行。例如，`programs/<my-program>/`。
 
-<Callout title="Tip">
-It's possible to pass arguments to the underlying `cargo build-sbf` command with `-- <ARGS>`. For example:
+<Callout title="提示">
+可以通过 `-- <ARGS>` 向底层的 `cargo build-sbf` 命令传递参数。例如：
 
 ```
 anchor build -- --features my-feature
@@ -106,10 +89,10 @@ anchor build -- --features my-feature
 anchor cluster list
 ```
 
-This lists cluster endpoints:
+列出集群端点：
 
 ```shell
-Cluster Endpoints:
+集群端点：
 
 * Mainnet - https://api.mainnet-beta.solana.com
 * Devnet  - https://api.devnet.solana.com
@@ -122,11 +105,10 @@ Cluster Endpoints:
 anchor deploy
 ```
 
-Deploys all programs in the workspace to the configured cluster.
+将工作区中的所有程序部署到配置的集群。
 
-<Callout title="Tip">
-  This is different from the `solana program deploy` command, because every time
-  it's run it will generate a _new_ program address.
+<Callout title="提示">
+  这与 `solana program deploy` 命令不同，因为每次运行它都会生成一个**新的**程序地址。
 </Callout>
 
 ## Expand
@@ -135,19 +117,15 @@ Deploys all programs in the workspace to the configured cluster.
 anchor expand
 ```
 
-If run inside a program folder, expands the macros of the program.
+如果在程序文件夹内运行，则将展开该程序的宏。
 
-If run in the workspace but outside a program folder, expands the macros of the
-workspace.
+如果在工作区内但没有在程序文件夹内运行，则将展开工作区的宏。
 
-If run with the `--program-name` option, expand only the given program.
+如果使用 `--program-name` 选项运行，则仅展开给定的程序。
 
 ## Idl
 
-The `idl` subcommand provides commands for interacting with interface definition
-files. It's recommended to use these commands to store an IDL on chain, at a
-deterministic address, as a function of nothing but the program's ID. This
-allows us to generate clients for a program using nothing but the program ID.
+`idl` 子命令提供了用于与接口定义文件交互的命令。建议使用这些命令在链上存储 IDL，并将其存储在由程序 ID 唯一决定的确定性地址。这使我们能够仅使用程序 ID 生成客户端。
 
 ### Idl Build
 
@@ -155,7 +133,7 @@ allows us to generate clients for a program using nothing but the program ID.
 anchor idl build
 ```
 
-Generates the IDL for the program using the compilation method.
+使用编译方法生成程序的 IDL。
 
 ### Idl Init
 
@@ -163,10 +141,7 @@ Generates the IDL for the program using the compilation method.
 anchor idl init -f <target/idl/program.json> <program-id>
 ```
 
-Creates an idl account, writing the given `<target/idl/program.json>` file into
-a program owned account. By default, the size of the account is double the size
-of the IDL, allowing room for growth in case the idl needs to be upgraded in the
-future.
+创建一个 idl 账户，并将给定的 `<target/idl/program.json>` 文件写入程序拥有的账户中。默认情况下，账户的大小是 IDL 大小的两倍，为将来升级 IDL 留出了空间。
 
 ### Idl Fetch
 
@@ -174,8 +149,7 @@ future.
 anchor idl fetch -o <out-file.json> <program-id>
 ```
 
-Fetches an IDL from the configured blockchain. For example, make sure your
-`Anchor.toml` is pointing to the `mainnet` cluster and run
+从配置的区块链中获取 IDL。例如，确保你的 `Anchor.toml` 指向 `mainnet` 集群并运行
 
 ```shell
 anchor idl fetch GrAkKfEpTKQuVHG2Y97Y2FF4i7y7Q5AHLK94JBy7Y5yv
@@ -187,8 +161,7 @@ anchor idl fetch GrAkKfEpTKQuVHG2Y97Y2FF4i7y7Q5AHLK94JBy7Y5yv
 anchor idl authority <program-id>
 ```
 
-Outputs the IDL account's authority. This is the wallet that has the ability to
-update the IDL.
+输出 IDL 账户的授权者。这是可以更新 IDL 的钱包。
 
 ### Idl Erase Authority
 
@@ -196,8 +169,7 @@ update the IDL.
 anchor idl erase-authority -p <program-id>
 ```
 
-Erases the IDL account's authority so that upgrades can no longer occur. The
-configured wallet must be the current authority.
+擦除 IDL 账户的授权者，以便不再进行升级。配置的钱包必须是当前授权者。
 
 ### Idl Upgrade
 
@@ -205,15 +177,13 @@ configured wallet must be the current authority.
 anchor idl upgrade <program-id> -f <target/idl/program.json>
 ```
 
-Upgrades the IDL file on chain to the new `target/idl/program.json` idl. The
-configured wallet must be the current authority.
+将链上的 IDL 文件升级为新的 `target/idl/program.json` IDL。配置的钱包必须是当前授权者。
 
 ```shell
 anchor idl set-authority -n <new-authority> -p <program-id>
 ```
 
-Sets a new authority on the IDL account. Both the `new-authority` and
-`program-id` must be encoded in base 58.
+在 IDL 账户上设置新的授权者。`new-authority` 和 `program-id` 都必须以 base58 编码。
 
 ## Init
 
@@ -221,19 +191,19 @@ Sets a new authority on the IDL account. Both the `new-authority` and
 anchor init
 ```
 
-Initializes a project workspace with the following structure.
+初始化一个项目工作区，结构如下。
 
-- `Anchor.toml`: Anchor configuration file.
-- `Cargo.toml`: Rust workspace configuration file.
-- `package.json`: JavaScript dependencies file.
-- `programs/`: Directory for Solana program crates.
-- `app/`: Directory for your application frontend.
-- `tests/`: Directory for JavaScript integration tests.
-- `migrations/deploy.js`: Deploy script.
+- `Anchor.toml`: Anchor 配置文件。
+- `Cargo.toml`: Rust 工作区配置文件。
+- `package.json`: JavaScript 依赖文件。
+- `programs/`: Solana 程序的目录。
+- `app/`: 应用程序前端的目录。
+- `tests/`: JavaScript 集成测试的目录。
+- `migrations/deploy.js`: 部署脚本。
 
 ## Keys
 
-Program keypair commands.
+程序密钥对命令。
 
 ### Keys List
 
@@ -241,7 +211,7 @@ Program keypair commands.
 anchor keys list
 ```
 
-List all of the program keys.
+列出所有程序密钥。
 
 ### Keys Sync
 
@@ -249,7 +219,7 @@ List all of the program keys.
 anchor keys sync
 ```
 
-Sync program `declare_id!` pubkeys with the program's actual pubkey.
+将程序 `declare_id!` 的 pubkey 与程序的实际 pubkey 同步。
 
 ## Migrate
 
@@ -257,23 +227,21 @@ Sync program `declare_id!` pubkeys with the program's actual pubkey.
 anchor migrate
 ```
 
-Runs the deploy script located at `migrations/deploy.js`, injecting a provider
-configured from the workspace's `Anchor.toml`. For example,
+运行位于 `migrations/deploy.js` 的部署脚本，注入一个根据工作区的 `Anchor.toml` 配置的提供者。例如，
 
 ```javascript
-// File: migrations/deploys.js
+// 文件：migrations/deploys.js
 
 const anchor = require("@coral-xyz/anchor");
 
 module.exports = async function (provider) {
   anchor.setProvider(provider);
 
-  // Add your deploy script here.
+  // 在这里添加你的部署脚本。
 };
 ```
 
-Migrations are a new feature and only support this simple deploy script at the
-moment.
+迁移是一个新功能，目前仅支持这种简单的部署脚本。
 
 ## New
 
@@ -281,8 +249,7 @@ moment.
 anchor new <program-name>
 ```
 
-Creates a new program in the workspace's `programs/` directory initialized with
-boilerplate.
+在工作区的 `programs/` 目录中创建一个新程序，并初始化模板代码。
 
 ## Shell
 
@@ -290,9 +257,7 @@ boilerplate.
 anchor shell
 ```
 
-Starts a node js shell with an Anchor client setup according to the local
-config. This client can be used to interact with deployed Solana programs in the
-workspace.
+启动一个 node js shell，其中根据本地配置设置了 Anchor 客户端。该客户端可用于与工作区中部署的 Solana 程序进行交互。
 
 ## Test
 
@@ -300,22 +265,18 @@ workspace.
 anchor test
 ```
 
-Run an integration test suit against the configured cluster, deploying new
-versions of all workspace programs before running them.
+针对配置的集群运行集成测试套件，部署工作区中所有程序的新版本。
 
-If the configured network is a localnet, then automatically starts the
-localnetwork and runs the test.
+如果配置的网络是 localnet，则会自动启动本地网络并运行测试。
 
-<Callout title="Note">
-Be sure to shutdown any other local validators, otherwise `anchor test` will fail to run.
+<Callout title="注意">
+确保关闭其他本地验证器，否则 `anchor test` 将无法运行。
 
-If you'd prefer to run the program against your local validator use
-`anchor test --skip-local-validator`.
+如果你希望针对本地验证器运行程序，请使用 `anchor test --skip-local-validator`。
 
 </Callout>
 
-When running tests we stream program logs to
-`.anchor/program-logs/<address>.<program-name>.log`
+运行测试时，我们会将程序日志流式传输到 `.anchor/program-logs/<address>.<program-name>.log`
 
 ## Upgrade
 
@@ -323,7 +284,7 @@ When running tests we stream program logs to
 anchor upgrade <target/deploy/program.so> --program-id <program-id>
 ```
 
-Uses Solana's upgradeable BPF loader to upgrade the on chain program code.
+使用 Solana 的可升级 BPF 加载程序来升级链上程序代码。
 
 ## Verify
 
@@ -331,4 +292,4 @@ Uses Solana's upgradeable BPF loader to upgrade the on chain program code.
 anchor verify <program-id>
 ```
 
-Verifies the on-chain bytecode matches the locally compiled artifact.
+验证链上字节码是否与本地编译的工件匹配。
