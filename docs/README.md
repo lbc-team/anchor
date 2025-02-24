@@ -14,3 +14,10 @@ yarn dev
 ```
 
 Open http://localhost:3000 with your browser to see the result.
+
+# Run in production
+
+```bash
+pm2 start ecosystem.config.js
+```
+
