@@ -1,4 +1,4 @@
 {
-  "title": "Additional Features",
+  "title": "附加功能",
   "pages": ["declare-program", "errors", "events", "zero-copy"]
 }

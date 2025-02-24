@@ -1,12 +1,12 @@
 {
-  "title": "docs",
-  "description": "The description of root folder",
+  "title": "Anchor 中文文档",
+  "description": "Anchor 中文文档",
   "pages": [
-    "---Getting Started---",
+    "---开始---",
     "installation",
     "quickstart",
 
-    "---Core Concepts---",
+    "---核心概念---",
     "basics",
     "clients",
     "testing",
