@@ -18,28 +18,28 @@ export const baseOptions: HomeLayoutProps = {
     title: (
       <div className="flex items-center gap-2 pl-2">
         <Image src="/icons/anchor.png" alt="Logo" width={24} height={24} />
-        <span>Anchor Docs</span>
+        <span>Anchor 中文文档</span>
       </div>
     ),
-    url: "/docs",
+    url: "/docs/anchor",
   },
   links: [
     {
       icon: <GithubIcon />,
       text: "Github",
-      url: "https://github.com/coral-xyz/anchor",
+      url: "https://github.com/lbc-team/anchor",
       active: "none",
     },
     {
       icon: <DiscordIcon />,
-      text: "Discord",
-      url: "https://discord.com/invite/NHHGSXAnXk",
+      text: "集训营",
+      url: "https://learnblockchain.cn/openspace/1",
       active: "none",
     },
     {
       icon: <StackExchangeIcon />,
-      text: "Stack Exchange",
-      url: "https://solana.stackexchange.com/",
+      text: "Solana 文章",
+      url: "https://learnblockchain.cn/categories/solana",
       active: "none",
     },
   ],

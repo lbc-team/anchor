@@ -61,7 +61,7 @@ export default async function Page(props: {
 
 function EditOnGithub({ path }: { path: string }) {
   // placeholder
-  const href = `https://github.com/coral-xyz/anchor/blob/master/docs/content/docs/${path.startsWith("/") ? path.slice(1) : path}`;
+  const href = `https://github.com/lbc-team/anchor/blob/cn/docs/content/docs/${path.startsWith("/") ? path.slice(1) : path}`;
   return (
     <a
       href={href}
@@ -70,7 +70,7 @@ function EditOnGithub({ path }: { path: string }) {
       className="pt-2 flex items-center gap-2 text-sm text-fd-muted-foreground hover:text-fd-accent-foreground/80"
     >
       <GithubIcon width="18" height="18" />
-      <span>Edit on GitHub</span>
+      <span>在GitHub上编辑</span>
     </a>
   );
 }
