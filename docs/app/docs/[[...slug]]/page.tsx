@@ -86,8 +86,10 @@ export async function generateMetadata(props: {
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const pageTitle = page.data.title;
+  
   return {
-    title: page.data.title,
+    title: pageTitle ? `${pageTitle} - Anchor 中文文档 - 登链社区` : "Anchor 中文文档 - 登链社区 ",
     description: page.data.description,
   };
 }
