@@ -89,7 +89,7 @@ export async function generateMetadata(props: {
   const pageTitle = page.data.title;
   
   return {
-    title: pageTitle ? `${pageTitle} - Anchor 中文文档 - 登链社区` : "Anchor 中文文档 - 登链社区 ",
+    title: pageTitle ? `${pageTitle}｜Anchor 中文文档｜登链社区` : "Anchor 中文文档｜登链社区 ",
     description: page.data.description,
   };
 }
